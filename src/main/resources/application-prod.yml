@@ -1,0 +1,54 @@
+server:
+  port: 7200
+  tomcat:
+    uri-encoding: UTF-8
+spring:
+  datasource:
+    jdbc-url: jdbc:mysql://47.94.248.38:3306/userCenter?characterEncoding=utf-8&useSSL=false
+    username: root
+    password: li197910
+    driver-class-name: com.mysql.jdbc.Driver
+  http:
+    encoding:
+      charset: utf-8
+      enabled: true
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
+    show-sql: true
+  jackson:
+      serialization:
+        indent_output: true
+  kafka:
+    bootstrap-servers: http://47.94.248.38:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    producer:
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: user_center_group
+  mail:
+    # 邮箱服务器地址，这里使用的是163.com的邮件服务器
+      host: smtp.163.com
+    # 在163.com注册的用户名，注意这里不需要@163.com后缀
+      username: userscenter
+    # 在163.com使用的授权码(关闭授权码时使用密码)，需要开启POP3/SMTP服务
+      password: li1979101
+# 以谁来发送邮件（发件人邮箱）
+mail:
+  fromMail:
+    addr: userscenter@163.com
+#最大连接数
+http:
+  maxTotal: 100
+#并发数
+  defaultMaxPerRoute: 20
+#创建连接的最长时间
+  connectTimeout: 1000
+#从连接池中获取到连接的最长时间
+  connectionRequestTimeout: 500
+#数据传输的最长时间
+  socketTimeout: 10000
+debug: false
