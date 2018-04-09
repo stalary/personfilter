@@ -8,5 +8,7 @@ package com.stalary.personfilter.utils;
  */
 public class PFUtil {
 
+    public static final String PROJECT = "project";
 
+    public static final String SWAGGER = "swagger";
 }

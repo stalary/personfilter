@@ -2,6 +2,7 @@ server:
   port: 6100
   tomcat:
     uri-encoding: UTF-8
+  user: http://47.94.248.38:7200
 spring:
   datasource:
     jdbc-url: jdbc:mysql://127.0.0.1:3306/userCenter?characterEncoding=utf-8&useSSL=false
@@ -40,4 +41,4 @@ spring:
 mail:
   fromMail:
     addr: userscenter@163.com
-debug: true
+debug: false
