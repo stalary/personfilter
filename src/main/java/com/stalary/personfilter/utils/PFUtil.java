@@ -11,4 +11,14 @@ public class PFUtil {
     public static final String PROJECT = "project";
 
     public static final String SWAGGER = "swagger";
+
+    public static final String KNOW = "know";
+
+    public static final String FAMILIAR = "familiar";
+
+    public static final String CONTROL = "control";
+
+    public static final String MASTER = "master";
+
+
 }

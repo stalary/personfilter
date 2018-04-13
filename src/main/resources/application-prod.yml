@@ -9,6 +9,11 @@ spring:
     username: root
     password: li197910
     driver-class-name: com.mysql.jdbc.Driver
+  data:
+      mongodb:
+        uri: mongodb://47.94.248.38:27017/personfilter
+  redis:
+    host: 47.94.248.38
   http:
     encoding:
       charset: utf-8
