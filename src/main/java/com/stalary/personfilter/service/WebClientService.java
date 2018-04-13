@@ -51,13 +51,13 @@ public class WebClientService {
     }
 
     public void getProjectInfo() {
-        Mono<ResponseMessage> info = builder(userCenterServer, HttpMethod.GET, "/facade/project?name={name}&phone={phone}", "人才筛选", "17853149599");
-        ResponseMessage block = info.block();
         // 将项目信息存入缓存中
         if (StringUtils.isEmpty(redis.opsForValue().get(PFUtil.PROJECT))) {
+            Mono<ResponseMessage> info = builder(userCenterServer, HttpMethod.GET, "/facade/project?name={name}&phone={phone}", "人才筛选", "17853149599");
+            ResponseMessage block = info.block();
             redis.opsForValue().set(PFUtil.PROJECT, block.getData().toString());
+            ProjectHolder.set(gson.fromJson(block.getData().toString(), ProjectInfo.class));
         }
-        ProjectHolder.set(gson.fromJson(block.getData().toString(), ProjectInfo.class));
     }
 
 

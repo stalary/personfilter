@@ -49,14 +49,6 @@ public class TestController {
 
     @GetMapping("/mongodb")
     public ResponseMessage mongodb() {
-        Resume resume = new Resume();
-        resume.setId(1);
-        resume.setName("stalary");
-        List<Skill> list = new ArrayList<>();
-        list.add(new Skill("java", PFUtil.MASTER));
-        list.add(new Skill("mysql", PFUtil.KNOW));
-        resume.setSkills(list);
-        resumeRepo.save(resume);
         return ResponseMessage.successMessage(resumeRepo.findAll());
     }
 }
