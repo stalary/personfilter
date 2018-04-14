@@ -1,4 +1,4 @@
-package com.stalary.personfilter.repo;
+package com.stalary.personfilter.repo.mongodb;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.NoRepositoryBean;

@@ -5,13 +5,15 @@ server:
   user: http://47.94.248.38:7200
 spring:
   datasource:
-    jdbc-url: jdbc:mysql://127.0.0.1:3306/userCenter?characterEncoding=utf-8&useSSL=false
     username: root
     password: li197910
     driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/userCenter?characterEncoding=utf-8&useSSL=false
   data:
     mongodb:
-      uri: mongodb://localhost:27017/personfilter
+      host: localhost
+      port: 27017
+      database: personfilter
   http:
     encoding:
       charset: utf-8

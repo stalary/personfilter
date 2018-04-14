@@ -1,28 +1,21 @@
 package com.stalary.personfilter.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.stalary.personfilter.data.dto.ProjectInfo;
 import com.stalary.personfilter.data.dto.ResponseMessage;
 import com.stalary.personfilter.holder.ProjectHolder;
-import com.stalary.personfilter.utils.PFUtil;
+import com.stalary.personfilter.utils.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-
-import javax.annotation.Resource;
-import java.util.Map;
 
 /**
  * WebClient
@@ -34,10 +27,10 @@ import java.util.Map;
 @Service
 public class WebClientService {
 
-    @Resource
+    @Autowired
     private Gson gson;
 
-    @Resource
+    @Autowired
     private StringRedisTemplate redis;
     /**
      * 用户中心的地址
@@ -49,17 +42,6 @@ public class WebClientService {
         // 预热
         builder(userCenterServer, HttpMethod.GET, "");
     }
-
-    public void getProjectInfo() {
-        // 将项目信息存入缓存中
-        if (StringUtils.isEmpty(redis.opsForValue().get(PFUtil.PROJECT))) {
-            Mono<ResponseMessage> info = builder(userCenterServer, HttpMethod.GET, "/facade/project?name={name}&phone={phone}", "人才筛选", "17853149599");
-            ResponseMessage block = info.block();
-            redis.opsForValue().set(PFUtil.PROJECT, block.getData().toString());
-            ProjectHolder.set(gson.fromJson(block.getData().toString(), ProjectInfo.class));
-        }
-    }
-
 
     private Mono<ResponseMessage> builder(String baseUrl, HttpMethod httpMethod, String uri, Object... uriVariables) {
         return WebClient.create(baseUrl)
@@ -76,6 +58,16 @@ public class WebClientService {
                     log.warn("error: {}, msg: {}", err.getRawStatusCode(), err.getResponseBodyAsString());
                 })
                 .doOnSuccess(responseMessage -> log.info("webClient: " + userCenterServer + uri + responseMessage));
+    }
+
+    public void getProjectInfo() {
+        // 将项目信息存入缓存中
+        if (StringUtils.isEmpty(redis.opsForValue().get(Constant.PROJECT))) {
+            Mono<ResponseMessage> info = builder(userCenterServer, HttpMethod.GET, "/facade/project?name={name}&phone={phone}", "人才筛选", "17853149599");
+            ResponseMessage block = info.block();
+            redis.opsForValue().set(Constant.PROJECT, block.getData().toString());
+            ProjectHolder.set(gson.fromJson(block.getData().toString(), ProjectInfo.class));
+        }
     }
 
 }

@@ -1,10 +1,10 @@
 package com.stalary.personfilter.data.entity;
 
-import com.stalary.personfilter.data.dto.Skill;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.List;
 
@@ -43,6 +43,7 @@ public class Resume extends BaseEntity {
     /**
      * 技能
      */
+    @DBRef
     private List<Skill> skills;
 
     /**
@@ -79,4 +80,9 @@ public class Resume extends BaseEntity {
      * 个人经历：包括项目经验等
      */
     private String experience;
+
+    /**
+     * 奖项
+     */
+    private String awards;
 }

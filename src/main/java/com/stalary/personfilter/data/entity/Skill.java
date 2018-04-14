@@ -1,7 +1,10 @@
-package com.stalary.personfilter.data.dto;
+package com.stalary.personfilter.data.entity;
 
-import com.stalary.personfilter.utils.PFUtil;
+import com.stalary.personfilter.utils.Constant;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Skill
@@ -11,7 +14,7 @@ import lombok.*;
  */
 @NoArgsConstructor
 @ToString
-public class Skill {
+public class Skill extends BaseEntity {
 
     /**
      * 技能名称
@@ -25,16 +28,23 @@ public class Skill {
      */
     private int level;
 
+    /**
+     * 存储简历id
+     */
+    @Getter
+    @Setter
+    private long resumeId;
+
     public String getLevel() {
         switch (this.level) {
             case 1:
-                return PFUtil.KNOW;
+                return Constant.KNOW;
             case 2:
-                return PFUtil.FAMILIAR;
+                return Constant.FAMILIAR;
             case 3:
-                return PFUtil.CONTROL;
+                return Constant.CONTROL;
             case 4:
-                return PFUtil.MASTER;
+                return Constant.MASTER;
             default:
                 return null;
         }
@@ -42,16 +52,16 @@ public class Skill {
 
     private void setLevel(String level) {
         switch (level) {
-            case PFUtil.KNOW:
+            case Constant.KNOW:
                 this.level = 1;
                 break;
-            case PFUtil.FAMILIAR:
+            case Constant.FAMILIAR:
                 this.level = 2;
                 break;
-            case PFUtil.CONTROL:
+            case Constant.CONTROL:
                 this.level = 3;
                 break;
-            case PFUtil.MASTER:
+            case Constant.MASTER:
                 this.level = 4;
                 break;
             default:
@@ -60,18 +70,18 @@ public class Skill {
         }
     }
 
-    public Skill(String name, String level) {
+    public Skill(String name, String level, Long resumeId) {
         switch (level) {
-            case PFUtil.KNOW:
+            case Constant.KNOW:
                 this.level = 1;
                 break;
-            case PFUtil.FAMILIAR:
+            case Constant.FAMILIAR:
                 this.level = 2;
                 break;
-            case PFUtil.CONTROL:
+            case Constant.CONTROL:
                 this.level = 3;
                 break;
-            case PFUtil.MASTER:
+            case Constant.MASTER:
                 this.level = 4;
                 break;
             default:
@@ -79,6 +89,7 @@ public class Skill {
                 break;
         }
         this.name = name;
+        this.resumeId = resumeId;
     }
 
 

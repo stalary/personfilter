@@ -11,7 +11,7 @@ public enum ResultEnum {
     UNKNOW_ERROR(-1000, "未知错误"),
 
     // 1开头为用户有关的错误
-    USERNAME_EMPTY(1001, "用户名为空"),
+    NEED_LOGIN(1001, "未登陆"),
     PASSWORD_EMPTY(1002, "密码为空"),
     USERNAME_PASSWORD_ERROR(1003, "账号密码错误"),
     USERNAME_REPEAT(1004, "该用户已注册"),
