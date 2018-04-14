@@ -1,4 +1,4 @@
-package com.stalary.personfilter.data.entity;
+package com.stalary.personfilter.data.entity.mongodb;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

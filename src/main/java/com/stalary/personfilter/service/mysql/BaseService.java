@@ -1,6 +1,6 @@
-package com.stalary.personfilter.service;
+package com.stalary.personfilter.service.mysql;
 
-import com.stalary.personfilter.repo.mongodb.BaseRepo;
+import com.stalary.personfilter.repo.mysql.BaseRepo;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * @author lirongqian
  * @since 2018/04/14
  */
-public abstract class BaseService<T, R extends BaseRepo<T, Long>>  {
+public abstract class BaseService<T, R extends BaseRepo<T, Long>> {
 
     protected R repo;
 
@@ -19,7 +19,7 @@ public abstract class BaseService<T, R extends BaseRepo<T, Long>>  {
     }
 
     public T findOne(Long id) {
-        return repo.findById(id).get();
+        return repo.getOne(id);
     }
 
     public T save(T entity) {
@@ -37,4 +37,5 @@ public abstract class BaseService<T, R extends BaseRepo<T, Long>>  {
     public void delete(T entity) {
         repo.delete(entity);
     }
+
 }

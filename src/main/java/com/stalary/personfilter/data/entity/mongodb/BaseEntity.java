@@ -1,4 +1,4 @@
-package com.stalary.personfilter.data.entity;
+package com.stalary.personfilter.data.entity.mongodb;
 
 import com.stalary.personfilter.annotation.AutoValue;
 import com.stalary.personfilter.annotation.CreateTime;

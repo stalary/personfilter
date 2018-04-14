@@ -1,10 +1,11 @@
 package com.stalary.personfilter.controller;
 
 import com.stalary.personfilter.data.dto.ResponseMessage;
-import com.stalary.personfilter.data.entity.Resume;
-import com.stalary.personfilter.service.ResumeService;
-import com.stalary.personfilter.service.SkillService;
+import com.stalary.personfilter.data.entity.mysql.Company;
+import com.stalary.personfilter.service.mongodb.ResumeService;
+import com.stalary.personfilter.service.mongodb.SkillService;
 import com.stalary.personfilter.service.WebClientService;
+import com.stalary.personfilter.service.mysql.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -38,6 +39,9 @@ public class TestController {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    private CompanyService companyService;
+
     @GetMapping("/hello")
     public ResponseMessage hello() {
         webClientService.getProjectInfo();
@@ -53,5 +57,11 @@ public class TestController {
     public ResponseMessage mongodb(
             @RequestParam String name) {
         return ResponseMessage.successMessage(skillService.findResumeByName(name));
+    }
+
+    @RequestMapping("/mysql")
+    public ResponseMessage mysql(
+            @RequestBody Company company) {
+        return ResponseMessage.successMessage(companyService.save(company));
     }
 }

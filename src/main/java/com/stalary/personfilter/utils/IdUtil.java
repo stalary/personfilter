@@ -1,6 +1,6 @@
 package com.stalary.personfilter.utils;
 
-import com.stalary.personfilter.data.entity.SeqInfo;
+import com.stalary.personfilter.data.entity.mongodb.SeqInfo;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;

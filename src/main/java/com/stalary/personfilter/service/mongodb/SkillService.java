@@ -1,12 +1,11 @@
-package com.stalary.personfilter.service;
+package com.stalary.personfilter.service.mongodb;
 
 import com.google.common.collect.Lists;
-import com.stalary.personfilter.data.entity.Resume;
-import com.stalary.personfilter.data.entity.Skill;
+import com.stalary.personfilter.data.entity.mongodb.Resume;
+import com.stalary.personfilter.data.entity.mongodb.Skill;
 import com.stalary.personfilter.repo.mongodb.ResumeRepo;
 import com.stalary.personfilter.repo.mongodb.SkillRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;

@@ -1,10 +1,7 @@
-package com.stalary.personfilter.data.entity;
+package com.stalary.personfilter.data.entity.mongodb;
 
 import com.stalary.personfilter.utils.Constant;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Skill

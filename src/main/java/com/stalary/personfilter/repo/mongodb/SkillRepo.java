@@ -1,6 +1,6 @@
 package com.stalary.personfilter.repo.mongodb;
 
-import com.stalary.personfilter.data.entity.Skill;
+import com.stalary.personfilter.data.entity.mongodb.Skill;
 
 /**
  * SkillRepo
