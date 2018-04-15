@@ -1,12 +1,10 @@
 package com.stalary.personfilter.controller;
 
 import com.stalary.personfilter.data.dto.ResponseMessage;
+import com.stalary.personfilter.data.entity.mysql.Company;
 import com.stalary.personfilter.service.mysql.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * CompanyController
@@ -26,5 +24,10 @@ public class CompanyController {
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "4") int size) {
         return ResponseMessage.successMessage(companyService.allCompany(page, size));
+    }
+
+    @PostMapping ResponseMessage addCompany(
+            @RequestBody Company company) {
+        return ResponseMessage.successMessage(companyService.save(company));
     }
 }

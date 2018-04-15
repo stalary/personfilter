@@ -1,12 +1,16 @@
 package com.stalary.personfilter.service;
 
 import com.google.gson.Gson;
+import com.stalary.personfilter.data.ResultEnum;
 import com.stalary.personfilter.data.dto.ProjectInfo;
 import com.stalary.personfilter.data.dto.ResponseMessage;
+import com.stalary.personfilter.data.dto.User;
+import com.stalary.personfilter.exception.MyException;
 import com.stalary.personfilter.holder.ProjectHolder;
 import com.stalary.personfilter.utils.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.util.bcel.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -16,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+
+import javax.annotation.Nullable;
 
 /**
  * WebClient
@@ -67,7 +73,45 @@ public class WebClientService {
             ResponseMessage block = info.block();
             redis.opsForValue().set(Constant.PROJECT, block.getData().toString());
             ProjectHolder.set(gson.fromJson(block.getData().toString(), ProjectInfo.class));
+        } else {
+            ProjectHolder.set(gson.fromJson(redis.opsForValue().get(Constant.PROJECT), ProjectInfo.class));
         }
+    }
+
+    public ResponseMessage postUser(User user, String type) {
+        ProjectInfo projectInfo = ProjectHolder.get();
+        user.setProjectId(projectInfo.getProjectId());
+        ResponseMessage tokenResponse = WebClient
+                .create(userCenterServer)
+                .method(HttpMethod.POST)
+                .uri("/token/{register}?key={key}", type, projectInfo.getKey())
+                .body(Mono.just(user), User.class)
+                .retrieve()
+                .onStatus(HttpStatus::isError, response -> {
+                    log.warn("error: {}, msg: {}", response.statusCode().value(), response.statusCode().getReasonPhrase());
+                    return Mono.error(new RuntimeException(response.statusCode().value() + " : " + response.statusCode().getReasonPhrase()));
+                })
+                .bodyToMono(ResponseMessage.class)
+                .block();
+        if (tokenResponse != null) {
+            getUser(tokenResponse.getData().toString());
+        }
+        return tokenResponse;
+    }
+
+    /**
+     * 获取到用户信息时即存入缓存
+     * @param token
+     * @return
+     */
+    public ResponseMessage getUser(String token) {
+        ProjectInfo projectInfo = ProjectHolder.get();
+        Mono<ResponseMessage> builder = builder(userCenterServer, HttpMethod.GET, "/facade/token?token={token}&key={key}", token, projectInfo.getKey());
+        ResponseMessage userResponse = builder.block();
+        if (userResponse != null) {
+            redis.opsForValue().set(Constant.TOKEN + Constant.SPLIT + token, userResponse.getData().toString());
+        }
+        return userResponse;
     }
 
 }

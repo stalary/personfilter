@@ -13,7 +13,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class ProjectInfo {
 
-    private Integer projectId;
+    private Long projectId;
 
     private String key;
 }

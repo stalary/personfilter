@@ -36,4 +36,12 @@ public class Constant {
      * token
      */
     public static final String Authorization = "Authorization";
+
+    public static final String SPLIT = ":";
+
+    public static final String TOKEN = "token";
+
+    public static final String LOGIN = "login";
+
+    public static final String REGISTER = "register";
 }

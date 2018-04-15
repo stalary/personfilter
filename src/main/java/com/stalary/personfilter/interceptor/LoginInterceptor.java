@@ -1,11 +1,14 @@
 package com.stalary.personfilter.interceptor;
 
 import com.stalary.personfilter.annotation.LoginRequired;
+import com.stalary.personfilter.holder.ProjectHolder;
 import com.stalary.personfilter.service.WebClientService;
 import com.stalary.personfilter.utils.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -28,6 +31,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private WebClientService webClientService;
 
+    @Autowired
+    private StringRedisTemplate redis;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (!(handler instanceof HandlerMethod)) {
@@ -37,12 +43,13 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 //        if (request.getRequestURI().contains(Constant.SWAGGER)) {
 //            return true;
 //        }
+        webClientService.getProjectInfo();
         Method method = ((HandlerMethod) handler).getMethod();
         // 判断需要调用需要登陆的接口时是否已经登陆
         boolean isLoginRequired = isAnnotationPresent(method, LoginRequired.class);
         if (isLoginRequired) {
             // 获取项目信息，以便调用登陆中心
-            webClientService.getProjectInfo();
+//            if (redis.opsForValue().get())
         }
 
         return true;
