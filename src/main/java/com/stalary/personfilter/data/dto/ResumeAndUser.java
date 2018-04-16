@@ -1,0 +1,22 @@
+package com.stalary.personfilter.data.dto;
+
+import com.stalary.personfilter.data.entity.mongodb.Resume;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * ResumeAndUser
+ *
+ * @author lirongqian
+ * @since 2018/04/16
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ResumeAndUser {
+
+    private Resume resume;
+
+    private User user;
+}

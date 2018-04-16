@@ -1,6 +1,7 @@
 package com.stalary.personfilter.service.mongodb;
 
 import com.google.common.collect.Lists;
+import com.stalary.personfilter.data.dto.ResumeAndUser;
 import com.stalary.personfilter.data.entity.mongodb.Resume;
 import com.stalary.personfilter.data.entity.mongodb.Skill;
 import com.stalary.personfilter.repo.mongodb.ResumeRepo;
@@ -11,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,11 +52,17 @@ public class SkillService extends BaseService<Skill, SkillRepo> {
      * @param name
      * @return
      */
+    //todo
     public List<Resume> findResumeByName(String name) {
         List<Long> resumeId = findByName(name)
                 .stream()
                 .map(Skill::getResumeId)
                 .collect(Collectors.toList());
+        List<ResumeAndUser> list = new ArrayList<>();
+        resumeRepo.findAllById(resumeId)
+                .forEach(resume -> {
+                    resume.getUserId();
+                });
         return Lists.newArrayList(resumeRepo.findAllById(resumeId));
     }
 }

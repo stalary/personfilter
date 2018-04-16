@@ -26,4 +26,8 @@ public class CompanyService extends BaseService<Company, CompanyRepo> {
         return repo.allCompany(pageRequest);
     }
 
+    public List<Company> allCompany() {
+        return repo.findAll();
+    }
+
 }

@@ -140,4 +140,8 @@ public class WebClientService {
         return userResponse;
     }
 
+//    public User getUserById(Long userId) {
+//        builder()
+//    }
+
 }
