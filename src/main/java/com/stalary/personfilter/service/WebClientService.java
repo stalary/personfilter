@@ -1,16 +1,11 @@
 package com.stalary.personfilter.service;
 
 import com.google.gson.Gson;
-import com.stalary.personfilter.data.ResultEnum;
-import com.stalary.personfilter.data.dto.ProjectInfo;
-import com.stalary.personfilter.data.dto.ResponseMessage;
-import com.stalary.personfilter.data.dto.User;
-import com.stalary.personfilter.exception.MyException;
+import com.stalary.personfilter.data.dto.*;
 import com.stalary.personfilter.holder.ProjectHolder;
 import com.stalary.personfilter.utils.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.util.bcel.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -20,8 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-
-import javax.annotation.Nullable;
 
 /**
  * WebClient
@@ -71,15 +64,40 @@ public class WebClientService {
         if (StringUtils.isEmpty(redis.opsForValue().get(Constant.PROJECT))) {
             Mono<ResponseMessage> info = builder(userCenterServer, HttpMethod.GET, "/facade/project?name={name}&phone={phone}", "人才筛选", "17853149599");
             ResponseMessage block = info.block();
-            redis.opsForValue().set(Constant.PROJECT, block.getData().toString());
-            ProjectHolder.set(gson.fromJson(block.getData().toString(), ProjectInfo.class));
+            if (block != null) {
+                redis.opsForValue().set(Constant.PROJECT, block.getData().toString());
+                ProjectHolder.set(gson.fromJson(block.getData().toString(), ProjectInfo.class));
+            }
         } else {
+            // 存在缓存时直接取出
             ProjectHolder.set(gson.fromJson(redis.opsForValue().get(Constant.PROJECT), ProjectInfo.class));
         }
     }
 
-    public ResponseMessage postUser(User user, String type) {
+    public ResponseMessage postUser(Object object, String type) {
         ProjectInfo projectInfo = ProjectHolder.get();
+        User user = new User();
+        if (object instanceof Applicant) {
+            Applicant applicant = (Applicant) object;
+            user.setUsername(applicant.getUsername())
+                    .setPassword(applicant.getPassword())
+                    .setPhone(applicant.getPhone())
+                    .setEmail(applicant.getEmail())
+                    .setProjectId(projectInfo.getProjectId())
+                    .setRole(2);
+        } else if (object instanceof HR) {
+            HR hr = (HR) object;
+            user.setUsername(hr.getUsername())
+                    .setNickname(hr.getNickname())
+                    .setPassword(hr.getPassword())
+                    .setPhone(hr.getPhone())
+                    .setEmail(hr.getEmail())
+                    .setProjectId(projectInfo.getProjectId())
+                    .setFirstId(hr.getCompanyId())
+                    .setRole(1);
+        } else {
+            user = (User) object;
+        }
         user.setProjectId(projectInfo.getProjectId());
         ResponseMessage tokenResponse = WebClient
                 .create(userCenterServer)

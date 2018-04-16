@@ -35,6 +35,7 @@ public class SkillService extends BaseService<Skill, SkillRepo> {
 
     /**
      * 通过技能点名称查找出技能
+     *
      * @param name
      * @return
      */
@@ -43,6 +44,12 @@ public class SkillService extends BaseService<Skill, SkillRepo> {
         return mongo.find(query, Skill.class);
     }
 
+    /**
+     * 通过技能点查找简历
+     *
+     * @param name
+     * @return
+     */
     public List<Resume> findResumeByName(String name) {
         List<Long> resumeId = findByName(name)
                 .stream()

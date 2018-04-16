@@ -31,6 +31,7 @@ public class ResumeService extends BaseService<Resume, ResumeRepo> {
 
     /**
      * 保存简历
+     *
      * @param resume
      * @return
      */
@@ -38,12 +39,12 @@ public class ResumeService extends BaseService<Resume, ResumeRepo> {
         final long resumeId = IdUtil.getNextId(Resume.class.getSimpleName(), mongo);
         skillRepo.saveAll(
                 resume.getSkills()
-                .stream()
-                .peek(skill -> {
-                    // 存入简历id
-                    skill.setResumeId(resumeId);
-                })
-                .collect(Collectors.toList())
+                        .stream()
+                        .peek(skill -> {
+                            // 存入简历id
+                            skill.setResumeId(resumeId);
+                        })
+                        .collect(Collectors.toList())
         );
         return repo.save(resume);
     }

@@ -85,4 +85,9 @@ public class Resume extends BaseEntity {
      * 奖项
      */
     private String awards;
+
+    /**
+     * 头像
+     */
+    private String avatar;
 }

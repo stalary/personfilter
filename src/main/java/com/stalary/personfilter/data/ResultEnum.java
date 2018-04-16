@@ -13,6 +13,9 @@ public enum ResultEnum {
     // 1开头为用户有关的错误
     NEED_LOGIN(1001, "未登陆"),
 
+    // 2开头为短信有关的错误
+    SEND_NOTE_ERROR(2001, "发送短信失败"),
+
     SUCCESS(0, "成功");
 
     @Getter
