@@ -1,6 +1,8 @@
 package com.stalary.personfilter.interceptor;
 
 import com.stalary.personfilter.annotation.LoginRequired;
+import com.stalary.personfilter.data.ResultEnum;
+import com.stalary.personfilter.exception.MyException;
 import com.stalary.personfilter.holder.ProjectHolder;
 import com.stalary.personfilter.service.WebClientService;
 import com.stalary.personfilter.utils.Constant;
@@ -31,27 +33,23 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private WebClientService webClientService;
 
-    @Autowired
-    private StringRedisTemplate redis;
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
-        // 当为swagger请求时跳过
-//        if (request.getRequestURI().contains(Constant.SWAGGER)) {
-//            return true;
-//        }
         webClientService.getProjectInfo();
         Method method = ((HandlerMethod) handler).getMethod();
         // 判断需要调用需要登陆的接口时是否已经登陆
         boolean isLoginRequired = isAnnotationPresent(method, LoginRequired.class);
         if (isLoginRequired) {
-            // 获取项目信息，以便调用登陆中心
-//            if (redis.opsForValue().get())
+            String token = getToken(getAuthHeader(request));
+            log.info("token: " + token);
+            if (webClientService.getUser(token) == null) {
+                // token无法获取到用户信息代表未登陆
+                throw new MyException(ResultEnum.NEED_LOGIN);
+            }
         }
-
         return true;
     }
 
@@ -66,7 +64,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         String authHeader = request.getHeader(Constant.Authorization);
         // 默认的auth
         if (StringUtils.isEmpty(authHeader)) {
-            authHeader = "Basic 6d7535729f01dfb0ea1202a01b9f6328d36278ff9a79859297fbe8857edfdff8";
+            authHeader = "Basic ea181087c67d85fcd58ee5b89808b4da6b4a859abb9d90e8b96c011418a10c2e";
         }
         return authHeader;
     }

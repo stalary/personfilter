@@ -1,5 +1,6 @@
 package com.stalary.personfilter.data.entity.mongodb;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stalary.personfilter.annotation.AutoValue;
 import com.stalary.personfilter.annotation.CreateTime;
 import com.stalary.personfilter.annotation.UpdateTime;
@@ -30,9 +31,11 @@ public abstract class BaseEntity {
      * 修改时间
      */
     @UpdateTime
+    @JsonIgnore
     private LocalDateTime updateTime;
 
     @CreateTime
+    @JsonIgnore
     private LocalDateTime createTime;
 
 }

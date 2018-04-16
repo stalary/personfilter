@@ -1,10 +1,13 @@
 package com.stalary.personfilter.controller;
 
+import com.stalary.personfilter.annotation.LoginRequired;
 import com.stalary.personfilter.data.dto.Applicant;
 import com.stalary.personfilter.data.dto.HR;
 import com.stalary.personfilter.data.dto.ResponseMessage;
+import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.service.WebClientService;
 import com.stalary.personfilter.utils.Constant;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * @author lirongqian
  * @since 2018/04/13
  */
+@Api(tags = "用户操作接口")
 @RestController
 @RequestMapping("/user")
 @Slf4j
@@ -70,8 +74,9 @@ public class UserController {
      */
     @GetMapping
     @ApiOperation(value = "获得用户信息", notes = "header中带入token")
+    @LoginRequired
     public ResponseMessage getInfo() {
-        return ResponseMessage.successMessage();
+        return ResponseMessage.successMessage(UserHolder.get());
     }
 
     /**

@@ -2,6 +2,7 @@ package com.stalary.personfilter.controller;
 
 import com.stalary.personfilter.data.dto.ResponseMessage;
 import com.stalary.personfilter.service.CommonService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author lirongqian
  * @since 2018/04/16
  */
+@Api(tags = "公共操作接口")
 @RestController
 @RequestMapping("/common")
 public class CommonController {

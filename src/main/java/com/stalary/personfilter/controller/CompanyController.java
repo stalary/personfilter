@@ -3,6 +3,7 @@ package com.stalary.personfilter.controller;
 import com.stalary.personfilter.data.dto.ResponseMessage;
 import com.stalary.personfilter.data.entity.mysql.Company;
 import com.stalary.personfilter.service.mysql.CompanyService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
  * @author lirongqian
  * @since 2018/04/14
  */
+@Api(tags = "公司操作接口")
 @RestController
 @RequestMapping("/company")
 public class CompanyController {

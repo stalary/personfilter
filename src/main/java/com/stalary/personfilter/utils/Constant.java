@@ -10,6 +10,8 @@ public class Constant {
 
     public static final String PROJECT = "project";
 
+    public static final String USER = "user";
+
     public static final String SWAGGER = "swagger";
 
     /**

@@ -4,6 +4,7 @@ import com.stalary.personfilter.data.entity.mongodb.Resume;
 import com.stalary.personfilter.repo.mongodb.ResumeRepo;
 import com.stalary.personfilter.repo.mongodb.SkillRepo;
 import com.stalary.personfilter.utils.IdUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
  * @since 2018/04/14
  */
 @Service
+@Slf4j
 public class ResumeService extends BaseService<Resume, ResumeRepo> {
 
     public ResumeService(ResumeRepo repo) {
@@ -42,7 +44,9 @@ public class ResumeService extends BaseService<Resume, ResumeRepo> {
                         .stream()
                         .peek(skill -> {
                             // 存入简历id
-                            skill.setResumeId(resumeId);
+                            if (skill.getResumeId() == 0) {
+                                skill.setResumeId(resumeId);
+                            }
                         })
                         .collect(Collectors.toList())
         );

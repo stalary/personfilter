@@ -3,6 +3,7 @@ package com.stalary.personfilter.service;
 import com.google.gson.Gson;
 import com.stalary.personfilter.data.dto.*;
 import com.stalary.personfilter.holder.ProjectHolder;
+import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.utils.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+
+import java.time.Duration;
 
 /**
  * WebClient
@@ -53,16 +56,14 @@ public class WebClientService {
                 })
                 .bodyToMono(ResponseMessage.class)
                 .retry(3)
-                .doOnError(WebClientResponseException.class, err -> {
-                    log.warn("error: {}, msg: {}", err.getRawStatusCode(), err.getResponseBodyAsString());
-                })
+                .doOnError(WebClientResponseException.class, err -> log.warn("error: {}, msg: {}", err.getRawStatusCode(), err.getResponseBodyAsString()))
                 .doOnSuccess(responseMessage -> log.info("webClient: " + userCenterServer + uri + responseMessage));
     }
 
     public void getProjectInfo() {
         // 将项目信息存入缓存中
         if (StringUtils.isEmpty(redis.opsForValue().get(Constant.PROJECT))) {
-            Mono<ResponseMessage> info = builder(userCenterServer, HttpMethod.GET, "/facade/project?name={name}&phone={phone}", "人才筛选", "17853149599");
+            Mono<ResponseMessage> info = builder(userCenterServer, HttpMethod.GET, "/facade/project?name={name}&phone={phone}", "leader直聘", "17853149599");
             ResponseMessage block = info.block();
             if (block != null) {
                 redis.opsForValue().set(Constant.PROJECT, block.getData().toString());
@@ -123,11 +124,18 @@ public class WebClientService {
      * @return
      */
     public ResponseMessage getUser(String token) {
-        ProjectInfo projectInfo = ProjectHolder.get();
-        Mono<ResponseMessage> builder = builder(userCenterServer, HttpMethod.GET, "/facade/token?token={token}&key={key}", token, projectInfo.getKey());
-        ResponseMessage userResponse = builder.block();
-        if (userResponse != null) {
-            redis.opsForValue().set(Constant.TOKEN + Constant.SPLIT + token, userResponse.getData().toString());
+        ResponseMessage userResponse = null;
+        if (StringUtils.isEmpty(redis.opsForValue().get(Constant.USER))) {
+            ProjectInfo projectInfo = ProjectHolder.get();
+            Mono<ResponseMessage> builder = builder(userCenterServer, HttpMethod.GET, "/facade/token?token={token}&key={key}", token, projectInfo.getKey());
+            userResponse = builder.block();
+            if (userResponse != null) {
+                redis.opsForValue().set(Constant.TOKEN + Constant.SPLIT + token, userResponse.getData().toString());
+                log.info("user: " + userResponse.getData().toString());
+                UserHolder.set(gson.fromJson(userResponse.getData().toString(), User.class));
+            }
+        } else {
+            UserHolder.set(gson.fromJson(redis.opsForValue().get(Constant.USER), User.class));
         }
         return userResponse;
     }

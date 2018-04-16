@@ -39,7 +39,7 @@ public class SkillService extends BaseService<Skill, SkillRepo> {
      * @param name
      * @return
      */
-    public List<Skill> findByName(String name) {
+    private List<Skill> findByName(String name) {
         Query query = new Query(Criteria.where("name").is(name));
         return mongo.find(query, Skill.class);
     }

@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * SeqInfo
- *
+ * 用于mongodb产生自增id
  * @author lirongqian
  * @since 2018/04/13
  */
