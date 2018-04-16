@@ -2,15 +2,16 @@ package com.stalary.personfilter.controller;
 
 import com.stalary.personfilter.data.dto.ResponseMessage;
 import com.stalary.personfilter.data.entity.mysql.Company;
+import com.stalary.personfilter.service.WebClientService;
 import com.stalary.personfilter.service.mongodb.ResumeService;
 import com.stalary.personfilter.service.mongodb.SkillService;
-import com.stalary.personfilter.service.WebClientService;
 import com.stalary.personfilter.service.mysql.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * TestController
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
  * @since 2018/04/09
  */
 @RestController
+@ApiIgnore
 public class TestController {
 
     @Autowired
