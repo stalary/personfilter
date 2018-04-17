@@ -24,11 +24,11 @@ public class RecruitService extends BaseService<Recruit, RecruitRepo> {
     public List<Recruit> allRecruit(String key, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         if (StringUtils.isEmpty(key)) {
-            List<Recruit> recruitList = repo.allRecruit(pageRequest);
+            List<Recruit> recruitList = repo.findAll(pageRequest).getContent();
             recruitList.forEach(Recruit::deserializeFields);
             return recruitList;
         } else {
-            List<Recruit> recruitList = repo.findRecruitListByKey("%" + key + "%", pageRequest);
+            List<Recruit> recruitList = repo.findByContentIsLike("%" + key + "%", pageRequest);
             recruitList.forEach(Recruit::deserializeFields);
             return recruitList;
         }

@@ -37,10 +37,12 @@ public class CompanyController {
     }
 
     @GetMapping("/noPage")
-    @ApiOperation(value = "不分页的查找公司", notes = "不分页查找所有公司，用于获取公司列表")
-    public ResponseMessage allCompanyNoPage() {
-        return ResponseMessage.successMessage(companyService.allCompany());
+    @ApiOperation(value = "不分页的查找公司", notes = "不分页查找所有公司，用于获取公司列表,传入key则按关键字查找")
+    public ResponseMessage allCompanyNoPage(
+            @RequestParam(required = false, defaultValue = "") String key) {
+        return ResponseMessage.successMessage(companyService.findCompany(key));
     }
+
 
     /**
      * 添加公司

@@ -13,6 +13,5 @@ import java.util.List;
  */
 public interface CompanyRepo extends BaseRepo<Company, Long> {
 
-    @Query("select c from Company c")
-    List<Company> allCompany(Pageable pageable);
+    List<Company> findByNameIsLike(String key);
 }

@@ -13,9 +13,5 @@ import java.util.List;
  */
 public interface RecruitRepo extends BaseRepo<Recruit, Long> {
 
-    @Query("select r from Recruit r")
-    List<Recruit> allRecruit(Pageable pageable);
-
-    @Query("select r from Recruit r where r.content like ?1")
-    List<Recruit> findRecruitListByKey(String key, Pageable pageable);
+    List<Recruit> findByContentIsLike(String key, Pageable pageable);
 }

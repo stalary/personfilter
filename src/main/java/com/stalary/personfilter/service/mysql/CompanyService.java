@@ -2,8 +2,8 @@ package com.stalary.personfilter.service.mysql;
 
 import com.stalary.personfilter.data.entity.mysql.Company;
 import com.stalary.personfilter.repo.mysql.CompanyRepo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,11 +23,15 @@ public class CompanyService extends BaseService<Company, CompanyRepo> {
 
     public List<Company> allCompany(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
-        return repo.allCompany(pageRequest);
+        return repo.findAll(pageRequest).getContent();
     }
 
-    public List<Company> allCompany() {
-        return repo.findAll();
+    public List<Company> findCompany(String key) {
+        if (StringUtils.isEmpty(key)) {
+            return repo.findAll();
+        } else {
+            return repo.findByNameIsLike("%" + key + "%");
+        }
     }
 
 }
