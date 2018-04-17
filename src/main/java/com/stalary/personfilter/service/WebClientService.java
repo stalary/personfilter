@@ -125,23 +125,33 @@ public class WebClientService {
      */
     public ResponseMessage getUser(String token) {
         ResponseMessage userResponse = null;
-        if (StringUtils.isEmpty(redis.opsForValue().get(Constant.USER))) {
+        if (StringUtils.isEmpty(redis.opsForValue().get(Constant.TOKEN + Constant.SPLIT + token))) {
             ProjectInfo projectInfo = ProjectHolder.get();
             Mono<ResponseMessage> builder = builder(userCenterServer, HttpMethod.GET, "/facade/token?token={token}&key={key}", token, projectInfo.getKey());
             userResponse = builder.block();
             if (userResponse != null) {
                 redis.opsForValue().set(Constant.TOKEN + Constant.SPLIT + token, userResponse.getData().toString());
-                log.info("user: " + userResponse.getData().toString());
                 UserHolder.set(gson.fromJson(userResponse.getData().toString(), User.class));
             }
         } else {
-            UserHolder.set(gson.fromJson(redis.opsForValue().get(Constant.USER), User.class));
+            UserHolder.set(gson.fromJson(redis.opsForValue().get(Constant.TOKEN + Constant.SPLIT + token), User.class));
         }
         return userResponse;
     }
 
-//    public User getUserById(Long userId) {
-//        builder()
-//    }
+    /**
+     * 通过id获取用户信息
+     * @param userId
+     * @return
+     */
+    public User getUser(Long userId) {
+        ProjectInfo projectInfo = ProjectHolder.get();
+        Mono<ResponseMessage> builder = builder(userCenterServer, HttpMethod.GET, "/facade/user?userId={userId}&key={key}&projectId={projectId}", userId, projectInfo.getKey(), projectInfo.getProjectId());
+        ResponseMessage block = builder.block();
+        if (block != null) {
+            return gson.fromJson(block.getData().toString(), User.class);
+        }
+        return null;
+    }
 
 }

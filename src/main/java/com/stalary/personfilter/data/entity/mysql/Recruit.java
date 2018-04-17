@@ -1,6 +1,7 @@
 package com.stalary.personfilter.data.entity.mysql;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.gson.reflect.TypeToken;
 import com.stalary.personfilter.data.dto.SkillRule;
 import com.stalary.personfilter.factory.BeansFactory;
@@ -8,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -59,10 +59,12 @@ public class Recruit extends BaseEntity {
     @JsonIgnore
     private String skillStr;
 
+    @JsonIgnore
     public void serializeFields() {
         this.skillStr = BeansFactory.getGson().toJson(skillList);
     }
 
+    @JsonIgnore
     public void deserializeFields() {
         this.skillList = BeansFactory.getGson().fromJson(skillStr, new TypeToken<List<SkillRule>>(){}.getType());
     }

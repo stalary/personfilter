@@ -1,8 +1,6 @@
 package com.stalary.personfilter.data.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * User
@@ -12,54 +10,52 @@ import lombok.NoArgsConstructor;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class User {
+
+    /**
+     * id
+     */
+    private Long id;
 
     /**
      * 用户名
      */
-    @Getter
     private String username;
 
     /**
      * 昵称
      */
-    @Getter
     private String nickname;
 
     /**
      * 手机号
      */
-    @Getter
     private String phone;
 
     /**
      * 密码
      */
-    @Getter
     private String password;
 
     /**
      * 邮箱
      */
-    @Getter
     private String email;
 
     /**
      * 项目id
      */
-    @Getter
     private Long projectId;
 
     /**
      * 角色，1为hr，2为求职者
      */
-    @Getter
     private Integer role;
 
     /**
      * 关联Id
      */
-    @Getter
     private Long firstId;
 
     public User setUsername(String username) {

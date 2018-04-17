@@ -1,6 +1,7 @@
 package com.stalary.personfilter.data.entity.mysql;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -42,6 +43,7 @@ public abstract class BaseEntity implements Serializable {
     /**
      * 创建时间
      */
+    @JsonIgnore
     @CreationTimestamp
     @ApiModelProperty(hidden=true)
     private Date createTime;

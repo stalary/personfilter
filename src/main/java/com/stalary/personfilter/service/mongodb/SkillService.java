@@ -6,6 +6,8 @@ import com.stalary.personfilter.data.entity.mongodb.Resume;
 import com.stalary.personfilter.data.entity.mongodb.Skill;
 import com.stalary.personfilter.repo.mongodb.ResumeRepo;
 import com.stalary.personfilter.repo.mongodb.SkillRepo;
+import com.stalary.personfilter.service.WebClientService;
+import com.stalary.personfilter.service.mysql.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -35,6 +37,9 @@ public class SkillService extends BaseService<Skill, SkillRepo> {
     @Autowired
     private ResumeRepo resumeRepo;
 
+    @Autowired
+    private WebClientService webClientService;
+
     /**
      * 通过技能点名称查找出技能
      *
@@ -52,17 +57,14 @@ public class SkillService extends BaseService<Skill, SkillRepo> {
      * @param name
      * @return
      */
-    //todo
-    public List<Resume> findResumeByName(String name) {
+    public List<ResumeAndUser> findResumeByName(String name) {
         List<Long> resumeId = findByName(name)
                 .stream()
                 .map(Skill::getResumeId)
                 .collect(Collectors.toList());
         List<ResumeAndUser> list = new ArrayList<>();
         resumeRepo.findAllById(resumeId)
-                .forEach(resume -> {
-                    resume.getUserId();
-                });
-        return Lists.newArrayList(resumeRepo.findAllById(resumeId));
+                .forEach(resume -> list.add(new ResumeAndUser(resume, webClientService.getUser(resume.getUserId()))));
+        return list;
     }
 }

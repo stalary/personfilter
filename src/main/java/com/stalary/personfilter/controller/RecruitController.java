@@ -1,12 +1,16 @@
 package com.stalary.personfilter.controller;
 
+import com.stalary.personfilter.data.dto.RecruitAndHr;
 import com.stalary.personfilter.data.dto.ResponseMessage;
 import com.stalary.personfilter.data.entity.mysql.Recruit;
 import com.stalary.personfilter.service.mysql.RecruitService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * RecruitController
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = "招聘操作接口")
 @RestController
 @RequestMapping("/recruit")
+@Slf4j
 public class RecruitController {
 
     @Autowired
@@ -35,7 +40,9 @@ public class RecruitController {
             @RequestParam(required = false, defaultValue = "") String key,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "4") int size) {
-        return ResponseMessage.successMessage(recruitService.allRecruit(key, page, size));
+        List<RecruitAndHr> list = recruitService.allRecruit(key, page, size);
+        log.info("list: " + list);
+        return ResponseMessage.successMessage(list);
     }
 
 }

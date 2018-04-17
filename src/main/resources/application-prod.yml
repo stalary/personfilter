@@ -11,10 +11,10 @@ spring:
     password: li197910
     driver-class-name: com.mysql.jdbc.Driver
   data:
-      mongodb:
-        host: 47.94.248.38
-        port: 27017
-        database: personfilter
+    mongodb:
+      host: 47.94.248.38
+      port: 27017
+      database: personfilter
   redis:
     host: 47.94.248.38
     timeout: 5000ms

@@ -44,4 +44,34 @@ public class HR {
      * 邮箱
      */
     private String email;
+
+    public HR setNickname(String nickname) {
+        this.nickname = nickname;
+        return this;
+    }
+
+    public HR setUsername(String username) {
+        this.username = username;
+        return this;
+    }
+
+    public HR setPassword(String password) {
+        this.password = password;
+        return this;
+    }
+
+    public HR setCompanyId(Long companyId) {
+        this.companyId = companyId;
+        return this;
+    }
+
+    public HR setPhone(String phone) {
+        this.phone = phone;
+        return this;
+    }
+
+    public HR setEmail(String email) {
+        this.email = email;
+        return this;
+    }
 }

@@ -1,5 +1,6 @@
 package com.stalary.personfilter.data.entity.mysql;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
