@@ -1,6 +1,6 @@
 package com.stalary.personfilter.controller;
 
-import com.stalary.personfilter.data.dto.ResponseMessage;
+import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.service.CommonService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

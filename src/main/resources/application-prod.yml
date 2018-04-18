@@ -40,7 +40,7 @@ spring:
     producer:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
     consumer:
-      group-id: user_center_group
+      group-id: personfilter
   mail:
     # 邮箱服务器地址，这里使用的是163.com的邮件服务器
       host: smtp.163.com

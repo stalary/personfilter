@@ -50,4 +50,6 @@ public class Constant {
     public static final String UPDATE = "update";
 
     public static final String OK = "OK";
+
+    public static final String SENDINFO = "sendInfo";
 }

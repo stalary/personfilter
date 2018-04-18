@@ -3,7 +3,7 @@ package com.stalary.personfilter.controller;
 import com.stalary.personfilter.annotation.LoginRequired;
 import com.stalary.personfilter.data.dto.Applicant;
 import com.stalary.personfilter.data.dto.HR;
-import com.stalary.personfilter.data.dto.ResponseMessage;
+import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.service.WebClientService;
 import com.stalary.personfilter.utils.Constant;

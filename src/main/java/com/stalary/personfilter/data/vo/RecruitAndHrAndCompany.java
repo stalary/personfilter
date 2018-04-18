@@ -1,5 +1,6 @@
-package com.stalary.personfilter.data.dto;
+package com.stalary.personfilter.data.vo;
 
+import com.stalary.personfilter.data.dto.HR;
 import com.stalary.personfilter.data.entity.mysql.Company;
 import com.stalary.personfilter.data.entity.mysql.Recruit;
 import lombok.AllArgsConstructor;

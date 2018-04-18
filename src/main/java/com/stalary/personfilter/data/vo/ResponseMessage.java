@@ -1,4 +1,4 @@
-package com.stalary.personfilter.data.dto;
+package com.stalary.personfilter.data.vo;
 
 import com.stalary.personfilter.data.ResultEnum;
 import io.swagger.annotations.ApiModel;

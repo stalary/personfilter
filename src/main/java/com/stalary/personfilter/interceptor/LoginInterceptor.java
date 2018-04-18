@@ -44,7 +44,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         boolean isLoginRequired = isAnnotationPresent(method, LoginRequired.class);
         if (isLoginRequired) {
             String token = getToken(getAuthHeader(request));
-            log.info("token: " + token);
             if (webClientService.getUser(token) == null) {
                 // token无法获取到用户信息代表未登陆
                 throw new MyException(ResultEnum.NEED_LOGIN);

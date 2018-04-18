@@ -1,14 +1,13 @@
 package com.stalary.personfilter.controller;
 
 import com.stalary.personfilter.annotation.LoginRequired;
-import com.stalary.personfilter.data.dto.ResponseMessage;
+import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.data.dto.User;
 import com.stalary.personfilter.data.entity.mysql.Message;
 import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.service.mysql.MessageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -1,6 +1,6 @@
 package com.stalary.personfilter.controller;
 
-import com.stalary.personfilter.data.dto.ResponseMessage;
+import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.data.entity.mongodb.Resume;
 import com.stalary.personfilter.service.mongodb.ResumeService;
 import com.stalary.personfilter.service.mongodb.SkillService;

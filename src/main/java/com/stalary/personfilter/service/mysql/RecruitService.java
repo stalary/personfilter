@@ -1,7 +1,7 @@
 package com.stalary.personfilter.service.mysql;
 
 import com.stalary.personfilter.data.dto.HR;
-import com.stalary.personfilter.data.dto.RecruitAndHrAndCompany;
+import com.stalary.personfilter.data.vo.RecruitAndHrAndCompany;
 import com.stalary.personfilter.data.dto.User;
 import com.stalary.personfilter.data.entity.mysql.Recruit;
 import com.stalary.personfilter.repo.mysql.RecruitRepo;

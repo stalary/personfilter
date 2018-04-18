@@ -1,8 +1,10 @@
 package com.stalary.personfilter.controller;
 
-import com.stalary.personfilter.data.dto.ResponseMessage;
+import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.data.entity.mysql.Company;
 import com.stalary.personfilter.service.WebClientService;
+import com.stalary.personfilter.service.kafka.Consumer;
+import com.stalary.personfilter.service.kafka.Producer;
 import com.stalary.personfilter.service.mongodb.ResumeService;
 import com.stalary.personfilter.service.mongodb.SkillService;
 import com.stalary.personfilter.service.mysql.CompanyService;
@@ -44,6 +46,9 @@ public class TestController {
     @Autowired
     private CompanyService companyService;
 
+    @Autowired
+    private Producer producer;
+
     @GetMapping("/hello")
     public ResponseMessage hello() {
         webClientService.getProjectInfo();
@@ -55,15 +60,22 @@ public class TestController {
         return ResponseMessage.successMessage(redis.opsForValue().get("project"));
     }
 
-    @RequestMapping("/mongodb")
+    @GetMapping("/mongodb")
     public ResponseMessage mongodb(
             @RequestParam String name) {
         return ResponseMessage.successMessage(skillService.findResumeByName(name));
     }
 
-    @RequestMapping("/mysql")
+    @PostMapping("/mysql")
     public ResponseMessage mysql(
             @RequestBody Company company) {
         return ResponseMessage.successMessage(companyService.save(company));
+    }
+
+    @GetMapping("/kafka")
+    public ResponseMessage kafka(
+            @RequestParam String message) {
+        producer.send(Consumer.NOTIFY, message);
+        return ResponseMessage.successMessage();
     }
 }

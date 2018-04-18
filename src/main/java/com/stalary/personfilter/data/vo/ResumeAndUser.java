@@ -1,5 +1,6 @@
-package com.stalary.personfilter.data.dto;
+package com.stalary.personfilter.data.vo;
 
+import com.stalary.personfilter.data.dto.User;
 import com.stalary.personfilter.data.entity.mongodb.Resume;
 import lombok.AllArgsConstructor;
 import lombok.Data;
