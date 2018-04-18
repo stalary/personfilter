@@ -123,20 +123,23 @@ public class WebClientService {
      * @param token
      * @return
      */
-    public ResponseMessage getUser(String token) {
-        ResponseMessage userResponse = null;
+    public User getUser(String token) {
         if (StringUtils.isEmpty(redis.opsForValue().get(Constant.TOKEN + Constant.SPLIT + token))) {
             ProjectInfo projectInfo = ProjectHolder.get();
             Mono<ResponseMessage> builder = builder(userCenterServer, HttpMethod.GET, "/facade/token?token={token}&key={key}", token, projectInfo.getKey());
-            userResponse = builder.block();
+            ResponseMessage userResponse = builder.block();
             if (userResponse != null) {
                 redis.opsForValue().set(Constant.TOKEN + Constant.SPLIT + token, userResponse.getData().toString());
-                UserHolder.set(gson.fromJson(userResponse.getData().toString(), User.class));
+                User user = gson.fromJson(userResponse.getData().toString(), User.class);
+                UserHolder.set(user);
+                return user;
             }
+            return null;
         } else {
-            UserHolder.set(gson.fromJson(redis.opsForValue().get(Constant.TOKEN + Constant.SPLIT + token), User.class));
+            User user = gson.fromJson(redis.opsForValue().get(Constant.TOKEN + Constant.SPLIT + token), User.class);
+            UserHolder.set(user);
+            return user;
         }
-        return userResponse;
     }
 
     /**

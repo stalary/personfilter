@@ -3,6 +3,7 @@ package com.stalary.personfilter.service.mysql;
 import com.stalary.personfilter.repo.mysql.BaseRepo;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * BaseService
@@ -19,7 +20,7 @@ public abstract class BaseService<T, R extends BaseRepo<T, Long>> {
     }
 
     public T findOne(Long id) {
-        return repo.getOne(id);
+        return repo.findById(id).get();
     }
 
     public T save(T entity) {

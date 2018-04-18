@@ -7,6 +7,8 @@ import com.stalary.personfilter.data.entity.mysql.Message;
 import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.service.mysql.MessageService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,11 +29,10 @@ public class MessageController {
     private MessageService messageService;
 
     /**
-     * 推送一条站内信
+     * 推送一条站内信，可以供前端群发站内信使用
      * @return
      */
     @PostMapping
-    @LoginRequired
     public ResponseMessage postMessage(
             @RequestBody Message message) {
         log.info("message: " + message);
@@ -42,6 +43,7 @@ public class MessageController {
      * 获取一个用户接收的站内信
      */
     @GetMapping("/user/get")
+    @ApiOperation(value = "获取一个用户接收的站内信")
     @LoginRequired
     public ResponseMessage getMessage() {
         User user = UserHolder.get();
@@ -53,9 +55,23 @@ public class MessageController {
     }
 
     /**
+     * 已读站内信
+     */
+    @PostMapping("/{id}")
+    @ApiOperation(value = "已读站内信", notes = "传入站内信的id")
+    @LoginRequired
+    public ResponseMessage readMessage(
+            @PathVariable("id") Long id) {
+        messageService.read(id);
+        return ResponseMessage.successMessage();
+    }
+
+
+    /**
      * 获取一个用户发送的站内信
      */
     @GetMapping("/user/send")
+    @ApiOperation(value = "获取一个用户发送的站内信")
     @LoginRequired
     public ResponseMessage getSendMessage(
             @RequestParam Long userId) {

@@ -26,4 +26,8 @@ public class MessageService extends BaseService<Message, MessageRepo> {
     public List<Message> findByFromId(Long fromId) {
         return repo.findByFromId(fromId);
     }
+
+    public void read(Long id) {
+        repo.read(id);
+    }
 }

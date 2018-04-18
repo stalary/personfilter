@@ -1,11 +1,9 @@
 package com.stalary.personfilter.service.mysql;
 
 import com.stalary.personfilter.data.dto.HR;
-import com.stalary.personfilter.data.dto.RecruitAndHr;
+import com.stalary.personfilter.data.dto.RecruitAndHrAndCompany;
 import com.stalary.personfilter.data.dto.User;
-import com.stalary.personfilter.data.entity.mysql.Company;
 import com.stalary.personfilter.data.entity.mysql.Recruit;
-import com.stalary.personfilter.repo.mysql.CompanyRepo;
 import com.stalary.personfilter.repo.mysql.RecruitRepo;
 import com.stalary.personfilter.service.WebClientService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,11 +33,11 @@ public class RecruitService extends BaseService<Recruit, RecruitRepo> {
     private WebClientService webClientService;
 
     @Autowired
-    private CompanyRepo companyRepo;
+    private CompanyService companyService;
 
-    public List<RecruitAndHr> allRecruit(String key, int page, int size) {
+    public List<RecruitAndHrAndCompany> allRecruit(String key, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
-        List<RecruitAndHr> list = new ArrayList<>();
+        List<RecruitAndHrAndCompany> list = new ArrayList<>();
         List<Recruit> recruitList;
         if (StringUtils.isEmpty(key)) {
             recruitList = repo.findAll(pageRequest).getContent();
@@ -55,7 +53,7 @@ public class RecruitService extends BaseService<Recruit, RecruitRepo> {
                     .setNickname(user.getNickname())
                     .setPhone(user.getPhone())
                     .setUsername(user.getUsername());
-            list.add(new RecruitAndHr(recruit, hr));
+            list.add(new RecruitAndHrAndCompany(recruit, hr, companyService.findOne(recruit.getCompanyId())));
         });
         return list;
     }

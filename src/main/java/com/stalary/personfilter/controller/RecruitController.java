@@ -1,6 +1,6 @@
 package com.stalary.personfilter.controller;
 
-import com.stalary.personfilter.data.dto.RecruitAndHr;
+import com.stalary.personfilter.data.dto.RecruitAndHrAndCompany;
 import com.stalary.personfilter.data.dto.ResponseMessage;
 import com.stalary.personfilter.data.entity.mysql.Recruit;
 import com.stalary.personfilter.service.mysql.RecruitService;
@@ -40,9 +40,11 @@ public class RecruitController {
             @RequestParam(required = false, defaultValue = "") String key,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "4") int size) {
-        List<RecruitAndHr> list = recruitService.allRecruit(key, page, size);
+        List<RecruitAndHrAndCompany> list = recruitService.allRecruit(key, page, size);
         log.info("list: " + list);
         return ResponseMessage.successMessage(list);
     }
+
+
 
 }
