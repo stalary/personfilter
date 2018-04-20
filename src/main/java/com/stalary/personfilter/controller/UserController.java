@@ -5,6 +5,8 @@ import com.stalary.personfilter.data.dto.Applicant;
 import com.stalary.personfilter.data.dto.HR;
 import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.holder.UserHolder;
+import com.stalary.personfilter.service.redis.RedisKeys;
+import com.stalary.personfilter.service.redis.RedisService;
 import com.stalary.personfilter.service.WebClientService;
 import com.stalary.personfilter.utils.Constant;
 import io.swagger.annotations.Api;
@@ -27,6 +29,9 @@ public class UserController {
 
     @Autowired
     private WebClientService webClientService;
+
+    @Autowired
+    private RedisService redisService;
 
     /**
      * 求职者注册
@@ -69,6 +74,20 @@ public class UserController {
     }
 
     /**
+     * 退出登录
+     */
+    @GetMapping("/logout")
+    @LoginRequired
+    @ApiOperation(value = "退出登陆", notes = "传入token")
+    public ResponseMessage logout(
+            @RequestParam String token) {
+        if (redisService.remove(RedisKeys.getKey(RedisKeys.USER_TOKEN, token))) {
+            return ResponseMessage.successMessage("退出成功");
+        }
+        return ResponseMessage.failedMessage("退出失败");
+    }
+
+    /**
      * 获得用户信息，header中带入token
      * @return
      */
@@ -76,6 +95,7 @@ public class UserController {
     @ApiOperation(value = "获得用户信息", notes = "header中带入token")
     @LoginRequired
     public ResponseMessage getInfo() {
+        log.info("info: " + UserHolder.get());
         return ResponseMessage.successMessage(UserHolder.get());
     }
 
@@ -97,5 +117,12 @@ public class UserController {
     public ResponseMessage hrUpdate(
             @RequestBody HR hr) {
         return webClientService.postUser(hr, Constant.UPDATE);
+    }
+
+    @GetMapping("/token")
+    @ApiOperation(value = "使用token获取用户信息", notes = "传入token")
+    public ResponseMessage token(
+            @RequestParam String token) {
+        return ResponseMessage.successMessage(webClientService.getUser(token));
     }
 }

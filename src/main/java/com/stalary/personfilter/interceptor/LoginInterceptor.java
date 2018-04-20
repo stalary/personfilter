@@ -44,6 +44,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         boolean isLoginRequired = isAnnotationPresent(method, LoginRequired.class);
         if (isLoginRequired) {
             String token = getToken(getAuthHeader(request));
+            log.info("token: " + token);
             if (webClientService.getUser(token) == null) {
                 // token无法获取到用户信息代表未登陆
                 throw new MyException(ResultEnum.NEED_LOGIN);
@@ -61,6 +62,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      */
     private String getAuthHeader(HttpServletRequest request) {
         String authHeader = request.getHeader(Constant.Authorization);
+        log.info("header: " + authHeader);
         // 默认的auth
         if (StringUtils.isEmpty(authHeader)) {
             authHeader = "Basic ea181087c67d85fcd58ee5b89808b4da6b4a859abb9d90e8b96c011418a10c2e";

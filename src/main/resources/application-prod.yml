@@ -34,13 +34,13 @@ spring:
       serialization:
         indent_output: true
   kafka:
-    bootstrap-servers: http://47.94.248.38:9092
+    bootstrap-servers: 47.94.248.38:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
     producer:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
     consumer:
-      group-id: personfilter
+      group-id: person
   mail:
     # 邮箱服务器地址，这里使用的是163.com的邮件服务器
       host: smtp.163.com

@@ -52,4 +52,6 @@ public class Constant {
     public static final String OK = "OK";
 
     public static final String SENDINFO = "sendInfo";
+
+    public static final String NAME = "pf";
 }

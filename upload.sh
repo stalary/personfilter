@@ -20,7 +20,7 @@ cd $buildpath
 
 # 上传到服务器并运行
 /usr/bin/expect << EOF
-set timeout 30
+set timeout 40
 
 spawn scp $jarname $user@$address:$jarpath
 expect {

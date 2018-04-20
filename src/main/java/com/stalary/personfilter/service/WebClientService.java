@@ -5,12 +5,13 @@ import com.stalary.personfilter.data.dto.*;
 import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.holder.ProjectHolder;
 import com.stalary.personfilter.holder.UserHolder;
+import com.stalary.personfilter.service.redis.RedisKeys;
+import com.stalary.personfilter.service.redis.RedisService;
 import com.stalary.personfilter.utils.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class WebClientService {
     private Gson gson;
 
     @Autowired
-    private StringRedisTemplate redis;
+    private RedisService redisService;
     /**
      * 用户中心的地址
      */
@@ -61,16 +62,16 @@ public class WebClientService {
 
     public void getProjectInfo() {
         // 将项目信息存入缓存中
-        if (StringUtils.isEmpty(redis.opsForValue().get(Constant.PROJECT))) {
+        if (StringUtils.isEmpty(redisService.getString(RedisKeys.PROJECT_INFO))) {
             Mono<ResponseMessage> info = builder(userCenterServer, HttpMethod.GET, "/facade/project?name={name}&phone={phone}", "leader直聘", "17853149599");
             ResponseMessage block = info.block();
-            if (block != null) {
-                redis.opsForValue().set(Constant.PROJECT, block.getData().toString());
+            if (block.isSuccess()) {
+                redisService.setString(RedisKeys.PROJECT_INFO, block.getData().toString());
                 ProjectHolder.set(gson.fromJson(block.getData().toString(), ProjectInfo.class));
             }
         } else {
             // 存在缓存时直接取出
-            ProjectHolder.set(gson.fromJson(redis.opsForValue().get(Constant.PROJECT), ProjectInfo.class));
+            ProjectHolder.set(gson.fromJson(redisService.getString(RedisKeys.PROJECT_INFO), ProjectInfo.class));
         }
     }
 
@@ -111,7 +112,7 @@ public class WebClientService {
                 })
                 .bodyToMono(ResponseMessage.class)
                 .block();
-        if (tokenResponse != null) {
+        if (tokenResponse.isSuccess()) {
             getUser(tokenResponse.getData().toString());
         }
         return tokenResponse;
@@ -123,19 +124,19 @@ public class WebClientService {
      * @return
      */
     public User getUser(String token) {
-        if (StringUtils.isEmpty(redis.opsForValue().get(Constant.TOKEN + Constant.SPLIT + token))) {
+        if (StringUtils.isEmpty(redisService.getString(RedisKeys.getKey(RedisKeys.USER_TOKEN, token)))) {
             ProjectInfo projectInfo = ProjectHolder.get();
             Mono<ResponseMessage> builder = builder(userCenterServer, HttpMethod.GET, "/facade/token?token={token}&key={key}", token, projectInfo.getKey());
             ResponseMessage userResponse = builder.block();
-            if (userResponse != null) {
-                redis.opsForValue().set(Constant.TOKEN + Constant.SPLIT + token, userResponse.getData().toString());
+            if (userResponse.isSuccess()) {
+                redisService.setString(RedisKeys.getKey(RedisKeys.USER_TOKEN, token), userResponse.getData().toString());
                 User user = gson.fromJson(userResponse.getData().toString(), User.class);
                 UserHolder.set(user);
                 return user;
             }
             return null;
         } else {
-            User user = gson.fromJson(redis.opsForValue().get(Constant.TOKEN + Constant.SPLIT + token), User.class);
+            User user = gson.fromJson(redisService.getString(RedisKeys.getKey(RedisKeys.USER_TOKEN, token)), User.class);
             UserHolder.set(user);
             return user;
         }
@@ -150,7 +151,7 @@ public class WebClientService {
         ProjectInfo projectInfo = ProjectHolder.get();
         Mono<ResponseMessage> builder = builder(userCenterServer, HttpMethod.GET, "/facade/user?userId={userId}&key={key}&projectId={projectId}", userId, projectInfo.getKey(), projectInfo.getProjectId());
         ResponseMessage block = builder.block();
-        if (block != null) {
+        if (block.isSuccess()) {
             return gson.fromJson(block.getData().toString(), User.class);
         }
         return null;
