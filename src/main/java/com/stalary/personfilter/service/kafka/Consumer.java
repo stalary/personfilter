@@ -3,7 +3,9 @@ package com.stalary.personfilter.service.kafka;
 
 import com.google.gson.Gson;
 import com.stalary.personfilter.data.dto.SendResume;
+import com.stalary.personfilter.data.entity.mysql.Message;
 import com.stalary.personfilter.factory.BeansFactory;
+import com.stalary.personfilter.service.mysql.MessageService;
 import com.stalary.personfilter.service.outer.MapdbService;
 import com.stalary.personfilter.utils.Constant;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,9 @@ public class Consumer {
     @Autowired
     private MapdbService mapdbService;
 
+    @Autowired
+    private MessageService messageService;
+
     @KafkaListener(topics = {SEND_RESUME, NOTIFY})
     public void process(ConsumerRecord record) {
         long startTime = System.currentTimeMillis();
@@ -41,17 +46,15 @@ public class Consumer {
         String message = record.value().toString();
         log.info("receive message: topic: " + topic + " key: " + key + " message: " + message);
         if (SEND_RESUME.equals(topic)) {
+            SendResume resume = gson.fromJson(message, SendResume.class);
             if (HANDLE_RESUME.equals(key)) {
-                SendResume resume = gson.fromJson(message, SendResume.class);
                 mapdbService.handleResume(resume);
             } else if (SEND.equals(key)) {
-
+//                Message m = new Message(0L, resume.getUserId(), "简历投递成功", "");
+//                messageService.save()
             } else if (RECEIVE.equals(key)) {
 
-            } else if (LOOK.equals(key)) {
-
             }
-
         } else if (NOTIFY.equals(topic)) {
             log.info("notify");
         }

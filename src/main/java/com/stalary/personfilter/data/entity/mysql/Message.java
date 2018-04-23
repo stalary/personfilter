@@ -24,7 +24,7 @@ import javax.persistence.Table;
 public class Message extends BaseEntity {
 
     /**
-     * 发送方id
+     * 发送方id，系统发送则id为0
      */
     private Long fromId;
 
@@ -44,7 +44,7 @@ public class Message extends BaseEntity {
     private String content;
 
     /**
-     * 是否已阅,0未阅，1已阅，2忽略
+     * 是否已阅
      */
     @ApiModelProperty(value = "false")
     private Boolean readState;

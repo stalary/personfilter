@@ -88,7 +88,7 @@ public class TestController {
     @GetMapping("/goeasy")
     public ResponseMessage goeasy() {
         PushNotRead push = new PushNotRead(1L, 10);
-        commonService.pushMessage("test", gson.toJson(push));
+        commonService.pushMessage("test", "郑亚雯是个臭娘们！！");
         return ResponseMessage.successMessage();
     }
 
