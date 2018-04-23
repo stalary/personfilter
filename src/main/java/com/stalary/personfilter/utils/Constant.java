@@ -1,5 +1,7 @@
 package com.stalary.personfilter.utils;
 
+import com.google.common.base.Joiner;
+
 /**
  * Constant
  * 存储常量
@@ -8,40 +10,14 @@ package com.stalary.personfilter.utils;
  */
 public class Constant {
 
-    public static final String PROJECT = "project";
-
-    public static final String USER = "user";
-
-    public static final String SWAGGER = "swagger";
-
-    /**
-     * 了解
-     */
-    public static final String KNOW = "know";
-
-    /**
-     * 熟悉
-     */
-    public static final String FAMILIAR = "familiar";
-
-    /**
-     * 掌握
-     */
-    public static final String CONTROL = "control";
-
-    /**
-     * 精通
-     */
-    public static final String MASTER = "master";
-
-    /**
-     * token
-     */
-    public static final String Authorization = "Authorization";
-
     public static final String SPLIT = ":";
 
-    public static final String TOKEN = "token";
+    public static final String OK = "OK";
+
+    /**
+     * 用户相关
+     */
+    public static final String Authorization = "Authorization";
 
     public static final String LOGIN = "login";
 
@@ -49,9 +25,43 @@ public class Constant {
 
     public static final String UPDATE = "update";
 
-    public static final String OK = "OK";
+    public static final String PASSWORD = "password";
+
+    public static final String UPDATE_PASSWORD = "update/password";
+
 
     public static final String SENDINFO = "sendInfo";
 
-    public static final String NAME = "pf";
+    public static final String PICTURE = "picture";
+
+    /**
+     * kafka通知
+     */
+    public static final String NOTIFY = "notify";
+
+    /**
+     * 投递方
+     */
+    public static final String SEND = "send";
+
+    /**
+     * 接受方
+     */
+    public static final String RECEIVE = "receive";
+
+    /**
+     * 查看简历
+     */
+    public static final String LOOK = "look";
+
+    /**
+     *
+     */
+    public static final String SEND_RESUME = "resume";
+
+    public static final Joiner JOINER = Joiner.on(SPLIT);
+
+    public static String getKey(String... keys) {
+        return JOINER.join(keys);
+    }
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -51,6 +52,10 @@ public class ResumeService extends BaseService<Resume, ResumeRepo> {
                         .collect(Collectors.toList())
         );
         return repo.save(resume);
+    }
+
+    public List<Resume> getReceiveResume() {
+
     }
 
 }

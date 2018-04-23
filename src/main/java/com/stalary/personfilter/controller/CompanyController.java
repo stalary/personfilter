@@ -5,8 +5,13 @@ import com.stalary.personfilter.data.entity.mysql.Company;
 import com.stalary.personfilter.service.mysql.CompanyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * CompanyController
@@ -33,7 +38,11 @@ public class CompanyController {
     public ResponseMessage allCompany(
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "4") int size) {
-        return ResponseMessage.successMessage(companyService.allCompany(page, size));
+        Pair<List<Company>, Integer> pair = companyService.allCompany(page, size);
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("total", pair.getValue1());
+        map.put("companyList", pair.getValue0());
+        return ResponseMessage.successMessage(map);
     }
 
     @GetMapping("/noPage")

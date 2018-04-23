@@ -1,5 +1,6 @@
-package com.stalary.personfilter.data.dto;
+package com.stalary.personfilter.data.vo;
 
+import com.stalary.personfilter.data.dto.RecruitLow;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

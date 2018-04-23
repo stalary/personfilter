@@ -1,5 +1,9 @@
 package com.stalary.personfilter.utils;
 
+import org.apache.tomcat.util.bcel.Const;
+
+import java.util.UUID;
+
 /**
  * PFUtil
  *
@@ -8,4 +12,11 @@ package com.stalary.personfilter.utils;
  */
 public class PFUtil {
 
+    public static String getUUID() {
+        return UUID.randomUUID().toString().substring(0, 5);
+    }
+
+    public static String getPicture() {
+        return Constant.getKey(Constant.PICTURE, getUUID());
+    }
 }

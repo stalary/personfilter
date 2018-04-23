@@ -8,7 +8,9 @@ import com.stalary.personfilter.repo.mysql.RecruitRepo;
 import com.stalary.personfilter.service.WebClientService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -35,14 +37,17 @@ public class RecruitService extends BaseService<Recruit, RecruitRepo> {
     @Autowired
     private CompanyService companyService;
 
-    public List<RecruitAndHrAndCompany> allRecruit(String key, int page, int size) {
+    public Pair<List<RecruitAndHrAndCompany>, Integer> allRecruit(String key, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         List<RecruitAndHrAndCompany> list = new ArrayList<>();
         List<Recruit> recruitList;
+        Page<Recruit> recruitPage;
         if (StringUtils.isEmpty(key)) {
-            recruitList = repo.findAll(pageRequest).getContent();
+            recruitPage = repo.findAll(pageRequest);
+            recruitList = recruitPage.getContent();
         } else {
-            recruitList = repo.findByContentIsLike("%" + key + "%", pageRequest);
+            recruitPage = repo.findByContentIsLike("%" + key + "%", pageRequest);
+            recruitList = recruitPage.getContent();
         }
         recruitList.forEach(recruit -> {
             recruit.deserializeFields();
@@ -55,7 +60,7 @@ public class RecruitService extends BaseService<Recruit, RecruitRepo> {
                     .setUsername(user.getUsername());
             list.add(new RecruitAndHrAndCompany(recruit, hr, companyService.findOne(recruit.getCompanyId())));
         });
-        return list;
+        return new Pair<>(list, recruitPage.getTotalPages());
     }
 
     public Recruit saveRecruit(Recruit recruit) {

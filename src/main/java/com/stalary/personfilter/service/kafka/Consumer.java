@@ -2,11 +2,13 @@
 package com.stalary.personfilter.service.kafka;
 
 import com.google.gson.Gson;
+import com.stalary.personfilter.utils.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+import static com.stalary.personfilter.utils.Constant.*;
 
 /**
  * Consumer
@@ -18,11 +20,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class Consumer {
 
-    public static final String NOTIFY = "notify";
-
     @Autowired
     private Gson gson;
-
 
     @KafkaListener(topics = {NOTIFY})
     public void process(ConsumerRecord record) {
@@ -34,7 +33,16 @@ public class Consumer {
         }
         String message = record.value().toString();
         if (NOTIFY.equals(topic)) {
+            if (SEND.equals(key)) {
+
+            } else if (RECEIVE.equals(key)) {
+
+            } else if (LOOK.equals(key)) {
+
+            }
             log.info("kafka: " + topic + key + message);
+        } else if (SEND_RESUME.equals(topic)) {
+
         }
         long endTime = System.currentTimeMillis();
         log.info("SubmitConsumer.time=" + (endTime - startTime));

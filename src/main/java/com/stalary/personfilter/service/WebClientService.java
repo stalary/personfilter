@@ -3,11 +3,12 @@ package com.stalary.personfilter.service;
 import com.google.gson.Gson;
 import com.stalary.personfilter.data.dto.*;
 import com.stalary.personfilter.data.vo.ResponseMessage;
+import com.stalary.personfilter.exception.MyException;
 import com.stalary.personfilter.holder.ProjectHolder;
 import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.service.redis.RedisKeys;
 import com.stalary.personfilter.service.redis.RedisService;
-import com.stalary.personfilter.utils.Constant;
+import static com.stalary.personfilter.utils.Constant.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +79,7 @@ public class WebClientService {
     public ResponseMessage postUser(Object object, String type) {
         ProjectInfo projectInfo = ProjectHolder.get();
         User user = new User();
+        // 当登录注册时，判断对象类型
         if (object instanceof Applicant) {
             Applicant applicant = (Applicant) object;
             user.setUsername(applicant.getUsername())
@@ -99,11 +101,18 @@ public class WebClientService {
         } else {
             user = (User) object;
         }
+        // 修改密码时需要特别判断
+        String password = "";
+        if (UPDATE_PASSWORD.equals(type)) {
+            type = UPDATE;
+            password = PASSWORD;
+        }
+        // 存入项目的id
         user.setProjectId(projectInfo.getProjectId());
         ResponseMessage tokenResponse = WebClient
                 .create(userCenterServer)
                 .method(HttpMethod.POST)
-                .uri("/token/{register}?key={key}", type, projectInfo.getKey())
+                .uri("/token/{type}/{password}?key={key}", type, password, projectInfo.getKey())
                 .body(Mono.just(user), User.class)
                 .retrieve()
                 .onStatus(HttpStatus::isError, response -> {
@@ -112,6 +121,14 @@ public class WebClientService {
                 })
                 .bodyToMono(ResponseMessage.class)
                 .block();
+        if (UPDATE.equals(type)) {
+            if (tokenResponse.isSuccess()) {
+                return ResponseMessage.successMessage("修改成功");
+            } else {
+                return tokenResponse;
+            }
+        }
+        // 当登陆注册时，需要用户token
         if (tokenResponse.isSuccess()) {
             getUser(tokenResponse.getData().toString());
         }
@@ -120,23 +137,25 @@ public class WebClientService {
 
     /**
      * 获取到用户信息时即存入缓存
+     *
      * @param token
      * @return
      */
     public User getUser(String token) {
-        if (StringUtils.isEmpty(redisService.getString(RedisKeys.getKey(RedisKeys.USER_TOKEN, token)))) {
+        if (StringUtils.isEmpty(redisService.getString(getKey(RedisKeys.USER_TOKEN, token)))) {
             ProjectInfo projectInfo = ProjectHolder.get();
             Mono<ResponseMessage> builder = builder(userCenterServer, HttpMethod.GET, "/facade/token?token={token}&key={key}", token, projectInfo.getKey());
             ResponseMessage userResponse = builder.block();
             if (userResponse.isSuccess()) {
-                redisService.setString(RedisKeys.getKey(RedisKeys.USER_TOKEN, token), userResponse.getData().toString());
+                redisService.setString(getKey(RedisKeys.USER_TOKEN, token), userResponse.getData().toString());
                 User user = gson.fromJson(userResponse.getData().toString(), User.class);
                 UserHolder.set(user);
                 return user;
+            } else {
+                throw new MyException(userResponse.getCode(), userResponse.getMsg());
             }
-            return null;
         } else {
-            User user = gson.fromJson(redisService.getString(RedisKeys.getKey(RedisKeys.USER_TOKEN, token)), User.class);
+            User user = gson.fromJson(redisService.getString(getKey(RedisKeys.USER_TOKEN, token)), User.class);
             UserHolder.set(user);
             return user;
         }
@@ -144,6 +163,7 @@ public class WebClientService {
 
     /**
      * 通过id获取用户信息
+     *
      * @param userId
      * @return
      */

@@ -44,4 +44,10 @@ public class ResumeController {
             @RequestParam String name) {
         return ResponseMessage.successMessage(skillService.findResumeByName(name));
     }
+
+    /*@GetMapping("/receive")
+    @ApiOperation(value = "查看收到的简历")
+    public ResponseMessage getReceiveResume() {
+
+    }*/
 }

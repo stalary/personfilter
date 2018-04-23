@@ -3,15 +3,18 @@ package com.stalary.personfilter.service.mapdb;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.stalary.personfilter.data.dto.RecruitLow;
-import com.stalary.personfilter.data.dto.SendInfo;
+import com.stalary.personfilter.data.dto.SendResume;
+import com.stalary.personfilter.data.vo.SendInfo;
 import com.stalary.personfilter.holder.UserHolder;
-import com.stalary.personfilter.utils.Constant;
+import com.stalary.personfilter.service.kafka.Producer;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static com.stalary.personfilter.utils.Constant.*;
 
 /**
  * MapdbService
@@ -24,6 +27,9 @@ public class MapdbService {
 
     @Autowired
     private Gson gson;
+
+    @Autowired
+    private Producer producer;
 
     /**
      * 投递简历
@@ -42,17 +48,19 @@ public class MapdbService {
                 hashMap("recruit_map", Serializer.STRING, Serializer.STRING)
                 .createOrOpen();
         Long userId = UserHolder.get().getId();
-        String s = map.get(Constant.SENDINFO + Constant.SPLIT + userId);
+        String s = map.get(getKey(SENDINFO, userId.toString()));
         if (s != null) {
             SendInfo sendInfo = gson.fromJson(s, SendInfo.class);
             sendInfo.getRecruitLowList().add(new RecruitLow(recruitId, title));
-            map.put(Constant.SENDINFO + Constant.SPLIT + userId, gson.toJson(sendInfo));
+            map.put(getKey(SENDINFO, userId.toString()), gson.toJson(sendInfo));
         } else {
             SendInfo sendInfo = new SendInfo(userId, Lists.newArrayList(new RecruitLow(recruitId, title)));
-            map.put(Constant.SENDINFO + Constant.SPLIT + userId, gson.toJson(sendInfo));
+            map.put(getKey(SENDINFO, userId.toString()), gson.toJson(sendInfo));
         }
-        String result = map.get(Constant.SENDINFO + Constant.SPLIT + userId);
+        String result = map.get(getKey(SENDINFO, userId.toString()));
         map.close();
+        // 投递简历
+        producer.send(SEND_RESUME, gson.toJson(new SendResume(userId, recruitId)));
         return gson.fromJson(result, SendInfo.class);
     }
 
@@ -70,8 +78,12 @@ public class MapdbService {
                 hashMap("recruit_map", Serializer.STRING, Serializer.STRING)
                 .open();
         Long userId = UserHolder.get().getId();
-        String result = map.get(Constant.SENDINFO + Constant.SPLIT + userId);
+        String result = map.get(getKey(SENDINFO, userId.toString()));
         map.close();
         return gson.fromJson(result, SendInfo.class);
     }
+
+    /**
+     * 获取
+     */
 }

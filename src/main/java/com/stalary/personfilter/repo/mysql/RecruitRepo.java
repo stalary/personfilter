@@ -1,6 +1,7 @@
 package com.stalary.personfilter.repo.mysql;
 
 import com.stalary.personfilter.data.entity.mysql.Recruit;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,5 +14,5 @@ import java.util.List;
  */
 public interface RecruitRepo extends BaseRepo<Recruit, Long> {
 
-    List<Recruit> findByContentIsLike(String key, Pageable pageable);
+    Page<Recruit> findByContentIsLike(String key, Pageable pageable);
 }

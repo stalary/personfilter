@@ -8,12 +8,15 @@ import com.stalary.personfilter.service.kafka.Producer;
 import com.stalary.personfilter.service.mongodb.ResumeService;
 import com.stalary.personfilter.service.mongodb.SkillService;
 import com.stalary.personfilter.service.mysql.CompanyService;
+import io.goeasy.GoEasy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+
+import static com.stalary.personfilter.utils.Constant.NOTIFY;
 
 /**
  * TestController
@@ -30,9 +33,6 @@ public class TestController {
 
     @Value("${server.user}")
     private String userCenterServer;
-
-    @Autowired
-    private ResumeService resumeService;
 
     @Autowired
     private SkillService skillService;
@@ -75,7 +75,7 @@ public class TestController {
     @GetMapping("/kafka")
     public ResponseMessage kafka(
             @RequestParam String message) {
-        producer.send(Consumer.NOTIFY, message);
+        producer.send(NOTIFY, message);
         return ResponseMessage.successMessage();
     }
 }

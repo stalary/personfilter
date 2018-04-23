@@ -20,7 +20,7 @@ public abstract class BaseService<T, R extends BaseRepo<T, Long>> {
     }
 
     public T findOne(Long id) {
-        return repo.findById(id).get();
+        return repo.findById(id).orElse(null);
     }
 
     public T save(T entity) {

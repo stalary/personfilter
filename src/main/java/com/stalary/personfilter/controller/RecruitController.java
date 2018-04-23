@@ -10,10 +10,14 @@ import com.stalary.personfilter.service.mysql.RecruitService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.crypto.hash.Hash;
+import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * RecruitController
@@ -49,9 +53,11 @@ public class RecruitController {
             @RequestParam(required = false, defaultValue = "") String key,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "4") int size) {
-        List<RecruitAndHrAndCompany> list = recruitService.allRecruit(key, page, size);
-        log.info("list: " + list);
-        return ResponseMessage.successMessage(list);
+        Pair<List<RecruitAndHrAndCompany>, Integer> pair = recruitService.allRecruit(key, page, size);
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("total", pair.getValue1());
+        map.put("recruitList", pair.getValue0());
+        return ResponseMessage.successMessage(map);
     }
 
     @PostMapping("/resume")
@@ -64,6 +70,7 @@ public class RecruitController {
     }
 
     @GetMapping("/send")
+    @ApiOperation(value = "投递列表", notes = "查看个人投递列表")
     @LoginRequired
     public ResponseMessage getSendList() {
         return ResponseMessage.successMessage(mapdbService.getAll());

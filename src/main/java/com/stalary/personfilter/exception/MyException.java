@@ -22,4 +22,10 @@ public class MyException extends RuntimeException {
         log.warn("exception!", resultEnum.getMsg());
     }
 
+    public MyException(Integer code,  String msg) {
+        super(msg);
+        this.code = code;
+        log.warn("exception!", msg);
+    }
+
 }
