@@ -67,4 +67,9 @@ public class RecruitService extends BaseService<Recruit, RecruitRepo> {
         recruit.serializeFields();
         return repo.save(recruit);
     }
+
+    public List<Recruit> findByUserId(Long userId) {
+        return repo.findByHrId(userId);
+    }
+
 }

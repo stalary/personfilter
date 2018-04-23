@@ -52,8 +52,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 throw new MyException(ResultEnum.NEED_LOGIN);
             }
             // 退出时删除缓存
-            if (uri.contains("logout")) {
-                redisService.remove(RedisKeys.getKey(RedisKeys.USER_TOKEN, token));
+            if (uri.contains(LOGOUT)) {
+                redisService.remove(getKey(RedisKeys.USER_TOKEN, token));
             }
         }
         return true;

@@ -5,16 +5,16 @@ import com.stalary.personfilter.annotation.LoginRequired;
 import com.stalary.personfilter.data.entity.mysql.Recruit;
 import com.stalary.personfilter.data.vo.RecruitAndHrAndCompany;
 import com.stalary.personfilter.data.vo.ResponseMessage;
-import com.stalary.personfilter.service.mapdb.MapdbService;
+import com.stalary.personfilter.service.outer.MapdbService;
 import com.stalary.personfilter.service.mysql.RecruitService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.crypto.hash.Hash;
 import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.ws.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,20 +60,38 @@ public class RecruitController {
         return ResponseMessage.successMessage(map);
     }
 
+    /**
+     * 投递简历的步骤
+     * 1 投递简历，在mapdb中构成投递表
+     * 2 向hr发送简历接收通知(站内信，邮件)
+     * 3 向投递者发送简历投递成功的通知
+     * 4 向hr和投递者push更新后的未读通知数量
+     * @param recruitId
+     * @param title
+     * @return
+     */
     @PostMapping("/resume")
     @ApiOperation(value = "投递简历", notes = "需要传入岗位id")
     @LoginRequired
     public ResponseMessage postResume(
             @RequestParam Long recruitId,
             @RequestParam String title) {
-        return ResponseMessage.successMessage(mapdbService.postResume(recruitId, title));
+        mapdbService.postResume(recruitId, title);
+        return ResponseMessage.successMessage("投递成功");
     }
 
     @GetMapping("/send")
     @ApiOperation(value = "投递列表", notes = "查看个人投递列表")
     @LoginRequired
     public ResponseMessage getSendList() {
-        return ResponseMessage.successMessage(mapdbService.getAll());
+        return ResponseMessage.successMessage(mapdbService.getSendList());
+    }
+
+    @GetMapping("/receive")
+    @ApiOperation(value = "简历列表", notes = "查看获取的简历列表")
+    @LoginRequired
+    public ResponseMessage getReceiveList() {
+        return ResponseMessage.successMessage(mapdbService.getReceiveList());
     }
 
 }

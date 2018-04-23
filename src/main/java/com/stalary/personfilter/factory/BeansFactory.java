@@ -2,6 +2,7 @@ package com.stalary.personfilter.factory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import io.goeasy.GoEasy;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -37,6 +38,10 @@ public class BeansFactory implements ApplicationContextAware {
 
     public static <T> T getBean(Class<T> requiredType) {
         return context.getBean(requiredType);
+    }
+
+    public static GoEasy getGoEasy() {
+        return context.getBean(GoEasy.class);
     }
 
 }

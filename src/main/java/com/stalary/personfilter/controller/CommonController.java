@@ -1,7 +1,7 @@
 package com.stalary.personfilter.controller;
 
 import com.stalary.personfilter.data.vo.ResponseMessage;
-import com.stalary.personfilter.service.CommonService;
+import com.stalary.personfilter.service.outer.SmsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommonController {
 
     @Autowired
-    private CommonService commonService;
+    private SmsService smsService;
 
     /**
      *  发送短信验证码的接口
@@ -31,7 +31,7 @@ public class CommonController {
     @GetMapping("/code")
     public ResponseMessage code(
             @RequestParam String phone) {
-        return ResponseMessage.successMessage(commonService.sendCode(phone));
+        return ResponseMessage.successMessage(smsService.sendCode(phone));
     }
 
 }

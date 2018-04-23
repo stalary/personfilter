@@ -24,4 +24,5 @@ public class UserService extends BaseService<UserInfo, UserInfoRepo> {
     public UserInfo getInfo() {
         return repo.findById(UserHolder.get().getId()).orElse(null);
     }
+
 }

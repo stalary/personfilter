@@ -7,9 +7,10 @@ import com.stalary.personfilter.data.dto.User;
 import com.stalary.personfilter.data.entity.mysql.UserInfo;
 import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.holder.UserHolder;
-import com.stalary.personfilter.service.CommonService;
+import com.stalary.personfilter.service.outer.GoEasyService;
 import com.stalary.personfilter.service.WebClientService;
 import com.stalary.personfilter.service.mysql.UserService;
+import com.stalary.personfilter.service.outer.QiNiuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private CommonService commonService;
+    private QiNiuService qiNiuService;
 
     /**
      * 求职者注册
@@ -161,6 +162,6 @@ public class UserController {
     @LoginRequired
     public ResponseMessage upload(
             @RequestParam("avatar") MultipartFile avatar) {
-        return ResponseMessage.successMessage(commonService.uploadPicture(avatar));
+        return ResponseMessage.successMessage(qiNiuService.uploadPicture(avatar));
     }
 }

@@ -1,14 +1,14 @@
 package com.stalary.personfilter.controller;
 
-import com.stalary.personfilter.data.vo.ResponseMessage;
+import com.google.gson.Gson;
+import com.stalary.personfilter.data.dto.PushNotRead;
 import com.stalary.personfilter.data.entity.mysql.Company;
+import com.stalary.personfilter.data.vo.ResponseMessage;
+import com.stalary.personfilter.service.outer.GoEasyService;
 import com.stalary.personfilter.service.WebClientService;
-import com.stalary.personfilter.service.kafka.Consumer;
 import com.stalary.personfilter.service.kafka.Producer;
-import com.stalary.personfilter.service.mongodb.ResumeService;
 import com.stalary.personfilter.service.mongodb.SkillService;
 import com.stalary.personfilter.service.mysql.CompanyService;
-import io.goeasy.GoEasy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -47,7 +47,13 @@ public class TestController {
     private CompanyService companyService;
 
     @Autowired
+    private GoEasyService commonService;
+
+    @Autowired
     private Producer producer;
+
+    @Autowired
+    private Gson gson;
 
     @GetMapping("/hello")
     public ResponseMessage hello() {
@@ -78,4 +84,12 @@ public class TestController {
         producer.send(NOTIFY, message);
         return ResponseMessage.successMessage();
     }
+
+    @GetMapping("/goeasy")
+    public ResponseMessage goeasy() {
+        PushNotRead push = new PushNotRead(1L, 10);
+        commonService.pushMessage("test", gson.toJson(push));
+        return ResponseMessage.successMessage();
+    }
+
 }

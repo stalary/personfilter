@@ -54,8 +54,8 @@ public class ResumeService extends BaseService<Resume, ResumeRepo> {
         return repo.save(resume);
     }
 
-    public List<Resume> getReceiveResume() {
+    /*public List<Resume> getReceiveResume() {
 
-    }
+    }*/
 
 }

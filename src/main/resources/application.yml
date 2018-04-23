@@ -7,5 +7,3 @@ spring:
   aop:
     proxy-target-class: false
     auto: false
-  jackson:
-    serialization: false

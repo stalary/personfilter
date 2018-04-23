@@ -40,7 +40,9 @@ spring:
     producer:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
     consumer:
-      group-id: person
+      group-id: person_filter
+      enable-auto-commit: true
+      auto-offset-reset: latest
   mail:
     # 邮箱服务器地址，这里使用的是163.com的邮件服务器
       host: smtp.163.com
