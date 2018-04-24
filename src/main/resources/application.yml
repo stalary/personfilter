@@ -1,3 +1,9 @@
 spring:
   profiles:
-    active: dev
+    active: prod
+  data:
+    rest:
+      base-path: /api
+  aop:
+    proxy-target-class: false
+    auto: false

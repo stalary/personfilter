@@ -2,12 +2,19 @@ server:
   port: 6100
   tomcat:
     uri-encoding: UTF-8
+  user: http://120.24.5.178:7200
+  max-http-header-size: 8192
 spring:
   datasource:
-    jdbc-url: jdbc:mysql://127.0.0.1:3306/userCenter?characterEncoding=utf-8&useSSL=false
     username: root
     password: li197910
     driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/personfilter?characterEncoding=utf-8&useSSL=false
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: personfilter
   http:
     encoding:
       charset: utf-8
@@ -40,4 +47,4 @@ spring:
 mail:
   fromMail:
     addr: userscenter@163.com
-debug: true
+debug: false

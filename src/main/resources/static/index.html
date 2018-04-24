@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>
+    hello world!
+</h1>
+<button onclick="f()">接收消息</button>
+<script type="text/javascript" src="http://cdn-hangzhou.goeasy.io"></script>
+<script type="text/javascript">
+    function f() {
+        var goEasy = new GoEasy({
+            appkey: 'BS-61b0fa471fbb45a682ba64501ff7c522'
+        });
+        goEasy.subscribe({
+            channel: "test",
+            onMessage: function (message) {
+                alert('收到：' + message.content);
+            }
+        });
+    }
+</script>
+</body>
+</html>

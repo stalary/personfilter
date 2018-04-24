@@ -2,12 +2,24 @@ server:
   port: 6200
   tomcat:
     uri-encoding: UTF-8
+  user: http://120.24.5.178:7200
+  max-http-header-size: 8192
 spring:
   datasource:
-    jdbc-url: jdbc:mysql://47.94.248.38:3306/userCenter?characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://47.94.248.38:3306/personfilter?characterEncoding=utf-8&useSSL=false
     username: root
     password: li197910
     driver-class-name: com.mysql.jdbc.Driver
+  data:
+    mongodb:
+      host: 47.94.248.38
+      port: 27017
+      database: personfilter
+  redis:
+    host: 47.94.248.38
+    timeout: 5000ms
+    password: li197910
+    port: 6666
   http:
     encoding:
       charset: utf-8
@@ -22,13 +34,15 @@ spring:
       serialization:
         indent_output: true
   kafka:
-    bootstrap-servers: http://47.94.248.38:9092
+    bootstrap-servers: 47.94.248.38:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
     producer:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
     consumer:
-      group-id: user_center_group
+      group-id: person_filter
+      enable-auto-commit: true
+      auto-offset-reset: latest
   mail:
     # 邮箱服务器地址，这里使用的是163.com的邮件服务器
       host: smtp.163.com
@@ -40,4 +54,3 @@ spring:
 mail:
   fromMail:
     addr: userscenter@163.com
-
