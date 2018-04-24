@@ -162,6 +162,7 @@ public class UserController {
     @LoginRequired
     public ResponseMessage upload(
             @RequestParam("avatar") MultipartFile avatar) {
-        return ResponseMessage.successMessage(qiNiuService.uploadPicture(avatar));
+        userService.uploadAvatar(avatar);
+        return ResponseMessage.successMessage("头像上传成功");
     }
 }

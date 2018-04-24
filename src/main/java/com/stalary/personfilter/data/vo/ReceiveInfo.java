@@ -1,7 +1,6 @@
 package com.stalary.personfilter.data.vo;
 
 import com.stalary.personfilter.data.dto.ReceiveResume;
-import com.stalary.personfilter.data.entity.mysql.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

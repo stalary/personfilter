@@ -21,7 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.stalary.personfilter.utils.Constant.*;
 
@@ -68,45 +70,47 @@ public class MapdbService {
      */
     public void handleResume(SendResume sendResume) {
         // 最大容量1GB，最大增速256MB
-        DB db = DBMaker.fileDB("mapdb.txt")
+        try (DB db = DBMaker.fileDB("mapdb.txt")
                 .checksumHeaderBypass()
                 .allocateStartSize(1024 * 1024 * 1024)
                 .allocateIncrement(256 * 1024 * 1024)
-                .make();
-        // 构建投递列表
-        HTreeMap<String, String> post = db.
-                hashMap("post_map", Serializer.STRING, Serializer.STRING)
-                .createOrOpen();
-        Long userId = sendResume.getUserId();
-        Long recruitId = sendResume.getRecruitId();
-        String postStr = post.get(getKey(SEND, userId.toString()));
-        // 获取map，存在时，加入投递列表，不存在时，初始化
-        if (postStr != null) {
-            SendInfo sendInfo = gson.fromJson(postStr, SendInfo.class);
-            sendInfo.getSendList().add(sendResume);
-            post.put(getKey(SEND, userId.toString()), gson.toJson(sendInfo));
-        } else {
-            SendInfo sendInfo = new SendInfo(Lists.newArrayList(sendResume));
-            post.put(getKey(SEND, userId.toString()), gson.toJson(sendInfo));
+                .make()) {
+            // 构建投递列表
+            HTreeMap<String, String> post = db.
+                    hashMap("post_map", Serializer.STRING, Serializer.STRING)
+                    .createOrOpen();
+            Long userId = sendResume.getUserId();
+            Long recruitId = sendResume.getRecruitId();
+            String postStr = post.get(getKey(SEND, userId.toString()));
+            // 获取map，存在时，加入投递列表，不存在时，初始化
+            if (postStr != null) {
+                SendInfo sendInfo = gson.fromJson(postStr, SendInfo.class);
+                sendInfo.getSendList().add(sendResume);
+                post.put(getKey(SEND, userId.toString()), gson.toJson(sendInfo));
+            } else {
+                SendInfo sendInfo = new SendInfo(Lists.newArrayList(sendResume));
+                post.put(getKey(SEND, userId.toString()), gson.toJson(sendInfo));
+            }
+            // 构建获取列表
+            HTreeMap<String, String> get = db.
+                    hashMap("get_map", Serializer.STRING, Serializer.STRING)
+                    .createOrOpen();
+            String getStr = get.get(getKey(RECEIVE, recruitId.toString()));
+            UserInfo userInfo = userService.findOne(userId);
+            // 计算匹配度
+            int rate = resumeService.calculate(recruitId, userId);
+            ReceiveResume resume = new ReceiveResume(sendResume.getTitle(), userInfo.getNickname(), rate, LocalDateTime.now());
+            if (getStr != null) {
+                ReceiveInfo receiveInfo = gson.fromJson(getStr, ReceiveInfo.class);
+                receiveInfo.getReceiveList().add(resume);
+                get.put(getKey(RECEIVE, recruitId.toString()), gson.toJson(receiveInfo));
+            } else {
+                ReceiveInfo receiveInfo = new ReceiveInfo(Lists.newArrayList(resume));
+                get.put(getKey(RECEIVE, recruitId.toString()), gson.toJson(receiveInfo));
+            }
+        } catch (Exception e) {
+            log.warn("mapdb error", e);
         }
-        // 构建获取列表
-        HTreeMap<String, String> get = db.
-                hashMap("get_map", Serializer.STRING, Serializer.STRING)
-                .createOrOpen();
-        String getStr = get.get(getKey(RECEIVE, recruitId.toString()));
-        UserInfo userInfo = userService.findOne(userId);
-        // 计算匹配度
-        int rate = resumeService.calculate(recruitId, userId);
-        ReceiveResume resume = new ReceiveResume(sendResume.getTitle(), userInfo.getNickname(), rate, LocalDateTime.now());
-        if (getStr != null) {
-            ReceiveInfo receiveInfo = gson.fromJson(getStr, ReceiveInfo.class);
-            receiveInfo.getReceiveList().add(resume);
-            get.put(getKey(RECEIVE, recruitId.toString()), gson.toJson(receiveInfo));
-        } else {
-            ReceiveInfo receiveInfo = new ReceiveInfo(Lists.newArrayList(resume));
-            post.put(getKey(RECEIVE, recruitId.toString()), gson.toJson(receiveInfo));
-        }
-        db.close();
     }
 
     /**
@@ -115,44 +119,50 @@ public class MapdbService {
      * @return
      */
     public SendInfo getSendList() {
-        DB db = DBMaker.fileDB("mapdb.txt")
+        try (DB db = DBMaker.fileDB("mapdb.txt")
                 .checksumHeaderBypass()
                 .allocateStartSize(1024 * 1024 * 1024)
                 .allocateIncrement(256 * 1024 * 1024)
-                .make();
-        HTreeMap<String, String> map = db.
-                hashMap("post_map", Serializer.STRING, Serializer.STRING)
-                .createOrOpen();
-        Long userId = UserHolder.get().getId();
-        String result = map.get(getKey(SEND, userId.toString()));
-        db.close();
-        return gson.fromJson(result, SendInfo.class);
+                .make()) {
+            HTreeMap<String, String> map = db.
+                    hashMap("post_map", Serializer.STRING, Serializer.STRING)
+                    .createOrOpen();
+            Long userId = UserHolder.get().getId();
+            String result = map.get(getKey(SEND, userId.toString()));
+            return gson.fromJson(result, SendInfo.class);
+        } catch (Exception e) {
+            log.warn("mapdb error", e);
+        }
+        return null;
     }
 
     /**
      * 获取收到简历列表
      */
     public ReceiveInfo getReceiveList() {
-        DB db = DBMaker.fileDB("mapdb.txt")
+        try (DB db = DBMaker.fileDB("mapdb.txt")
                 .checksumHeaderBypass()
                 .allocateStartSize(1024 * 1024 * 1024)
                 .allocateIncrement(256 * 1024 * 1024)
-                .make();
-        HTreeMap<String, String> map = db.
-                hashMap("get_map", Serializer.STRING, Serializer.STRING)
-                .createOrOpen();
-        Long userId = UserHolder.get().getId();
-        ReceiveInfo receiveInfo = new ReceiveInfo();
-        List<ReceiveResume> receiveList = receiveInfo.getReceiveList();
-        // 存入所有收到的简历
-        recruitService
-                .findByUserId(userId)
-                .forEach(recruit -> {
-                    String result = map.get(getKey(RECEIVE, recruit.getId().toString()));
-                    ReceiveInfo getInfo = gson.fromJson(result, ReceiveInfo.class);
-                    receiveList.addAll(getInfo.getReceiveList());
-                });
-        db.close();
-        return receiveInfo;
+                .make()) {
+            HTreeMap<String, String> map = db.
+                    hashMap("get_map", Serializer.STRING, Serializer.STRING)
+                    .createOrOpen();
+            Long userId = UserHolder.get().getId();
+            String receive = map.get(getKey(RECEIVE, userId.toString()));
+            ReceiveInfo receiveInfo = gson.fromJson(receive, ReceiveInfo.class);
+            // 对简历列表按匹配度进行排序
+            if (receiveInfo != null) {
+                receiveInfo.setReceiveList(receiveInfo
+                        .getReceiveList()
+                        .stream()
+                        .sorted(Comparator.comparing(ReceiveResume::getRate).reversed())
+                        .collect(Collectors.toList()));
+            }
+            return receiveInfo;
+        } catch (Exception e) {
+            log.warn("mapdb error", e);
+        }
+        return null;
     }
 }
