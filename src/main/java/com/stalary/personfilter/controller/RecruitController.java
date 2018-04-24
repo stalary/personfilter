@@ -97,11 +97,11 @@ public class RecruitController {
         return ResponseMessage.successMessage(mapdbService.getReceiveList());
     }
 
-    /*@GetMapping("/resume")
-    @ApiOperation(value = "查看用户投递的简历详情", notes = "查看简历详情,传入用户id和hrId")
+    @GetMapping("/get")
+    @ApiOperation(value = "查看岗位详情", notes = "传入岗位id")
     @LoginRequired
-    public ResponseMessage getResume(
-            @RequestParam Long userId) {
-        recruitService.
-    }*/
+    public ResponseMessage getRecruitById(
+            @RequestParam Long recruitId) {
+        return ResponseMessage.successMessage(recruitService.findById(recruitId));
+    }
 }

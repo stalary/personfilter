@@ -72,7 +72,7 @@ public class ResumeService extends BaseService<Resume, ResumeRepo> {
      * @return
      */
     public int calculate(Long recruitId, Long userId) {
-        Recruit recruit = recruitService.findOne(recruitId);
+        Recruit recruit = recruitService.findById(recruitId);
         List<SkillRule> skillRuleList = recruit.getSkillList();
         Resume resume = repo.findByUserId(userId);
         List<Skill> skillList = resume.getSkills();

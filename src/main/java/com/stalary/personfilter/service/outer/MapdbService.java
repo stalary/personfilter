@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.stalary.personfilter.data.dto.ReceiveResume;
 import com.stalary.personfilter.data.dto.SendResume;
+import com.stalary.personfilter.data.entity.mysql.Recruit;
 import com.stalary.personfilter.data.entity.mysql.UserInfo;
 import com.stalary.personfilter.data.vo.ReceiveInfo;
 import com.stalary.personfilter.data.vo.SendInfo;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,6 +71,8 @@ public class MapdbService {
      * 处理简历
      */
     public void handleResume(SendResume sendResume) {
+        log.info("start handle resume");
+        long start = System.currentTimeMillis();
         // 最大容量1GB，最大增速256MB
         try (DB db = DBMaker.fileDB("mapdb.txt")
                 .checksumHeaderBypass()
@@ -99,7 +103,7 @@ public class MapdbService {
             UserInfo userInfo = userService.findOne(userId);
             // 计算匹配度
             int rate = resumeService.calculate(recruitId, userId);
-            ReceiveResume resume = new ReceiveResume(sendResume.getTitle(), userInfo.getNickname(), rate, LocalDateTime.now());
+            ReceiveResume resume = new ReceiveResume(sendResume.getTitle(), userInfo.getNickname(), userInfo.getUserId(), rate, LocalDateTime.now());
             if (getStr != null) {
                 ReceiveInfo receiveInfo = gson.fromJson(getStr, ReceiveInfo.class);
                 receiveInfo.getReceiveList().add(resume);
@@ -108,6 +112,7 @@ public class MapdbService {
                 ReceiveInfo receiveInfo = new ReceiveInfo(Lists.newArrayList(resume));
                 get.put(getKey(RECEIVE, recruitId.toString()), gson.toJson(receiveInfo));
             }
+            log.info("end handle resume spend time is " + (System.currentTimeMillis() - start));
         } catch (Exception e) {
             log.warn("mapdb error", e);
         }
@@ -148,17 +153,26 @@ public class MapdbService {
             HTreeMap<String, String> map = db.
                     hashMap("get_map", Serializer.STRING, Serializer.STRING)
                     .createOrOpen();
+            // 多个岗位需要叠加
             Long userId = UserHolder.get().getId();
-            String receive = map.get(getKey(RECEIVE, userId.toString()));
-            ReceiveInfo receiveInfo = gson.fromJson(receive, ReceiveInfo.class);
-            // 对简历列表按匹配度进行排序
-            if (receiveInfo != null) {
-                receiveInfo.setReceiveList(receiveInfo
-                        .getReceiveList()
-                        .stream()
-                        .sorted(Comparator.comparing(ReceiveResume::getRate).reversed())
-                        .collect(Collectors.toList()));
-            }
+            List<Recruit> recruitList = recruitService.findByUserId(userId);
+            ReceiveInfo receiveInfo = new ReceiveInfo();
+            List<ReceiveResume> result = receiveInfo.getReceiveList();
+            recruitList.forEach(recruit -> {
+                String receive = map.get(getKey(RECEIVE, recruit.getId().toString()));
+                ReceiveInfo info = gson.fromJson(receive, ReceiveInfo.class);
+                // 对简历列表按匹配度进行排序
+                if (info != null) {
+                    info.setReceiveList(info
+                            .getReceiveList()
+                            .stream()
+                            .sorted(Comparator.comparing(ReceiveResume::getRate).reversed())
+                            .collect(Collectors.toList()));
+                }
+                if (info != null) {
+                    result.addAll(info.getReceiveList());
+                }
+            });
             return receiveInfo;
         } catch (Exception e) {
             log.warn("mapdb error", e);

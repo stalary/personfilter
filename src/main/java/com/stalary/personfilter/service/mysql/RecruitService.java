@@ -75,9 +75,8 @@ public class RecruitService extends BaseService<Recruit, RecruitRepo> {
     }
 
 
-    @Override
-    public Recruit findOne(Long id) {
-        Recruit recruit = repo.getOne(id);
+    public Recruit findById(Long id) {
+        Recruit recruit = findOne(id);
         recruit.deserializeFields();
         return recruit;
     }

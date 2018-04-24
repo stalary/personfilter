@@ -46,13 +46,9 @@ public class ResumeController {
 
     @GetMapping
     @ApiOperation(value = "通过userId查找对应简历", notes = "传入userId")
-    public ResponseMessage getResumeByName(
+    public ResponseMessage getResumeByUserId(
             @RequestParam Long userId) {
         return ResponseMessage.successMessage(resumeService.findByUserId(userId));
     }
-    /*@GetMapping("/receive")
-    @ApiOperation(value = "查看收到的简历")
-    public ResponseMessage getReceiveResume() {
 
-    }*/
 }
