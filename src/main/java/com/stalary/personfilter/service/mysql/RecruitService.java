@@ -69,7 +69,16 @@ public class RecruitService extends BaseService<Recruit, RecruitRepo> {
     }
 
     public List<Recruit> findByUserId(Long userId) {
-        return repo.findByHrId(userId);
+        List<Recruit> recruitList = repo.findByHrId(userId);
+        recruitList.forEach(Recruit::deserializeFields);
+        return recruitList;
     }
 
+
+    @Override
+    public Recruit findOne(Long id) {
+        Recruit recruit = repo.getOne(id);
+        recruit.deserializeFields();
+        return recruit;
+    }
 }

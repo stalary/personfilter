@@ -1,5 +1,6 @@
 package com.stalary.personfilter.data.entity.mysql;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModelProperty;
@@ -43,8 +44,8 @@ public abstract class BaseEntity implements Serializable {
     /**
      * 创建时间
      */
-    @JsonIgnore
     @CreationTimestamp
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(hidden=true)
     private Date createTime;
 

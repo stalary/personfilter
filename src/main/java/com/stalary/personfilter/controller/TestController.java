@@ -4,11 +4,12 @@ import com.google.gson.Gson;
 import com.stalary.personfilter.data.dto.PushNotRead;
 import com.stalary.personfilter.data.entity.mysql.Company;
 import com.stalary.personfilter.data.vo.ResponseMessage;
-import com.stalary.personfilter.service.outer.GoEasyService;
 import com.stalary.personfilter.service.WebClientService;
 import com.stalary.personfilter.service.kafka.Producer;
+import com.stalary.personfilter.service.mongodb.ResumeService;
 import com.stalary.personfilter.service.mongodb.SkillService;
 import com.stalary.personfilter.service.mysql.CompanyService;
+import com.stalary.personfilter.service.outer.GoEasyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -25,7 +26,7 @@ import static com.stalary.personfilter.utils.Constant.NOTIFY;
  * @since 2018/04/09
  */
 @RestController
-@ApiIgnore
+//@ApiIgnore
 public class TestController {
 
     @Autowired
@@ -53,6 +54,9 @@ public class TestController {
     private Producer producer;
 
     @Autowired
+    private ResumeService resumeService;
+
+    @Autowired
     private Gson gson;
 
     @GetMapping("/hello")
@@ -64,12 +68,6 @@ public class TestController {
     @GetMapping("/projectInfo")
     public ResponseMessage projectInfo() {
         return ResponseMessage.successMessage(redis.opsForValue().get("project"));
-    }
-
-    @GetMapping("/mongodb")
-    public ResponseMessage mongodb(
-            @RequestParam String name) {
-        return ResponseMessage.successMessage(skillService.findResumeByName(name));
     }
 
     @PostMapping("/mysql")
@@ -88,8 +86,15 @@ public class TestController {
     @GetMapping("/goeasy")
     public ResponseMessage goeasy() {
         PushNotRead push = new PushNotRead(1L, 10);
-        commonService.pushMessage("test", "郑亚雯是个臭娘们！！");
+        commonService.pushMessage("test", "123");
         return ResponseMessage.successMessage();
+    }
+
+    @GetMapping("/calculate")
+    public ResponseMessage calculate(
+            @RequestParam Long userId,
+            @RequestParam Long recruitId) {
+        return ResponseMessage.successMessage(resumeService.calculate(recruitId, userId));
     }
 
 }

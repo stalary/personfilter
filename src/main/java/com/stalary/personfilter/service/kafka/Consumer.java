@@ -4,8 +4,13 @@ package com.stalary.personfilter.service.kafka;
 import com.google.gson.Gson;
 import com.stalary.personfilter.data.dto.SendResume;
 import com.stalary.personfilter.data.entity.mysql.Message;
+import com.stalary.personfilter.data.entity.mysql.Recruit;
+import com.stalary.personfilter.data.entity.mysql.UserInfo;
 import com.stalary.personfilter.factory.BeansFactory;
 import com.stalary.personfilter.service.mysql.MessageService;
+import com.stalary.personfilter.service.mysql.RecruitService;
+import com.stalary.personfilter.service.mysql.UserService;
+import com.stalary.personfilter.service.outer.GoEasyService;
 import com.stalary.personfilter.service.outer.MapdbService;
 import com.stalary.personfilter.utils.Constant;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +40,15 @@ public class Consumer {
     @Autowired
     private MessageService messageService;
 
+    @Autowired
+    private RecruitService recruitService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private GoEasyService goEasyService;
+
     @KafkaListener(topics = {SEND_RESUME, NOTIFY})
     public void process(ConsumerRecord record) {
         long startTime = System.currentTimeMillis();
@@ -48,12 +62,28 @@ public class Consumer {
         if (SEND_RESUME.equals(topic)) {
             SendResume resume = gson.fromJson(message, SendResume.class);
             if (HANDLE_RESUME.equals(key)) {
+                // 处理投递简历
                 mapdbService.handleResume(resume);
             } else if (SEND.equals(key)) {
-//                Message m = new Message(0L, resume.getUserId(), "简历投递成功", "");
-//                messageService.save()
+                // 存储投递的消息通知
+                Long userId = resume.getUserId();
+                Message m = new Message(0L, userId, "简历投递成功", resume.getTitle() + "简历投递成功", false);
+                messageService.save(m);
+                // 统计通知未读的数量
+                int count = messageService.findNotRead(userId).size();
+                goEasyService.pushMessage(userId.toString(), "" + count);
             } else if (RECEIVE.equals(key)) {
-
+                // 存储收到简历的消息通知
+                Long recruitId = resume.getRecruitId();
+                Long userId = resume.getUserId();
+                Recruit recruit = recruitService.findOne(recruitId);
+                UserInfo userInfo = userService.findOne(userId);
+                Long hrId = recruit.getHrId();
+                Message m = new Message(userId, hrId, resume.getTitle() + "收到简历", resume.getTitle() + "收到来自" + userInfo.getSchool() + "的" + userInfo.getNickname() + "的简历", false);
+                messageService.save(m);
+                // 统计通知未读的数量
+                int count = messageService.findNotRead(hrId).size();
+                goEasyService.pushMessage(hrId.toString(), "" + count);
             }
         } else if (NOTIFY.equals(topic)) {
             log.info("notify");

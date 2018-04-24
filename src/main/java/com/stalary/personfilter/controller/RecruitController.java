@@ -5,8 +5,9 @@ import com.stalary.personfilter.annotation.LoginRequired;
 import com.stalary.personfilter.data.entity.mysql.Recruit;
 import com.stalary.personfilter.data.vo.RecruitAndHrAndCompany;
 import com.stalary.personfilter.data.vo.ResponseMessage;
-import com.stalary.personfilter.service.outer.MapdbService;
+import com.stalary.personfilter.service.mongodb.ResumeService;
 import com.stalary.personfilter.service.mysql.RecruitService;
+import com.stalary.personfilter.service.outer.MapdbService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,6 @@ import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.ws.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +39,9 @@ public class RecruitController {
 
     @Autowired
     private MapdbService mapdbService;
+
+    @Autowired
+    private ResumeService resumeService;
 
     @PostMapping
     @ApiOperation(value = "添加或更新招聘信息", notes = "传入招聘对象")
@@ -94,4 +97,11 @@ public class RecruitController {
         return ResponseMessage.successMessage(mapdbService.getReceiveList());
     }
 
+    /*@GetMapping("/resume")
+    @ApiOperation(value = "查看用户投递的简历详情", notes = "查看简历详情,传入用户id和hrId")
+    @LoginRequired
+    public ResponseMessage getResume(
+            @RequestParam Long userId) {
+        recruitService.
+    }*/
 }

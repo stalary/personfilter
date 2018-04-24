@@ -34,17 +34,22 @@ public class ResumeController {
     }
 
     /**
-     * 通过技能点查找简历
+     * 通过技能点查找简历,已弃用
      * @param name
      * @return
      */
-    @GetMapping
     @ApiOperation(value = "通过技能点查找简历和对应的人", notes = "传入技能名称")
     public ResponseMessage getResumeByName(
             @RequestParam String name) {
         return ResponseMessage.successMessage(skillService.findResumeByName(name));
     }
 
+    @GetMapping
+    @ApiOperation(value = "通过userId查找对应简历", notes = "传入userId")
+    public ResponseMessage getResumeByName(
+            @RequestParam Long userId) {
+        return ResponseMessage.successMessage(resumeService.findByUserId(userId));
+    }
     /*@GetMapping("/receive")
     @ApiOperation(value = "查看收到的简历")
     public ResponseMessage getReceiveResume() {

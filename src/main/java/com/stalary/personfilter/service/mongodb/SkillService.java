@@ -1,7 +1,7 @@
 package com.stalary.personfilter.service.mongodb;
 
-import com.stalary.personfilter.data.vo.ResumeAndUser;
 import com.stalary.personfilter.data.entity.mongodb.Skill;
+import com.stalary.personfilter.data.vo.ResumeAndUser;
 import com.stalary.personfilter.repo.mongodb.ResumeRepo;
 import com.stalary.personfilter.repo.mongodb.SkillRepo;
 import com.stalary.personfilter.service.WebClientService;
@@ -54,6 +54,7 @@ public class SkillService extends BaseService<Skill, SkillRepo> {
      * @param name
      * @return
      */
+    @Deprecated
     public List<ResumeAndUser> findResumeByName(String name) {
         List<Long> resumeId = findByName(name)
                 .stream()

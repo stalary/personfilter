@@ -9,4 +9,5 @@ import com.stalary.personfilter.data.entity.mongodb.Resume;
  */
 public interface ResumeRepo extends BaseRepo<Resume, Long> {
 
+    Resume findByUserId(long userId);
 }

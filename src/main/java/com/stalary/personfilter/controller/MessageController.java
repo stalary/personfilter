@@ -56,12 +56,13 @@ public class MessageController {
     /**
      * 已读站内信
      */
-    @PostMapping("/{id}")
-    @ApiOperation(value = "已读站内信", notes = "传入站内信的id")
+    @PostMapping("/read")
+    @ApiOperation(value = "已读站内信", notes = "传入站内信的id和userId")
     @LoginRequired
     public ResponseMessage readMessage(
-            @PathVariable("id") Long id) {
-        messageService.read(id);
+            @RequestParam Long id,
+            @RequestParam Long userId) {
+        messageService.read(id, userId);
         return ResponseMessage.successMessage();
     }
 

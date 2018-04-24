@@ -27,7 +27,19 @@ public interface MessageRepo extends BaseRepo<Message, Long> {
      */
     List<Message> findByFromId(Long fromId);
 
+    /**
+     * 设置状态为已读
+     * @param id
+     */
     @Modifying
     @Query("update Message m set m.readState=true where m.id=?1")
     void read(Long id);
+
+    /**
+     * 查找收到的未读通知
+     * @param fromId
+     * @param readState
+     * @return
+     */
+    List<Message> findByToIdAndReadState(Long fromId, Boolean readState);
 }

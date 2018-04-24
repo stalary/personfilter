@@ -2,12 +2,14 @@ package com.stalary.personfilter.service.outer;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
+import com.stalary.personfilter.data.dto.ReceiveResume;
 import com.stalary.personfilter.data.dto.SendResume;
 import com.stalary.personfilter.data.entity.mysql.UserInfo;
 import com.stalary.personfilter.data.vo.ReceiveInfo;
 import com.stalary.personfilter.data.vo.SendInfo;
 import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.service.kafka.Producer;
+import com.stalary.personfilter.service.mongodb.ResumeService;
 import com.stalary.personfilter.service.mysql.RecruitService;
 import com.stalary.personfilter.service.mysql.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +47,9 @@ public class MapdbService {
     @Autowired
     private RecruitService recruitService;
 
+    @Autowired
+    private ResumeService resumeService;
+
     /**
      * 投递简历
      */
@@ -54,9 +59,9 @@ public class MapdbService {
         // 投递简历
         producer.send(SEND_RESUME, HANDLE_RESUME, json);
         // 向接受方发送通知
-//        producer.send(SEND_RESUME, RECEIVE, json);
+        producer.send(SEND_RESUME, RECEIVE, json);
         // 向投递方发送通知
-//        producer.send(SEND_RESUME, SEND, json);
+        producer.send(SEND_RESUME, SEND, json);
     }
     /**
      * 处理简历
@@ -90,12 +95,15 @@ public class MapdbService {
                 .createOrOpen();
         String getStr = get.get(getKey(RECEIVE, recruitId.toString()));
         UserInfo userInfo = userService.findOne(userId);
+        // 计算匹配度
+        int rate = resumeService.calculate(recruitId, userId);
+        ReceiveResume resume = new ReceiveResume(sendResume.getTitle(), userInfo.getNickname(), rate, LocalDateTime.now());
         if (getStr != null) {
             ReceiveInfo receiveInfo = gson.fromJson(getStr, ReceiveInfo.class);
-            receiveInfo.getReceiveList().add(userInfo);
+            receiveInfo.getReceiveList().add(resume);
             get.put(getKey(RECEIVE, recruitId.toString()), gson.toJson(receiveInfo));
         } else {
-            ReceiveInfo receiveInfo = new ReceiveInfo(Lists.newArrayList(userInfo));
+            ReceiveInfo receiveInfo = new ReceiveInfo(Lists.newArrayList(resume));
             post.put(getKey(RECEIVE, recruitId.toString()), gson.toJson(receiveInfo));
         }
         db.close();
@@ -135,7 +143,7 @@ public class MapdbService {
                 .createOrOpen();
         Long userId = UserHolder.get().getId();
         ReceiveInfo receiveInfo = new ReceiveInfo();
-        List<UserInfo> receiveList = receiveInfo.getReceiveList();
+        List<ReceiveResume> receiveList = receiveInfo.getReceiveList();
         // 存入所有收到的简历
         recruitService
                 .findByUserId(userId)

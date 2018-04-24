@@ -2,6 +2,7 @@ package com.stalary.personfilter.data.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * ProjectInfo
@@ -11,6 +12,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ProjectInfo {
 
     private Long projectId;
