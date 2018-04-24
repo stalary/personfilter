@@ -26,7 +26,7 @@ import static com.stalary.personfilter.utils.Constant.NOTIFY;
  * @since 2018/04/09
  */
 @RestController
-//@ApiIgnore
+@ApiIgnore
 public class TestController {
 
     @Autowired
