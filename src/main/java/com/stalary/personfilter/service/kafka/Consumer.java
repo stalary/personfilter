@@ -65,7 +65,7 @@ public class Consumer {
                 // 处理投递简历
                 mapdbService.handleResume(resume);
             } else if (SEND.equals(key)) {
-                // 存储投递的消息通知
+                // 存储投递的消息通知(系统发送)
                 Long userId = resume.getUserId();
                 Message m = new Message(0L, userId, "简历投递成功", resume.getTitle() + "简历投递成功", false);
                 messageService.save(m);
@@ -73,13 +73,13 @@ public class Consumer {
                 int count = messageService.findNotRead(userId).size();
                 goEasyService.pushMessage(userId.toString(), "" + count);
             } else if (RECEIVE.equals(key)) {
-                // 存储收到简历的消息通知
+                // 存储收到简历的消息通知(系统发送)
                 Long recruitId = resume.getRecruitId();
                 Long userId = resume.getUserId();
                 Recruit recruit = recruitService.findOne(recruitId);
                 UserInfo userInfo = userService.findOne(userId);
                 Long hrId = recruit.getHrId();
-                Message m = new Message(userId, hrId, resume.getTitle() + "收到简历", resume.getTitle() + "收到来自" + userInfo.getSchool() + "的" + userInfo.getNickname() + "的简历", false);
+                Message m = new Message(0L, hrId, resume.getTitle() + "收到简历", resume.getTitle() + "收到来自" + userInfo.getSchool() + "的" + userInfo.getNickname() + "的简历", false);
                 messageService.save(m);
                 // 统计通知未读的数量
                 int count = messageService.findNotRead(hrId).size();

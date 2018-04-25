@@ -73,10 +73,12 @@ public class MessageController {
     @GetMapping("/user/send")
     @ApiOperation(value = "获取一个用户发送的站内信")
     @LoginRequired
-    public ResponseMessage getSendMessage(
-            @RequestParam Long userId) {
-        return ResponseMessage.successMessage(messageService.findByFromId(userId));
+    public ResponseMessage getSendMessage() {
+        User user = UserHolder.get();
+        if (user != null) {
+            return ResponseMessage.successMessage(messageService.findByFromId(user.getId()));
+        } else {
+            return ResponseMessage.successMessage();
+        }
     }
-
-
 }
