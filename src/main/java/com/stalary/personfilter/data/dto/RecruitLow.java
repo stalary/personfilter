@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Deprecated
 public class RecruitLow {
 
     /**

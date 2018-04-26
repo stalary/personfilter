@@ -52,7 +52,6 @@ public class CompanyController {
         return ResponseMessage.successMessage(companyService.findCompany(key));
     }
 
-
     /**
      * 添加公司
      * @param company
@@ -63,5 +62,15 @@ public class CompanyController {
     public ResponseMessage addCompany(
             @RequestBody Company company) {
         return ResponseMessage.successMessage(companyService.save(company));
+    }
+
+    /**
+     * 查看公司详情包括招聘信息
+     */
+    @GetMapping("{id}")
+    @ApiOperation(value = "查看公司详情", notes = "传入公司id")
+    public ResponseMessage getInfo(
+            @PathVariable("id") Long id) {
+        return ResponseMessage.successMessage(companyService.getInfo(id));
     }
 }

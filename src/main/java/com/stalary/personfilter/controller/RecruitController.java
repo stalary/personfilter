@@ -97,11 +97,4 @@ public class RecruitController {
         return ResponseMessage.successMessage(mapdbService.getReceiveList());
     }
 
-    @GetMapping("/get")
-    @ApiOperation(value = "查看岗位详情", notes = "传入岗位id")
-    @LoginRequired
-    public ResponseMessage getRecruitById(
-            @RequestParam Long recruitId) {
-        return ResponseMessage.successMessage(recruitService.findById(recruitId));
-    }
 }

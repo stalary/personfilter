@@ -11,6 +11,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@Deprecated
 public class PushNotRead {
 
     /**

@@ -1,18 +1,14 @@
 package com.stalary.personfilter.controller;
 
-import com.google.gson.Gson;
-import com.stalary.personfilter.data.dto.PushNotRead;
 import com.stalary.personfilter.data.entity.mysql.Company;
 import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.service.WebClientService;
 import com.stalary.personfilter.service.kafka.Producer;
 import com.stalary.personfilter.service.mongodb.ResumeService;
-import com.stalary.personfilter.service.mongodb.SkillService;
 import com.stalary.personfilter.service.mysql.CompanyService;
 import com.stalary.personfilter.service.outer.GoEasyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -35,14 +31,10 @@ public class TestController {
     @Value("${server.user}")
     private String userCenterServer;
 
-    @Autowired
-    private SkillService skillService;
 
     @Autowired
     private StringRedisTemplate redis;
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
 
     @Autowired
     private CompanyService companyService;
@@ -55,9 +47,6 @@ public class TestController {
 
     @Autowired
     private ResumeService resumeService;
-
-    @Autowired
-    private Gson gson;
 
     @GetMapping("/hello")
     public ResponseMessage hello() {
@@ -85,7 +74,6 @@ public class TestController {
 
     @GetMapping("/goeasy")
     public ResponseMessage goeasy() {
-        PushNotRead push = new PushNotRead(1L, 10);
         commonService.pushMessage("test", "123");
         return ResponseMessage.successMessage();
     }

@@ -38,9 +38,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private QiNiuService qiNiuService;
-
     /**
      * 求职者注册
      */
@@ -114,6 +111,11 @@ public class UserController {
         return ResponseMessage.successMessage(userService.save(userInfo));
     }
 
+    /**
+     * 修改手机号
+     * @param phone
+     * @return
+     */
     @PutMapping("/phone")
     @ApiOperation(value = "修改手机号", notes = "手机号")
     @LoginRequired
@@ -125,7 +127,7 @@ public class UserController {
     }
 
     /**
-     * 通过手机号修改hr密码
+     * 通过手机号修改密码
      */
     @PutMapping("/password")
     @ApiOperation(value = "修改密码", notes = "通过用户名和手机号和新密码进行修改")
@@ -140,6 +142,11 @@ public class UserController {
         return webClientService.postUser(user, UPDATE_PASSWORD);
     }
 
+    /**
+     * 修改邮箱
+     * @param email
+     * @return
+     */
     @PutMapping("/email")
     @ApiOperation(value = "修改邮箱", notes = "传入新邮箱")
     @LoginRequired
