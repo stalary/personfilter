@@ -169,6 +169,10 @@ public class WebClientService {
      */
     public User getUser(Long userId) {
         ProjectInfo projectInfo = ProjectHolder.get();
+        if (projectInfo == null) {
+            getProjectInfo();
+        }
+        projectInfo = ProjectHolder.get();
         Mono<ResponseMessage> builder = builder(userCenterServer, HttpMethod.GET, "/facade/user?userId={userId}&key={key}&projectId={projectId}", userId, projectInfo.getKey(), projectInfo.getProjectId());
         ResponseMessage block = builder.block();
         if (block.isSuccess()) {

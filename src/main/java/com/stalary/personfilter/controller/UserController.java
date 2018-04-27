@@ -52,10 +52,10 @@ public class UserController {
      * 求职者登陆，仅需要用户名和密码
      */
     @PostMapping("/login")
-    @ApiOperation(value = "求职者登陆", notes = "传入求职者登陆对象")
+    @ApiOperation(value = "登陆", notes = "传入登陆对象，仅需要用户名和密码")
     public ResponseMessage login(
-            @RequestBody Applicant applicant) {
-        return webClientService.postUser(applicant, LOGIN);
+            @RequestBody User user) {
+        return webClientService.postUser(user, LOGIN);
     }
 
     /**
@@ -69,9 +69,9 @@ public class UserController {
     }
 
     /**
-     * hr登陆，仅需要用户名和密码
+     * hr登陆，仅需要用户名和密码，暂时弃用，和用户公用一个接口
      */
-    @PostMapping("/hr/login")
+    @Deprecated
     @ApiOperation(value = "hr登陆", notes = "传入hr登陆对象")
     public ResponseMessage hrLogin(
             @RequestBody HR hr) {

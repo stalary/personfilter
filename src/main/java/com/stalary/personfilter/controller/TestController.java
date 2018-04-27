@@ -7,6 +7,7 @@ import com.stalary.personfilter.service.kafka.Producer;
 import com.stalary.personfilter.service.mongodb.ResumeService;
 import com.stalary.personfilter.service.mysql.CompanyService;
 import com.stalary.personfilter.service.outer.GoEasyService;
+import com.stalary.personfilter.service.outer.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -48,6 +49,9 @@ public class TestController {
     @Autowired
     private ResumeService resumeService;
 
+    @Autowired
+    private MailService mailService;
+
     @GetMapping("/hello")
     public ResponseMessage hello() {
         webClientService.getProjectInfo();
@@ -83,6 +87,12 @@ public class TestController {
             @RequestParam Long userId,
             @RequestParam Long recruitId) {
         return ResponseMessage.successMessage(resumeService.calculate(recruitId, userId));
+    }
+
+    @GetMapping("/mail")
+    public ResponseMessage mail() {
+        mailService.sendSimpleMail("stalary@163.com", "测试邮件");
+        return ResponseMessage.successMessage();
     }
 
 }

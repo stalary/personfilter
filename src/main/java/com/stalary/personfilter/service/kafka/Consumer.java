@@ -2,15 +2,19 @@
 package com.stalary.personfilter.service.kafka;
 
 import com.google.gson.Gson;
+import com.stalary.personfilter.data.dto.HR;
 import com.stalary.personfilter.data.dto.SendResume;
+import com.stalary.personfilter.data.dto.User;
 import com.stalary.personfilter.data.entity.mysql.Message;
 import com.stalary.personfilter.data.entity.mysql.Recruit;
 import com.stalary.personfilter.data.entity.mysql.UserInfo;
 import com.stalary.personfilter.factory.BeansFactory;
+import com.stalary.personfilter.service.WebClientService;
 import com.stalary.personfilter.service.mysql.MessageService;
 import com.stalary.personfilter.service.mysql.RecruitService;
 import com.stalary.personfilter.service.mysql.UserService;
 import com.stalary.personfilter.service.outer.GoEasyService;
+import com.stalary.personfilter.service.outer.MailService;
 import com.stalary.personfilter.service.outer.MapdbService;
 import com.stalary.personfilter.utils.Constant;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +53,12 @@ public class Consumer {
     @Autowired
     private GoEasyService goEasyService;
 
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private WebClientService webClientService;
+
     @KafkaListener(topics = {SEND_RESUME, NOTIFY})
     public void process(ConsumerRecord record) {
         long startTime = System.currentTimeMillis();
@@ -79,8 +89,10 @@ public class Consumer {
                 Recruit recruit = recruitService.findOne(recruitId);
                 UserInfo userInfo = userService.findOne(userId);
                 Long hrId = recruit.getHrId();
+                User hr = webClientService.getUser(hrId);
                 Message m = new Message(0L, hrId, resume.getTitle() + "收到简历", resume.getTitle() + "收到来自" + userInfo.getSchool() + "的" + userInfo.getNickname() + "的简历", false);
                 messageService.save(m);
+                mailService.sendSimpleMail(hr.getEmail(), resume.getTitle() + "收到来自" + userInfo.getSchool() + "的" + userInfo.getNickname() + "的简历");
                 // 统计通知未读的数量
                 int count = messageService.findNotRead(hrId).size();
                 goEasyService.pushMessage(hrId.toString(), "" + count);

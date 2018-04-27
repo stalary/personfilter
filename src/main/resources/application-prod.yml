@@ -53,4 +53,4 @@ spring:
 # 以谁来发送邮件（发件人邮箱）
 mail:
   fromMail:
-    addr: userscenter@163.com
+    address: userscenter@163.com
