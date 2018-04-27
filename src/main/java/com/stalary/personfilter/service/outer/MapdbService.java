@@ -108,8 +108,6 @@ public class MapdbService {
             if (getStr != null) {
                 ReceiveInfo receiveInfo = gson.fromJson(getStr, ReceiveInfo.class);
                 receiveInfo.getReceiveList().add(resume);
-                // 按照匹配度进行排序
-                receiveInfo.getReceiveList().sort(((o1, o2) -> (o2.getRate().compareTo(o1.getRate()))));
                 get.put(getKey(RECEIVE, recruitId.toString()), gson.toJson(receiveInfo));
             } else {
                 ReceiveInfo receiveInfo = new ReceiveInfo(Lists.newArrayList(resume));
