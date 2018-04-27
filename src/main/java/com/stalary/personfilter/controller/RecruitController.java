@@ -3,6 +3,7 @@ package com.stalary.personfilter.controller;
 import com.google.gson.Gson;
 import com.stalary.personfilter.annotation.LoginRequired;
 import com.stalary.personfilter.data.entity.mysql.Recruit;
+import com.stalary.personfilter.data.vo.RecruitAndCompany;
 import com.stalary.personfilter.data.vo.RecruitAndHrAndCompany;
 import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.service.mongodb.ResumeService;
@@ -15,6 +16,7 @@ import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.ws.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +58,7 @@ public class RecruitController {
             @RequestParam(required = false, defaultValue = "") String key,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "4") int size) {
-        Pair<List<RecruitAndHrAndCompany>, Integer> pair = recruitService.allRecruit(key, page, size);
+        Pair<List<RecruitAndCompany>, Integer> pair = recruitService.allRecruit(key, page, size);
         Map<String, Object> map = new HashMap<>(2);
         map.put("total", pair.getValue1());
         map.put("recruitList", pair.getValue0());
@@ -73,11 +75,11 @@ public class RecruitController {
      * @param title
      * @return
      */
-    @PostMapping("/resume")
+    @GetMapping("/resume/{recruitId}")
     @ApiOperation(value = "投递简历", notes = "需要传入岗位id")
     @LoginRequired
     public ResponseMessage postResume(
-            @RequestParam Long recruitId,
+            @PathVariable("recruitId") Long recruitId,
             @RequestParam String title) {
         mapdbService.postResume(recruitId, title);
         return ResponseMessage.successMessage("投递成功");
@@ -97,4 +99,10 @@ public class RecruitController {
         return ResponseMessage.successMessage(mapdbService.getReceiveList());
     }
 
+    @GetMapping("/{id}")
+    @ApiOperation(value = "查看招聘信息", notes = "传入岗位id")
+    public ResponseMessage getInfo(
+            @PathVariable("id") Long id) {
+        return ResponseMessage.successMessage(recruitService.getRecruitInfo(id));
+    }
 }

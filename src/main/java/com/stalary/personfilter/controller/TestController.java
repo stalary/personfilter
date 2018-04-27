@@ -77,8 +77,8 @@ public class TestController {
     }
 
     @GetMapping("/goeasy")
-    public ResponseMessage goeasy() {
-        commonService.pushMessage("test", "123");
+    public ResponseMessage goeasy(@RequestParam String message) {
+        commonService.pushMessage("1", message);
         return ResponseMessage.successMessage();
     }
 
@@ -91,7 +91,7 @@ public class TestController {
 
     @GetMapping("/mail")
     public ResponseMessage mail() {
-        mailService.sendSimpleMail("stalary@163.com", "测试邮件");
+        mailService.sendResume("stalary@163.com", "测试邮件");
         return ResponseMessage.successMessage();
     }
 

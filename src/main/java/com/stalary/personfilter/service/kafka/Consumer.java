@@ -92,7 +92,7 @@ public class Consumer {
                 User hr = webClientService.getUser(hrId);
                 Message m = new Message(0L, hrId, resume.getTitle() + "收到简历", resume.getTitle() + "收到来自" + userInfo.getSchool() + "的" + userInfo.getNickname() + "的简历", false);
                 messageService.save(m);
-                mailService.sendSimpleMail(hr.getEmail(), resume.getTitle() + "收到来自" + userInfo.getSchool() + "的" + userInfo.getNickname() + "的简历");
+                mailService.sendResume(hr.getEmail(), resume.getTitle() + "收到来自" + userInfo.getSchool() + "的" + userInfo.getNickname() + "的简历");
                 // 统计通知未读的数量
                 int count = messageService.findNotRead(hrId).size();
                 goEasyService.pushMessage(hrId.toString(), "" + count);

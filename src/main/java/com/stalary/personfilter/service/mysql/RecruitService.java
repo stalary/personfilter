@@ -1,6 +1,9 @@
 package com.stalary.personfilter.service.mysql;
 
 import com.stalary.personfilter.data.dto.HR;
+import com.stalary.personfilter.data.entity.mysql.Company;
+import com.stalary.personfilter.data.vo.CompanyAndRecruit;
+import com.stalary.personfilter.data.vo.RecruitAndCompany;
 import com.stalary.personfilter.data.vo.RecruitAndHrAndCompany;
 import com.stalary.personfilter.data.dto.User;
 import com.stalary.personfilter.data.entity.mysql.Recruit;
@@ -37,9 +40,9 @@ public class RecruitService extends BaseService<Recruit, RecruitRepo> {
     @Autowired
     private CompanyService companyService;
 
-    public Pair<List<RecruitAndHrAndCompany>, Integer> allRecruit(String key, int page, int size) {
+    public Pair<List<RecruitAndCompany>, Integer> allRecruit(String key, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
-        List<RecruitAndHrAndCompany> list = new ArrayList<>();
+        List<RecruitAndCompany> list = new ArrayList<>();
         List<Recruit> recruitList;
         Page<Recruit> recruitPage;
         if (StringUtils.isEmpty(key)) {
@@ -51,16 +54,22 @@ public class RecruitService extends BaseService<Recruit, RecruitRepo> {
         }
         recruitList.forEach(recruit -> {
             recruit.deserializeFields();
-            User user = webClientService.getUser(recruit.getHrId());
-            HR hr = new HR()
-                    .setCompanyId(recruit.getCompanyId())
-                    .setEmail(user.getEmail())
-                    .setNickname(user.getNickname())
-                    .setPhone(user.getPhone())
-                    .setUsername(user.getUsername());
-            list.add(new RecruitAndHrAndCompany(recruit, hr, companyService.findOne(recruit.getCompanyId())));
+            list.add(new RecruitAndCompany(recruit, companyService.findOne(recruit.getCompanyId())));
         });
         return new Pair<>(list, recruitPage.getTotalPages());
+    }
+
+    public RecruitAndHrAndCompany getRecruitInfo(Long id) {
+        Recruit recruit = findById(id);
+        User user = webClientService.getUser(recruit.getHrId());
+        HR hr = new HR()
+                .setCompanyId(recruit.getCompanyId())
+                .setEmail(user.getEmail())
+                .setNickname(user.getNickname())
+                .setPhone(user.getPhone())
+                .setUsername(user.getUsername());
+        Company company = companyService.findOne(recruit.getCompanyId());
+        return new RecruitAndHrAndCompany(recruit, hr, company);
     }
 
     public Recruit saveRecruit(Recruit recruit) {
