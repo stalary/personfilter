@@ -1,6 +1,5 @@
 package com.stalary.personfilter.data.entity.mysql;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -42,4 +41,14 @@ public class Company extends BaseEntity {
      * 简介
      */
     private String introduce;
+
+    /**
+     * 规模
+     */
+    private String scale;
+
+    /**
+     * 类型
+     */
+    private String type;
 }

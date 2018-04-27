@@ -18,7 +18,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "UserInfo")
+@Table(name = "userInfo")
 @Entity
 public class UserInfo extends BaseEntity {
 

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -107,6 +108,8 @@ public class MapdbService {
             if (getStr != null) {
                 ReceiveInfo receiveInfo = gson.fromJson(getStr, ReceiveInfo.class);
                 receiveInfo.getReceiveList().add(resume);
+                // 按照匹配度进行排序
+                receiveInfo.getReceiveList().sort(((o1, o2) -> (o2.getRate().compareTo(o1.getRate()))));
                 get.put(getKey(RECEIVE, recruitId.toString()), gson.toJson(receiveInfo));
             } else {
                 ReceiveInfo receiveInfo = new ReceiveInfo(Lists.newArrayList(resume));
