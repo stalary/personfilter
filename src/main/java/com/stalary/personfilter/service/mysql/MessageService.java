@@ -25,7 +25,7 @@ public class MessageService extends BaseService<Message, MessageRepo> {
     private GoEasyService goEasyService;
 
     public List<Message> findByToId(Long toId) {
-        return repo.findByToId(toId);
+        return repo.findByToIdOrderByCreateTimeDesc(toId);
     }
 
     public List<Message> findByFromId(Long fromId) {
@@ -43,7 +43,7 @@ public class MessageService extends BaseService<Message, MessageRepo> {
 
     public void read(Long id, Long userId) {
         repo.read(id);
-        int count = findByToId(userId).size();
+        int count = findNotRead(userId).size();
         goEasyService.pushMessage(userId.toString(), "" + count);
     }
 }

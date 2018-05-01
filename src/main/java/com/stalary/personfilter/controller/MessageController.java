@@ -1,6 +1,7 @@
 package com.stalary.personfilter.controller;
 
 import com.stalary.personfilter.annotation.LoginRequired;
+import com.stalary.personfilter.data.dto.ReadMessage;
 import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.data.dto.User;
 import com.stalary.personfilter.data.entity.mysql.Message;
@@ -60,9 +61,8 @@ public class MessageController {
     @ApiOperation(value = "已读站内信", notes = "传入站内信的id和userId")
     @LoginRequired
     public ResponseMessage readMessage(
-            @RequestParam Long id,
-            @RequestParam Long userId) {
-        messageService.read(id, userId);
+            @RequestBody ReadMessage readMessage) {
+        messageService.read(readMessage.getId(), readMessage.getUserId());
         return ResponseMessage.successMessage();
     }
 

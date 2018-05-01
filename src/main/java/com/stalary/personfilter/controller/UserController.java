@@ -18,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.stalary.personfilter.utils.Constant.*;
 
 /**
@@ -55,7 +58,12 @@ public class UserController {
     @ApiOperation(value = "登陆", notes = "传入登陆对象，仅需要用户名和密码")
     public ResponseMessage login(
             @RequestBody User user) {
-        return webClientService.postUser(user, LOGIN);
+        String token = webClientService.postUser(user, LOGIN).getData().toString();
+        User getUser = webClientService.getUser(token);
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("token", token);
+        map.put("role", getUser.getRole());
+        return ResponseMessage.successMessage(map);
     }
 
     /**

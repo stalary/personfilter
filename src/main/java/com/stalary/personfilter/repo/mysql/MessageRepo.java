@@ -20,7 +20,7 @@ public interface MessageRepo extends BaseRepo<Message, Long> {
      * @param toId
      * @return
      */
-    List<Message> findByToId(Long toId);
+    List<Message> findByToIdOrderByCreateTimeDesc(Long toId);
 
     /**
      * 通过fromId查找发送的站内信

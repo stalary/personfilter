@@ -41,7 +41,7 @@ public class UserInfo extends BaseEntity {
     /**
      * 性别
      */
-    private Boolean man;
+    private String sex;
 
     /**
      * 个人介绍

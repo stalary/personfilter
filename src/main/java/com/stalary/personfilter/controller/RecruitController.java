@@ -2,6 +2,7 @@ package com.stalary.personfilter.controller;
 
 import com.google.gson.Gson;
 import com.stalary.personfilter.annotation.LoginRequired;
+import com.stalary.personfilter.data.dto.SendResume;
 import com.stalary.personfilter.data.entity.mysql.Recruit;
 import com.stalary.personfilter.data.vo.RecruitAndCompany;
 import com.stalary.personfilter.data.vo.RecruitAndHrAndCompany;
@@ -75,13 +76,13 @@ public class RecruitController {
      * @param title
      * @return
      */
-    @GetMapping("/resume/{recruitId}")
+    @PostMapping("/resume")
     @ApiOperation(value = "投递简历", notes = "需要传入岗位id")
     @LoginRequired
     public ResponseMessage postResume(
-            @PathVariable("recruitId") Long recruitId,
-            @RequestParam String title) {
-        mapdbService.postResume(recruitId, title);
+            @RequestBody SendResume sendResume) {
+        log.info("sendResume" + sendResume);
+        mapdbService.postResume(sendResume.getRecruitId(), sendResume.getTitle());
         return ResponseMessage.successMessage("投递成功");
     }
 

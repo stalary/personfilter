@@ -31,9 +31,9 @@ public class Resume extends BaseEntity {
     private String name;
 
     /**
-     * 性别，男true，女false
+     * 性别
      */
-    private boolean man;
+    private String sex;
 
     /**
      * 年龄
