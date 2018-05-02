@@ -17,4 +17,5 @@ server:
       rotate: true
       file-date-format: .yyyy-MM-dd
       request-attributes-enabled: true
+      pattern: combined
     basedir: personfilter_tomcat

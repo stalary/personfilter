@@ -63,6 +63,8 @@ public class UserController {
         Map<String, Object> map = new HashMap<>(2);
         map.put("token", token);
         map.put("role", getUser.getRole());
+        map.put("userId", getUser.getId());
+        map.put("companyId", getUser.getFirstId());
         return ResponseMessage.successMessage(map);
     }
 
@@ -107,6 +109,7 @@ public class UserController {
     public ResponseMessage getInfo() {
         return ResponseMessage.successMessage(userService.getInfo());
     }
+
 
     @PutMapping("/info")
     @ApiOperation(value = "修改个人信息", notes = "个人信息对象")

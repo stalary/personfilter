@@ -3,6 +3,7 @@ package com.stalary.personfilter.interceptor;
 import com.stalary.personfilter.annotation.LoginRequired;
 import com.stalary.personfilter.data.ResultEnum;
 import com.stalary.personfilter.exception.MyException;
+import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.service.WebClientService;
 import com.stalary.personfilter.service.redis.RedisKeys;
 import com.stalary.personfilter.service.redis.RedisService;
@@ -55,6 +56,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             }
             // 退出时删除缓存
             if (uri.contains(LOGOUT)) {
+                UserHolder.remove();
                 redisService.remove(getKey(RedisKeys.USER_TOKEN, token));
             }
         }

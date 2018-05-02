@@ -50,7 +50,16 @@ public class RecruitController {
     @ApiOperation(value = "添加或更新招聘信息", notes = "传入招聘对象")
     public ResponseMessage add(
             @RequestBody Recruit recruit) {
-        return ResponseMessage.successMessage(recruitService.saveRecruit(recruit));
+        Recruit saveRecruit = recruitService.saveRecruit(recruit);
+        return ResponseMessage.successMessage(saveRecruit);
+    }
+
+    @DeleteMapping
+    @ApiOperation(value = "删除招聘信息", notes = "传入招聘信息的id")
+    public ResponseMessage delete(
+            @RequestParam Long id) {
+        recruitService.deleteById(id);
+        return ResponseMessage.successMessage();
     }
 
     @GetMapping
@@ -72,8 +81,6 @@ public class RecruitController {
      * 2 向hr发送简历接收通知(站内信，邮件)
      * 3 向投递者发送简历投递成功的通知
      * 4 向hr和投递者push更新后的未读通知数量
-     * @param recruitId
-     * @param title
      * @return
      */
     @PostMapping("/resume")

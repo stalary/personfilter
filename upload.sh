@@ -36,7 +36,7 @@ expect {
 }
 expect $user@*  {send "screen -S $screenname -X quit\r"}
 expect $user@*  {send "screen -S $screenname\r"}
-expect $user@*  {send "sleep 10s\r"}
+expect $user@*  {send "sleep 5s\r"}
 expect $user@*  {send "cd $jarpath\r"}
 expect $user@*  {send "java -jar $jarname $args\r"}
 expect eof

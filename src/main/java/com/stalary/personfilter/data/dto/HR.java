@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class HR {
 
+    private Long userId;
+
     /**
      * 姓名
      */

@@ -54,7 +54,7 @@ public class Recruit extends BaseEntity {
      * 需要的技能列表，对前端隐藏
      */
     @Transient
-    private List<SkillRule> skillList = new ArrayList<>();
+    private List<SkillRule> skillList;
 
     @JsonIgnore
     private String skillStr;
