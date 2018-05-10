@@ -13,7 +13,9 @@ import com.stalary.personfilter.service.mysql.UserService;
 import com.stalary.personfilter.service.outer.QiNiuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import kotlin.UseExperimental;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -124,16 +126,16 @@ public class UserController {
 
     /**
      * 修改手机号
-     * @param phone
+     * @param params
      * @return
      */
     @PutMapping("/phone")
     @ApiOperation(value = "修改手机号", notes = "手机号")
     @LoginRequired
     public ResponseMessage updatePhone(
-            @RequestParam String phone) {
+            @RequestBody Map<String, String> params) {
         User user = UserHolder.get();
-        user.setPhone(phone);
+        user.setPhone(params.get("phone"));
         return webClientService.postUser(user, UPDATE);
     }
 
@@ -141,30 +143,41 @@ public class UserController {
      * 通过手机号修改密码
      */
     @PutMapping("/password")
-    @ApiOperation(value = "修改密码", notes = "通过用户名和手机号和新密码进行修改")
+    @ApiOperation(value = "修改密码", notes = "通过新密码进行修改")
+    @LoginRequired
     public ResponseMessage updatePassword(
-            @RequestParam String username,
-            @RequestParam String phone,
-            @RequestParam String password) {
+            @RequestBody Map<String, String> params) {
+        User user = UserHolder.get();
+        user.setPassword(params.get("password"));
+        return webClientService.postUser(user, UPDATE_PASSWORD);
+    }
+
+    /**
+     * 忘记密码
+     */
+    @PostMapping("/password")
+    @ApiOperation(value = "忘记密码", notes = "通过用户名，手机号，新密码进行修改")
+    public ResponseMessage forgetPassword(
+            @RequestBody Map<String, String> params) {
         User user = new User();
-        user.setUsername(username);
-        user.setPhone(phone);
-        user.setPassword(password);
+        user.setPassword(params.get("password"));
+        user.setUsername(params.get("username"));
+        user.setPhone(params.get("phone"));
         return webClientService.postUser(user, UPDATE_PASSWORD);
     }
 
     /**
      * 修改邮箱
-     * @param email
+     * @param params
      * @return
      */
     @PutMapping("/email")
     @ApiOperation(value = "修改邮箱", notes = "传入新邮箱")
     @LoginRequired
     public ResponseMessage updateEmail(
-            @RequestParam String email) {
+            @RequestBody Map<String, String> params) {
         User user = UserHolder.get();
-        user.setEmail(email);
+        user.setEmail(params.get("email"));
         return webClientService.postUser(user, UPDATE);
     }
 

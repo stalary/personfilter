@@ -9,4 +9,5 @@ import com.stalary.personfilter.data.entity.mongodb.Skill;
  * @since 2018/04/14
  */
 public interface SkillRepo extends BaseRepo<Skill, Long> {
+
 }

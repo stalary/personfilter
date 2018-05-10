@@ -3,6 +3,7 @@ package com.stalary.personfilter.interceptor;
 import com.stalary.personfilter.annotation.LoginRequired;
 import com.stalary.personfilter.data.ResultEnum;
 import com.stalary.personfilter.exception.MyException;
+import com.stalary.personfilter.holder.TokenHolder;
 import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.service.WebClientService;
 import com.stalary.personfilter.service.redis.RedisKeys;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import sun.tools.jstat.Token;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,12 +50,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         boolean isLoginRequired = isAnnotationPresent(method, LoginRequired.class);
         if (isLoginRequired) {
             String token = getToken(getAuthHeader(request));
-            log.info("1" + webClientService.getUser(token));
-            log.info("2" + token);
             if (webClientService.getUser(token) == null) {
                 // token无法获取到用户信息代表未登陆
                 throw new MyException(ResultEnum.NEED_LOGIN);
             }
+            TokenHolder.set(token);
             // 退出时删除缓存
             if (uri.contains(LOGOUT)) {
                 UserHolder.remove();
@@ -74,9 +75,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         String authHeader = request.getHeader(Authorization);
         // 默认的auth
         log.info("authHeader" + authHeader);
-        if (StringUtils.isEmpty(authHeader)) {
-            authHeader = "Basic ea181087c67d85fcd58ee5b89808b4da6b4a859abb9d90e8b96c011418a10c2e";
-        }
         return authHeader;
     }
 

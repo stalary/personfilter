@@ -38,6 +38,7 @@ public class ResumeController {
      * @param name
      * @return
      */
+    @Deprecated
     @ApiOperation(value = "通过技能点查找简历和对应的人", notes = "传入技能名称")
     public ResponseMessage getResumeByName(
             @RequestParam String name) {

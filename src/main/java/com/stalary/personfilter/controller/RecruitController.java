@@ -7,6 +7,7 @@ import com.stalary.personfilter.data.entity.mysql.Recruit;
 import com.stalary.personfilter.data.vo.RecruitAndCompany;
 import com.stalary.personfilter.data.vo.RecruitAndHrAndCompany;
 import com.stalary.personfilter.data.vo.ResponseMessage;
+import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.service.mongodb.ResumeService;
 import com.stalary.personfilter.service.mysql.RecruitService;
 import com.stalary.personfilter.service.outer.MapdbService;
@@ -112,5 +113,12 @@ public class RecruitController {
     public ResponseMessage getInfo(
             @PathVariable("id") Long id) {
         return ResponseMessage.successMessage(recruitService.getRecruitInfo(id));
+    }
+
+    @GetMapping("/hr")
+    @ApiOperation(value = "查看当前hr的招聘信息")
+    @LoginRequired
+    public ResponseMessage getHrInfo() {
+        return ResponseMessage.successMessage(recruitService.findByUserId(UserHolder.get().getId()));
     }
 }

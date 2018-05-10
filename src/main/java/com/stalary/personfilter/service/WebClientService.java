@@ -5,6 +5,7 @@ import com.stalary.personfilter.data.dto.*;
 import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.exception.MyException;
 import com.stalary.personfilter.holder.ProjectHolder;
+import com.stalary.personfilter.holder.TokenHolder;
 import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.service.redis.RedisKeys;
 import com.stalary.personfilter.service.redis.RedisService;
@@ -123,6 +124,8 @@ public class WebClientService {
                 .block();
         if (UPDATE.equals(type)) {
             if (tokenResponse.isSuccess()) {
+                // 修改成功后清空缓存
+                redisService.remove(getKey(RedisKeys.USER_TOKEN, TokenHolder.get()));
                 return ResponseMessage.successMessage("修改成功");
             } else {
                 return tokenResponse;
