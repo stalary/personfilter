@@ -8,4 +8,6 @@ import com.stalary.personfilter.data.entity.mysql.UserInfo;
  * @date 2018/4/22
  */
 public interface UserInfoRepo extends BaseRepo<UserInfo, Long> {
+
+    UserInfo findByUserId(Long userId);
 }
