@@ -145,7 +145,6 @@ public class WebClientService {
      * @return
      */
     public User getUser(String token) {
-        log.info("token: " + token);
         if (StringUtils.isEmpty(redisService.getString(getKey(RedisKeys.USER_TOKEN, token)))) {
             ProjectInfo projectInfo = ProjectHolder.get();
             Mono<ResponseMessage> builder = builder(userCenterServer, HttpMethod.GET, "/facade/token?token={token}&key={key}", token, projectInfo.getKey());
@@ -154,7 +153,6 @@ public class WebClientService {
                 redisService.setString(getKey(RedisKeys.USER_TOKEN, token), userResponse.getData().toString());
                 User user = gson.fromJson(userResponse.getData().toString(), User.class);
                 UserHolder.set(user);
-                log.info("user1: " + user);
                 return user;
             } else {
                 throw new MyException(userResponse.getCode(), userResponse.getMsg());
@@ -162,7 +160,6 @@ public class WebClientService {
         } else {
             User user = gson.fromJson(redisService.getString(getKey(RedisKeys.USER_TOKEN, token)), User.class);
             UserHolder.set(user);
-            log.info("user2: " + user);
             return user;
         }
     }

@@ -1,12 +1,6 @@
 spring:
   profiles:
     active: prod
-  data:
-    rest:
-      base-path: /api
-  aop:
-    proxy-target-class: false
-    auto: false
 server:
   tomcat:
     accesslog:

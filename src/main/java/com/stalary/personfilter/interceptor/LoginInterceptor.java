@@ -75,9 +75,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         String authHeader = request.getHeader(Authorization);
         // 默认的auth
         log.info("authHeader" + authHeader);
-        if (StringUtils.isEmpty(authHeader)) {
-            authHeader = "Basic ea181087c67d85fcd58ee5b89808b4da6b4a859abb9d90e8b96c011418a10c2e";
-        }
         return authHeader;
     }
 
