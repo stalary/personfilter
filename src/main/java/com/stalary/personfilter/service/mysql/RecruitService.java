@@ -49,7 +49,7 @@ public class RecruitService extends BaseService<Recruit, RecruitRepo> {
             recruitPage = repo.findAll(pageRequest);
             recruitList = recruitPage.getContent();
         } else {
-            recruitPage = repo.findByContentIsLike("%" + key + "%", pageRequest);
+            recruitPage = repo.findByTitleIsLike("%" + key + "%", pageRequest);
             recruitList = recruitPage.getContent();
         }
         recruitList.forEach(recruit -> {
