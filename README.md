@@ -7,7 +7,7 @@
   * mongodb(存储简历)
   * mapdb(存储记录等)
   * kafka(异步消息，解耦)
-  * goeasy(向客户端推送消息)
+  * webSocket(向客户端推送消息)
   * userCenter(用户中心)
   * webClient(http请求)
   * Spring-Boot

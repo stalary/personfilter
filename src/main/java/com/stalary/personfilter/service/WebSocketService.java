@@ -81,6 +81,7 @@ public class WebSocketService {
      **/
     @SneakyThrows
     public void sendMessage(Long userId, String message) {
+        log.info("【webSocket】 send message: " + userId + " " + message);
         WebSocketService socket = sessionCache.getIfPresent(userId);
         // socket连接时直接发送消息
         if (socket != null && socket.getSession() != null) {
