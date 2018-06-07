@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
+@Deprecated
 public class GoEasyService {
 
     /**
@@ -37,10 +38,6 @@ public class GoEasyService {
     public void pushMessage(String channel, String message) {
         GoEasy goEasy = getInstance();
         goEasy.publish(channel, message);
-    }
-
-    public static void main(String[] args) {
-
     }
 
 }

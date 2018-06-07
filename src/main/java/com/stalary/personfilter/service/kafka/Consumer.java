@@ -10,6 +10,7 @@ import com.stalary.personfilter.data.entity.mysql.Recruit;
 import com.stalary.personfilter.data.entity.mysql.UserInfo;
 import com.stalary.personfilter.factory.BeansFactory;
 import com.stalary.personfilter.service.WebClientService;
+import com.stalary.personfilter.service.WebSocketService;
 import com.stalary.personfilter.service.mysql.MessageService;
 import com.stalary.personfilter.service.mysql.RecruitService;
 import com.stalary.personfilter.service.mysql.UserService;
@@ -51,7 +52,7 @@ public class Consumer {
     private UserService userService;
 
     @Autowired
-    private GoEasyService goEasyService;
+    private WebSocketService webSocketService;
 
     @Autowired
     private MailService mailService;
@@ -81,7 +82,7 @@ public class Consumer {
                 messageService.save(m);
                 // 统计通知未读的数量
                 int count = messageService.findNotRead(userId).size();
-                goEasyService.pushMessage(userId.toString(), "" + count);
+                webSocketService.sendMessage(userId, "" + count);
             } else if (RECEIVE.equals(key)) {
                 // 存储收到简历的消息通知(系统发送)
                 Long recruitId = resume.getRecruitId();
@@ -95,7 +96,7 @@ public class Consumer {
                 mailService.sendResume(hr.getEmail(), resume.getTitle() + "收到来自" + userInfo.getSchool() + "的" + userInfo.getNickname() + "的简历");
                 // 统计通知未读的数量
                 int count = messageService.findNotRead(hrId).size();
-                goEasyService.pushMessage(hrId.toString(), "" + count);
+                webSocketService.sendMessage(hrId, "" + count);
             }
         } else if (NOTIFY.equals(topic)) {
             log.info("notify");

@@ -3,6 +3,7 @@ package com.stalary.personfilter.controller;
 import com.stalary.personfilter.data.entity.mysql.Company;
 import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.service.WebClientService;
+import com.stalary.personfilter.service.WebSocketService;
 import com.stalary.personfilter.service.kafka.Producer;
 import com.stalary.personfilter.service.mongodb.ResumeService;
 import com.stalary.personfilter.service.mysql.CompanyService;
@@ -41,9 +42,6 @@ public class TestController {
     private CompanyService companyService;
 
     @Autowired
-    private GoEasyService commonService;
-
-    @Autowired
     private Producer producer;
 
     @Autowired
@@ -51,6 +49,9 @@ public class TestController {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private WebSocketService webSocketService;
 
     @GetMapping("/hello")
     public ResponseMessage hello() {
@@ -76,9 +77,11 @@ public class TestController {
         return ResponseMessage.successMessage();
     }
 
-    @GetMapping("/goeasy")
-    public ResponseMessage goeasy(@RequestParam String message) {
-        commonService.pushMessage("1", message);
+    @GetMapping("/websocket")
+    public ResponseMessage websocket(
+            @RequestParam Long userId,
+            @RequestParam String message) {
+        webSocketService.sendMessage(userId, message);
         return ResponseMessage.successMessage();
     }
 
