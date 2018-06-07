@@ -108,8 +108,4 @@ public class WebSocketService {
         log.info("sessionCache: " + sessionCache.asMap().keySet());
     }
 
-    public static void remove(Long userId) {
-        sessionCache.invalidate(userId);
-    }
-
 }
