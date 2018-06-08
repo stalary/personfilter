@@ -125,8 +125,8 @@ public class MapdbService {
     public SendInfo getSendList() {
         try (DB db = DBMaker.fileDB("mapdb.txt")
                 .checksumHeaderBypass()
-                .allocateStartSize(1024 * 1024 * 1024)
-                .allocateIncrement(256 * 1024 * 1024)
+                .allocateStartSize(1024 * 1024)
+                .allocateIncrement(256 * 1024)
                 .make()) {
             HTreeMap<String, String> map = db.
                     hashMap("post_map", Serializer.STRING, Serializer.STRING)
@@ -146,8 +146,8 @@ public class MapdbService {
     public ReceiveInfo getReceiveList() {
         try (DB db = DBMaker.fileDB("mapdb.txt")
                 .checksumHeaderBypass()
-                .allocateStartSize(1024 * 1024 * 1024)
-                .allocateIncrement(256 * 1024 * 1024)
+                .allocateStartSize(1024 * 1024)
+                .allocateIncrement(256 * 1024)
                 .make()) {
             HTreeMap<String, String> map = db.
                     hashMap("get_map", Serializer.STRING, Serializer.STRING)

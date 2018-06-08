@@ -1,6 +1,8 @@
 package com.stalary.personfilter.service.mysql;
 
+import com.stalary.personfilter.data.dto.User;
 import com.stalary.personfilter.data.entity.mysql.Message;
+import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.repo.mysql.MessageRepo;
 import com.stalary.personfilter.service.WebSocketService;
 import com.stalary.personfilter.service.outer.GoEasyService;
@@ -44,6 +46,12 @@ public class MessageService extends BaseService<Message, MessageRepo> {
 
     public void read(Long id, Long userId) {
         repo.read(id);
+        int count = findNotRead(userId).size();
+        webSocketService.sendMessage(userId, "" + count);
+    }
+
+    public void getCount() {
+        Long userId = UserHolder.get().getId();
         int count = findNotRead(userId).size();
         webSocketService.sendMessage(userId, "" + count);
     }

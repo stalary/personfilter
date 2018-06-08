@@ -7,6 +7,7 @@ import com.stalary.personfilter.data.dto.User;
 import com.stalary.personfilter.data.entity.mysql.UserInfo;
 import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.holder.UserHolder;
+import com.stalary.personfilter.service.mysql.MessageService;
 import com.stalary.personfilter.service.outer.GoEasyService;
 import com.stalary.personfilter.service.WebClientService;
 import com.stalary.personfilter.service.mysql.UserService;
@@ -43,6 +44,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MessageService messageService;
+
     /**
      * 求职者注册
      */
@@ -60,13 +64,18 @@ public class UserController {
     @ApiOperation(value = "登陆", notes = "传入登陆对象，仅需要用户名和密码")
     public ResponseMessage login(
             @RequestBody User user) {
-        String token = webClientService.postUser(user, LOGIN).getData().toString();
+        ResponseMessage responseMessage = webClientService.postUser(user, LOGIN);
+        if (!responseMessage.isSuccess()) {
+            return responseMessage;
+        }
+        String token = responseMessage.getData().toString();
         User getUser = webClientService.getUser(token);
         Map<String, Object> map = new HashMap<>(2);
         map.put("token", token);
         map.put("role", getUser.getRole());
         map.put("userId", getUser.getId());
         map.put("companyId", getUser.getFirstId());
+        messageService.getCount();
         return ResponseMessage.successMessage(map);
     }
 
@@ -78,16 +87,6 @@ public class UserController {
     public ResponseMessage hrRegister(
             @RequestBody HR hr) {
         return webClientService.postUser(hr, REGISTER);
-    }
-
-    /**
-     * hr登陆，仅需要用户名和密码，暂时弃用，和用户公用一个接口
-     */
-    @Deprecated
-    @ApiOperation(value = "hr登陆", notes = "传入hr登陆对象")
-    public ResponseMessage hrLogin(
-            @RequestBody HR hr) {
-        return webClientService.postUser(hr, LOGIN);
     }
 
     /**

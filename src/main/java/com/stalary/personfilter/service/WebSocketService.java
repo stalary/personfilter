@@ -81,19 +81,20 @@ public class WebSocketService {
      **/
     @SneakyThrows
     public void sendMessage(Long userId, String message) {
-        log.info("【webSocket】 send message: " + userId + " " + message);
         WebSocketService socket = sessionCache.getIfPresent(userId);
         // socket连接时直接发送消息
         if (socket != null && socket.getSession() != null) {
             socket.session
                     .getBasicRemote()
                     .sendText(message);
+            log.info("【webSocket】 send message: userId: " + userId + " : message:" + message);
         } else {
             // 未连接时暂存消息
             WebSocketService webSocketService = new WebSocketService();
             webSocketService.setUserId(userId);
             webSocketService.setMessage(message);
             sessionCache.put(userId, webSocketService);
+            log.info("save: userId: " + userId + " : message:" + message);
         }
     }
 
