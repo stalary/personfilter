@@ -50,20 +50,27 @@ public class WebSocketService {
         log.info("userId: " + userId + " webSocket开始连接");
         this.userId = userId;
         this.session = session;
-        save(userId, this);
         WebSocketService present = sessionCache.getIfPresent(userId);
         if (present != null && StringUtils.isNotEmpty(present.getMessage())) {
+            present.setSession(this.session);
             this.message = present.getMessage();
             sendMessage(userId, this.message);
+        } else {
+            sessionCache.put(userId, this);
         }
+        log.info("sessionCache: " + sessionCache.asMap().keySet());
     }
 
 
     @OnClose
     public void onClose() {
-        log.info("userId: " + userId + " webSocket关闭连接");
-        sessionCache.invalidate(this.userId);
-        log.info("sessionCache: " + sessionCache.asMap().keySet());
+        log.info("userId: " + this.userId + " webSocket关闭连接");
+        WebSocketService present = sessionCache.getIfPresent(this.userId);
+        if (present != null) {
+            // 退出时清空session
+            present.setSession(null);
+            sessionCache.put(this.userId, present);
+        }
     }
 
     @OnError
@@ -87,6 +94,9 @@ public class WebSocketService {
             socket.session
                     .getBasicRemote()
                     .sendText(message);
+            // 更新消息的信息，进行缓存
+            socket.setMessage(message);
+            sessionCache.put(userId, socket);
             log.info("【webSocket】 send message: userId: " + userId + " : message:" + message);
         } else {
             // 未连接时暂存消息
@@ -98,6 +108,7 @@ public class WebSocketService {
         }
     }
 
+    @Deprecated
     public static void save(Long userId, WebSocketService webSocket) {
         WebSocketService present = sessionCache.getIfPresent(userId);
         // 当为null时，需要存储
@@ -107,7 +118,6 @@ public class WebSocketService {
             // 存在时表面已有缓存的消息，仅需要设置session
             present.setSession(webSocket.getSession());
         }
-        log.info("sessionCache: " + sessionCache.asMap().keySet());
     }
 
 }
