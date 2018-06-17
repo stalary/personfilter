@@ -3,7 +3,7 @@
 
     <property name="CONSOLE_LOG_PATTERN"
               value="%date{yyyy-MM-dd HH:mm:ss} | %highlight(%-5level) | %boldGreen(%msg%n)"/>
-    <property name="LOG_PATH" value="logs"/>
+    <property name="LOG_PATH" value="personfilter_logs"/>
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>${CONSOLE_LOG_PATTERN}</pattern>
@@ -18,8 +18,8 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>${LOG_PATH}/warn.%d{yyyyMMdd}.log</fileNamePattern>
-            <!-- keep 30 days' worth of history -->
-            <maxHistory>30</maxHistory>
+            <!-- keep 10 days' worth of history -->
+            <maxHistory>10</maxHistory>
         </rollingPolicy>
         <encoder charset="UTF-8">
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
@@ -32,8 +32,8 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>${LOG_PATH}/error.%d{yyyyMMdd}.log</fileNamePattern>
-            <!-- keep 30 days' worth of history -->
-            <maxHistory>30</maxHistory>
+            <!-- keep 10 days' worth of history -->
+            <maxHistory>10</maxHistory>
         </rollingPolicy>
         <encoder charset="UTF-8">
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
@@ -46,8 +46,8 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>${LOG_PATH}/info.%d{yyyyMMdd}.log</fileNamePattern>
-            <!-- keep 30 days' worth of history -->
-            <maxHistory>30</maxHistory>
+            <!-- keep 10 days' worth of history -->
+            <maxHistory>10</maxHistory>
         </rollingPolicy>
         <encoder charset="UTF-8">
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>

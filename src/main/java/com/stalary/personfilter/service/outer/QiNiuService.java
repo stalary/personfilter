@@ -25,9 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class QiNiuService {
 
-    @Autowired
-    private UserService userService;
-
     /**
      * 七牛云
      **/
@@ -48,9 +45,7 @@ public class QiNiuService {
         try {
             Response response = uploadManager.put(picture.getBytes(), name, getUpToken());
             if (response.isOK() && response.isJson()) {
-                UserInfo info = userService.getInfo();
-                info.setAvatar(QINIU_IMAGE_DOMAIN + name);
-                userService.save(info);
+                return QINIU_IMAGE_DOMAIN + name;
             }
         } catch (Exception e) {
             log.warn("upload picture error", e);

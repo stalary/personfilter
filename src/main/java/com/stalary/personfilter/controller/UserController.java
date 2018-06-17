@@ -58,7 +58,7 @@ public class UserController {
     }
 
     /**
-     * 求职者登陆，仅需要用户名和密码
+     * 登陆，仅需要用户名和密码
      */
     @PostMapping("/login")
     @ApiOperation(value = "登陆", notes = "传入登陆对象，仅需要用户名和密码")
