@@ -96,7 +96,8 @@ public class UserController {
     @LoginRequired
     @ApiOperation(value = "退出登陆", notes = "传入token")
     public ResponseMessage logout() {
-        return ResponseMessage.failedMessage("退出成功");
+        // 在拦截器中进行删除操作
+        return ResponseMessage.successMessage("退出成功");
     }
 
     /**

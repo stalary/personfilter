@@ -1,14 +1,11 @@
 package com.stalary.personfilter.controller;
 
-import com.google.gson.Gson;
 import com.stalary.personfilter.annotation.LoginRequired;
 import com.stalary.personfilter.data.dto.SendResume;
 import com.stalary.personfilter.data.entity.mysql.Recruit;
 import com.stalary.personfilter.data.vo.RecruitAndCompany;
-import com.stalary.personfilter.data.vo.RecruitAndHrAndCompany;
 import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.holder.UserHolder;
-import com.stalary.personfilter.service.mongodb.ResumeService;
 import com.stalary.personfilter.service.mysql.RecruitService;
 import com.stalary.personfilter.service.outer.MapdbService;
 import io.swagger.annotations.Api;
@@ -18,7 +15,6 @@ import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.ws.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,13 +35,7 @@ public class RecruitController {
     private RecruitService recruitService;
 
     @Autowired
-    private Gson gson;
-
-    @Autowired
     private MapdbService mapdbService;
-
-    @Autowired
-    private ResumeService resumeService;
 
     @PostMapping
     @ApiOperation(value = "添加或更新招聘信息", notes = "传入招聘对象")
