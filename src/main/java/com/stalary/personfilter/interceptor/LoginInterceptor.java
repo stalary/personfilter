@@ -65,6 +65,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     }
 
     private boolean isAnnotationPresent(Method method, Class<? extends Annotation> annotationClass) {
+        // 查找类注解或者方法注解
         return method.getDeclaringClass().isAnnotationPresent(annotationClass) || method.isAnnotationPresent(annotationClass);
     }
 
