@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel("返回对象")
-public class ResponseMessage {
+public class ResponseMessage<T> {
 
     /**
      * 状态码
@@ -41,7 +41,7 @@ public class ResponseMessage {
      * 数据
      */
     @ApiModelProperty("数据")
-    private Object data;
+    private T data;
 
     public ResponseMessage(int code, String msg, boolean success) {
         this.code = code;
@@ -54,23 +54,23 @@ public class ResponseMessage {
     }
 
     public static ResponseMessage error(int code, String msg) {
-        return new ResponseMessage(code, msg, false);
+        return new ResponseMessage<>(code, msg, false);
     }
 
-    public static ResponseMessage successMessage(Object data) {
-        return new ResponseMessage(0, "success", true, data);
+    public static <T>ResponseMessage successMessage(T data) {
+        return new ResponseMessage<>(0, "success", true, data);
     }
 
     public static ResponseMessage successMessage() {
-        return new ResponseMessage(0, "success", true, null);
+        return new ResponseMessage<>(0, "success", true, null);
     }
 
     public static ResponseMessage failedMessage(String message) {
-        return new ResponseMessage(1, message, false, null);
+        return new ResponseMessage<>(1, message, false, null);
     }
 
     public static ResponseMessage failedMessage() {
-        return new ResponseMessage(1, "failed", false, null);
+        return new ResponseMessage<>(1, "failed", false, null);
     }
 
 }
