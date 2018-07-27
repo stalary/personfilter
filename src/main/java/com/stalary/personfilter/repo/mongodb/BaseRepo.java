@@ -11,6 +11,6 @@ import java.io.Serializable;
  * @date 2018/4/13
  */
 @NoRepositoryBean
-public interface BaseRepo<T, Long extends Serializable> extends MongoRepository<T, Long> {
+public interface BaseRepo<T, ID extends Serializable> extends MongoRepository<T, ID> {
 
 }
