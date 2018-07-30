@@ -1,5 +1,6 @@
 package com.stalary.personfilter.service;
 
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.stalary.personfilter.data.dto.*;
 import com.stalary.personfilter.data.vo.ResponseMessage;
@@ -20,6 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * WebClient
@@ -43,6 +48,8 @@ public class WebClientService {
     private String userCenterServer;
 
     public WebClientService() {
+        Map<String, String> map = new ConcurrentHashMap<>();
+        Maps.newConcurrentMap();
         // 预热
         builder(userCenterServer, HttpMethod.GET, "");
     }

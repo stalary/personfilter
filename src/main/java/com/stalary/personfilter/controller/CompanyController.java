@@ -38,11 +38,7 @@ public class CompanyController {
     public ResponseMessage allCompany(
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "4") int size) {
-        Pair<List<Company>, Integer> pair = companyService.allCompany(page, size);
-        Map<String, Object> map = new HashMap<>(2);
-        map.put("total", pair.getValue1());
-        map.put("companyList", pair.getValue0());
-        return ResponseMessage.successMessage(map);
+        return ResponseMessage.successMessage(companyService.allCompany(page, size));
     }
 
     @GetMapping("/noPage")

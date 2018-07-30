@@ -59,11 +59,7 @@ public class RecruitController {
             @RequestParam(required = false, defaultValue = "") String key,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "4") int size) {
-        Pair<List<RecruitAndCompany>, Integer> pair = recruitService.allRecruit(key, page, size);
-        Map<String, Object> map = new HashMap<>(2);
-        map.put("total", pair.getValue1());
-        map.put("recruitList", pair.getValue0());
-        return ResponseMessage.successMessage(map);
+        return ResponseMessage.successMessage(recruitService.allRecruit(key, page, size));
     }
 
     /**

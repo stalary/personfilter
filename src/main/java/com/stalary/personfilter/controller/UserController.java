@@ -1,5 +1,6 @@
 package com.stalary.personfilter.controller;
 
+import com.google.common.collect.Maps;
 import com.stalary.personfilter.annotation.LoginRequired;
 import com.stalary.personfilter.data.dto.Applicant;
 import com.stalary.personfilter.data.dto.HR;
@@ -70,7 +71,7 @@ public class UserController {
         }
         String token = responseMessage.getData().toString();
         User getUser = webClientService.getUser(token);
-        Map<String, Object> map = new HashMap<>(2);
+        Map<String, Object> map = Maps.newHashMap();
         map.put("token", token);
         map.put("role", getUser.getRole());
         map.put("userId", getUser.getId());

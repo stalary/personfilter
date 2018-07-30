@@ -1,12 +1,11 @@
 package com.stalary.personfilter.service.mysql;
 
 import com.stalary.personfilter.data.dto.HR;
+import com.stalary.personfilter.data.dto.User;
 import com.stalary.personfilter.data.entity.mysql.Company;
-import com.stalary.personfilter.data.vo.CompanyAndRecruit;
+import com.stalary.personfilter.data.entity.mysql.Recruit;
 import com.stalary.personfilter.data.vo.RecruitAndCompany;
 import com.stalary.personfilter.data.vo.RecruitAndHrAndCompany;
-import com.stalary.personfilter.data.dto.User;
-import com.stalary.personfilter.data.entity.mysql.Recruit;
 import com.stalary.personfilter.repo.mysql.RecruitRepo;
 import com.stalary.personfilter.service.WebClientService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * RecruitService
@@ -40,7 +41,7 @@ public class RecruitService extends BaseService<Recruit, RecruitRepo> {
     @Autowired
     private CompanyService companyService;
 
-    public Pair<List<RecruitAndCompany>, Integer> allRecruit(String key, int page, int size) {
+    public Map<String, Object> allRecruit(String key, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         List<RecruitAndCompany> list = new ArrayList<>();
         List<Recruit> recruitList;
@@ -56,7 +57,10 @@ public class RecruitService extends BaseService<Recruit, RecruitRepo> {
             recruit.deserializeFields();
             list.add(new RecruitAndCompany(recruit, companyService.findOne(recruit.getCompanyId())));
         });
-        return new Pair<>(list, recruitPage.getTotalPages());
+        Map<String, Object> result = new HashMap<>();
+        result.put("total", recruitPage.getTotalPages());
+        result.put("recruitList", list);
+        return result;
     }
 
     public RecruitAndHrAndCompany getRecruitInfo(Long id) {
