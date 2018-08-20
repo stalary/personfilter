@@ -7,10 +7,9 @@ import com.stalary.personfilter.data.entity.mysql.Recruit;
 import com.stalary.personfilter.data.vo.RecruitAndCompany;
 import com.stalary.personfilter.data.vo.RecruitAndHrAndCompany;
 import com.stalary.personfilter.repo.mysql.RecruitRepo;
-import com.stalary.personfilter.service.WebClientService;
+import com.stalary.personfilter.service.ClientService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,7 +35,7 @@ public class RecruitService extends BaseService<Recruit, RecruitRepo> {
     }
 
     @Autowired
-    private WebClientService webClientService;
+    private ClientService clientService;
 
     @Autowired
     private CompanyService companyService;
@@ -65,7 +64,7 @@ public class RecruitService extends BaseService<Recruit, RecruitRepo> {
 
     public RecruitAndHrAndCompany getRecruitInfo(Long id) {
         Recruit recruit = findById(id);
-        User user = webClientService.getUser(recruit.getHrId());
+        User user = clientService.getUser(recruit.getHrId());
         HR hr = new HR()
                 .setCompanyId(recruit.getCompanyId())
                 .setEmail(user.getEmail())

@@ -2,6 +2,7 @@ package com.stalary.personfilter.service.outer;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
+import com.stalary.lightmqclient.facade.Producer;
 import com.stalary.personfilter.data.dto.ReceiveResume;
 import com.stalary.personfilter.data.dto.SendResume;
 import com.stalary.personfilter.data.entity.mysql.Recruit;
@@ -9,7 +10,6 @@ import com.stalary.personfilter.data.entity.mysql.UserInfo;
 import com.stalary.personfilter.data.vo.ReceiveInfo;
 import com.stalary.personfilter.data.vo.SendInfo;
 import com.stalary.personfilter.holder.UserHolder;
-import com.stalary.personfilter.service.kafka.Producer;
 import com.stalary.personfilter.service.mongodb.ResumeService;
 import com.stalary.personfilter.service.mysql.RecruitService;
 import com.stalary.personfilter.service.mysql.UserService;

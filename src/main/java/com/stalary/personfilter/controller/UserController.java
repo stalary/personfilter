@@ -9,20 +9,15 @@ import com.stalary.personfilter.data.entity.mysql.UserInfo;
 import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.service.mysql.MessageService;
-import com.stalary.personfilter.service.outer.GoEasyService;
-import com.stalary.personfilter.service.WebClientService;
+import com.stalary.personfilter.service.ClientService;
 import com.stalary.personfilter.service.mysql.UserService;
-import com.stalary.personfilter.service.outer.QiNiuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import kotlin.UseExperimental;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static com.stalary.personfilter.utils.Constant.*;
@@ -40,7 +35,7 @@ import static com.stalary.personfilter.utils.Constant.*;
 public class UserController {
 
     @Autowired
-    private WebClientService webClientService;
+    private ClientService clientService;
 
     @Autowired
     private UserService userService;
@@ -55,7 +50,7 @@ public class UserController {
     @ApiOperation(value = "求职者注册", notes = "传入求职者注册对象")
     public ResponseMessage register(
             @RequestBody Applicant applicant) {
-        return webClientService.postUser(applicant, REGISTER);
+        return clientService.postUser(applicant, REGISTER);
     }
 
     /**
@@ -65,12 +60,12 @@ public class UserController {
     @ApiOperation(value = "登陆", notes = "传入登陆对象，仅需要用户名和密码")
     public ResponseMessage login(
             @RequestBody User user) {
-        ResponseMessage responseMessage = webClientService.postUser(user, LOGIN);
+        ResponseMessage responseMessage = clientService.postUser(user, LOGIN);
         if (!responseMessage.isSuccess()) {
             return responseMessage;
         }
         String token = responseMessage.getData().toString();
-        User getUser = webClientService.getUser(token);
+        User getUser = clientService.getUser(token);
         Map<String, Object> map = Maps.newHashMap();
         map.put("token", token);
         map.put("role", getUser.getRole());
@@ -87,7 +82,7 @@ public class UserController {
     @ApiOperation(value = "hr注册", notes = "传入hr注册对象")
     public ResponseMessage hrRegister(
             @RequestBody HR hr) {
-        return webClientService.postUser(hr, REGISTER);
+        return clientService.postUser(hr, REGISTER);
     }
 
     /**
@@ -137,7 +132,7 @@ public class UserController {
             @RequestBody Map<String, String> params) {
         User user = UserHolder.get();
         user.setPhone(params.get("phone"));
-        return webClientService.postUser(user, UPDATE);
+        return clientService.postUser(user, UPDATE);
     }
 
     /**
@@ -150,7 +145,7 @@ public class UserController {
             @RequestBody Map<String, String> params) {
         User user = UserHolder.get();
         user.setPassword(params.get("password"));
-        return webClientService.postUser(user, UPDATE_PASSWORD);
+        return clientService.postUser(user, UPDATE_PASSWORD);
     }
 
     /**
@@ -164,7 +159,7 @@ public class UserController {
         user.setPassword(params.get("password"));
         user.setUsername(params.get("username"));
         user.setPhone(params.get("phone"));
-        return webClientService.postUser(user, UPDATE_PASSWORD);
+        return clientService.postUser(user, UPDATE_PASSWORD);
     }
 
     /**
@@ -179,14 +174,14 @@ public class UserController {
             @RequestBody Map<String, String> params) {
         User user = UserHolder.get();
         user.setEmail(params.get("email"));
-        return webClientService.postUser(user, UPDATE);
+        return clientService.postUser(user, UPDATE);
     }
 
     @GetMapping("/token")
     @ApiOperation(value = "使用token获取用户信息", notes = "传入token")
     public ResponseMessage token(
             @RequestParam String token) {
-        return ResponseMessage.successMessage(webClientService.getUser(token));
+        return ResponseMessage.successMessage(clientService.getUser(token));
     }
 
     @PostMapping("/avatar")

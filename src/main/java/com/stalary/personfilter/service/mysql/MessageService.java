@@ -1,11 +1,9 @@
 package com.stalary.personfilter.service.mysql;
 
-import com.stalary.personfilter.data.dto.User;
 import com.stalary.personfilter.data.entity.mysql.Message;
 import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.repo.mysql.MessageRepo;
 import com.stalary.personfilter.service.WebSocketService;
-import com.stalary.personfilter.service.outer.GoEasyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

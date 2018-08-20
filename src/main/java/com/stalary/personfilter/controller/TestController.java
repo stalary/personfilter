@@ -1,13 +1,12 @@
 package com.stalary.personfilter.controller;
 
+import com.stalary.lightmqclient.facade.Producer;
 import com.stalary.personfilter.data.entity.mysql.Company;
 import com.stalary.personfilter.data.vo.ResponseMessage;
-import com.stalary.personfilter.service.WebClientService;
+import com.stalary.personfilter.service.ClientService;
 import com.stalary.personfilter.service.WebSocketService;
-import com.stalary.personfilter.service.kafka.Producer;
 import com.stalary.personfilter.service.mongodb.ResumeService;
 import com.stalary.personfilter.service.mysql.CompanyService;
-import com.stalary.personfilter.service.outer.GoEasyService;
 import com.stalary.personfilter.service.outer.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +27,7 @@ import static com.stalary.personfilter.utils.Constant.NOTIFY;
 public class TestController {
 
     @Autowired
-    private WebClientService webClientService;
+    private ClientService clientService;
 
     @Value("${server.user}")
     private String userCenterServer;
@@ -55,7 +54,7 @@ public class TestController {
 
     @GetMapping("/hello")
     public ResponseMessage hello() {
-        webClientService.getProjectInfo();
+        clientService.getProjectInfo();
         return ResponseMessage.successMessage(userCenterServer);
     }
 

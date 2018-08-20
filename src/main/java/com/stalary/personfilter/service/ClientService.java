@@ -22,10 +22,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * WebClient
  *
@@ -34,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Slf4j
 @Service
-public class WebClientService {
+public class ClientService {
 
     @Autowired
     private Gson gson;
@@ -47,9 +43,7 @@ public class WebClientService {
     @Value("${server.user}")
     private String userCenterServer;
 
-    public WebClientService() {
-        Map<String, String> map = new ConcurrentHashMap<>();
-        Maps.newConcurrentMap();
+    public ClientService() {
         // 预热
         builder(userCenterServer, HttpMethod.GET, "");
     }

@@ -5,7 +5,7 @@ import com.stalary.personfilter.data.ResultEnum;
 import com.stalary.personfilter.exception.MyException;
 import com.stalary.personfilter.holder.TokenHolder;
 import com.stalary.personfilter.holder.UserHolder;
-import com.stalary.personfilter.service.WebClientService;
+import com.stalary.personfilter.service.ClientService;
 import com.stalary.personfilter.service.redis.RedisKeys;
 import com.stalary.personfilter.service.redis.RedisService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ import static com.stalary.personfilter.utils.Constant.*;
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Autowired
-    private WebClientService webClientService;
+    private ClientService clientService;
 
     @Autowired
     private RedisService redisService;
@@ -43,14 +43,14 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
-        webClientService.getProjectInfo();
+        clientService.getProjectInfo();
         Method method = ((HandlerMethod) handler).getMethod();
         String uri = request.getRequestURI();
         // 判断需要调用需要登陆的接口时是否已经登陆
         boolean isLoginRequired = isAnnotationPresent(method, LoginRequired.class);
         if (isLoginRequired) {
             String token = getToken(getAuthHeader(request));
-            if (webClientService.getUser(token) == null) {
+            if (clientService.getUser(token) == null) {
                 // token无法获取到用户信息代表未登陆
                 throw new MyException(ResultEnum.NEED_LOGIN);
             }

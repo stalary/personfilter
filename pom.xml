@@ -24,19 +24,24 @@
         <java.version>1.8</java.version>
     </properties>
     <repositories>
-        <!-- GoEasy消息推送 -->
         <repository>
-            <id>goeasy</id>
-            <name>goeasy</name>
-            <url>http://maven.goeasy.io/content/repositories/releases/</url>
+            <id>oss</id>
+            <name>oss</name>
+            <url>https://oss.sonatype.org/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>aliyun-repository</id>
+            <name>aliyun repository</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
         </repository>
     </repositories>
 
     <dependencies>
+        <!-- lightmq -->
         <dependency>
-            <groupId>io.goeasy</groupId>
-            <artifactId>goeasy-sdk</artifactId>
-            <version>0.3.8</version>
+            <groupId>com.stalary</groupId>
+            <artifactId>lightmqclient</artifactId>
+            <version>1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
