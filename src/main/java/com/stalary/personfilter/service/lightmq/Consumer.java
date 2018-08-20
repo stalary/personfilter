@@ -1,5 +1,5 @@
 
-package com.stalary.personfilter.service.kafka;
+package com.stalary.personfilter.service.lightmq;
 
 import com.google.gson.Gson;
 import com.stalary.lightmqclient.MQListener;
@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 import static com.stalary.personfilter.utils.Constant.*;
 
 /**
@@ -35,31 +37,64 @@ import static com.stalary.personfilter.utils.Constant.*;
 @Component
 public class Consumer implements MQConsumer {
 
-    @Autowired
-    private Gson gson;
+    private static Gson gson;
 
     @Autowired
-    private MapdbService mapdbService;
+    public void setGson(Gson gson) {
+        Consumer.gson = gson;
+    }
+
+    private static MapdbService mapdbService;
 
     @Autowired
-    private MessageService messageService;
+    public void setMapdbService(MapdbService mapdbService) {
+        Consumer.mapdbService = mapdbService;
+    }
+
+    private static MessageService messageService;
 
     @Autowired
-    private RecruitService recruitService;
+    public void setMessageService(MessageService messageService) {
+        Consumer.messageService = messageService;
+    }
+
+    private static RecruitService recruitService;
 
     @Autowired
-    private UserService userService;
+    public void setRecruitService(RecruitService recruitService) {
+        Consumer.recruitService = recruitService;
+    }
+
+    private static UserService userService;
 
     @Autowired
-    private WebSocketService webSocketService;
+    public void setUserService(UserService userService) {
+        Consumer.userService = userService;
+    }
+
+    private static WebSocketService webSocketService;
 
     @Autowired
-    private MailService mailService;
+    public void setWebSocketService(WebSocketService webSocketService) {
+        Consumer.webSocketService = webSocketService;
+    }
+
+    private static MailService mailService;
 
     @Autowired
-    private ClientService clientService;
+    public void setMailService(MailService mailService) {
+        Consumer.mailService= mailService;
+    }
 
-    @MQListener(topics = {SEND_RESUME, NOTIFY})
+    private static ClientService clientService;
+
+    @Autowired
+    public void setClientService(ClientService clientService) {
+        Consumer.clientService = clientService;
+    }
+
+    @Override
+    @MQListener(topics = {SEND_RESUME})
     public void process(MessageDto record) {
         long startTime = System.currentTimeMillis();
         String topic = record.getTopic();
@@ -97,8 +132,6 @@ public class Consumer implements MQConsumer {
                 int count = messageService.findNotRead(hrId).size();
                 webSocketService.sendMessage(hrId, "" + count);
             }
-        } else if (NOTIFY.equals(topic)) {
-            log.info("notify");
         }
         long endTime = System.currentTimeMillis();
         log.info("SubmitConsumer.time=" + (endTime - startTime));

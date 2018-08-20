@@ -28,14 +28,6 @@ spring:
   jackson:
       serialization:
         indent_output: true
-  kafka:
-    bootstrap-servers: localhost:9092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-    producer:
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-    consumer:
-      group-id: user_center_group
   mail:
       # 邮箱服务器地址，这里使用的是163.com的邮箱服务器
         host: smtp.163.com

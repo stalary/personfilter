@@ -72,7 +72,7 @@ public class TestController {
     @GetMapping("/kafka")
     public ResponseMessage kafka(
             @RequestParam String message) {
-        producer.send(NOTIFY, message);
+        producer.send("test", message);
         return ResponseMessage.successMessage();
     }
 
