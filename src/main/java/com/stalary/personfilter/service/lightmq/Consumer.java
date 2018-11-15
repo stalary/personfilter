@@ -94,7 +94,7 @@ public class Consumer implements MQConsumer {
     }
 
     @Override
-    @MQListener(topics = {SEND_RESUME})
+    @MQListener(topics = {SEND_RESUME, "test"})
     public void process(MessageDto record) {
         long startTime = System.currentTimeMillis();
         String topic = record.getTopic();
@@ -132,6 +132,8 @@ public class Consumer implements MQConsumer {
                 int count = messageService.findNotRead(hrId).size();
                 webSocketService.sendMessage(hrId, "" + count);
             }
+        } else {
+            log.info("receive message:" + record);
         }
         long endTime = System.currentTimeMillis();
         log.info("SubmitConsumer.time=" + (endTime - startTime));
