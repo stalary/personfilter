@@ -29,7 +29,7 @@ public class TestController {
     @Value("${server.user}")
     private String userCenterServer;
 
-    @Resource
+    @Resource(name = "stringRedisTemplate")
     private StringRedisTemplate redis;
 
     @Resource

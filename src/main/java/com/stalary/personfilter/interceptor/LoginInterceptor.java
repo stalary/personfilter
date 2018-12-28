@@ -33,8 +33,13 @@ import static com.stalary.personfilter.utils.Constant.*;
 @Component
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
-    @Resource
-    private ClientService clientService;
+
+    private static ClientService clientService;
+
+    @Autowired
+    private void setClientService(ClientService clientService) {
+        LoginInterceptor.clientService = clientService;
+    }
 
     @Resource
     private RedisService redisService;

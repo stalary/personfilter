@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class MongoEventListener extends AbstractMongoEventListener<Object> {
 
-    @Resource
+    @Resource(name = "mongoTemplate")
     private MongoTemplate mongo;
 
     @Override

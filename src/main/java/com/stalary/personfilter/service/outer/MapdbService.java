@@ -1,5 +1,6 @@
 package com.stalary.personfilter.service.outer;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.stalary.lightmqclient.facade.Producer;
@@ -39,9 +40,6 @@ import static com.stalary.personfilter.utils.Constant.*;
 public class MapdbService {
 
     @Resource
-    private Gson gson;
-
-    @Resource
     private Producer producer;
 
     @Resource
@@ -58,7 +56,7 @@ public class MapdbService {
      */
     public void postResume(Long recruitId, String title) {
         Long userId = UserHolder.get().getId();
-        String json = gson.toJson(new SendResume(userId, recruitId, title, LocalDateTime.now()));
+        String json = JSONObject.toJSONString(new SendResume(userId, recruitId, title, LocalDateTime.now()));
         // 投递简历
         producer.send(SEND_RESUME, HANDLE_RESUME, json);
         // 向接受方发送通知
@@ -88,12 +86,12 @@ public class MapdbService {
             String postStr = post.get(getKey(SEND, userId.toString()));
             // 获取map，存在时，加入投递列表，不存在时，初始化
             if (postStr != null) {
-                SendInfo sendInfo = gson.fromJson(postStr, SendInfo.class);
+                SendInfo sendInfo = JSONObject.parseObject(postStr, SendInfo.class);
                 sendInfo.getSendList().add(sendResume);
-                post.put(getKey(SEND, userId.toString()), gson.toJson(sendInfo));
+                post.put(getKey(SEND, userId.toString()), JSONObject.toJSONString(sendInfo));
             } else {
                 SendInfo sendInfo = new SendInfo(Lists.newArrayList(sendResume));
-                post.put(getKey(SEND, userId.toString()), gson.toJson(sendInfo));
+                post.put(getKey(SEND, userId.toString()), JSONObject.toJSONString(sendInfo));
             }
             // 构建获取列表
             HTreeMap<String, String> get = db.
@@ -105,12 +103,12 @@ public class MapdbService {
             int rate = resumeService.calculate(recruitId, userId);
             ReceiveResume resume = new ReceiveResume(sendResume.getTitle(), userInfo.getNickname(), userInfo.getUserId(), rate, LocalDateTime.now());
             if (getStr != null) {
-                ReceiveInfo receiveInfo = gson.fromJson(getStr, ReceiveInfo.class);
+                ReceiveInfo receiveInfo = JSONObject.parseObject(getStr, ReceiveInfo.class);
                 receiveInfo.getReceiveList().add(resume);
-                get.put(getKey(RECEIVE, recruitId.toString()), gson.toJson(receiveInfo));
+                get.put(getKey(RECEIVE, recruitId.toString()), JSONObject.toJSONString(receiveInfo));
             } else {
                 ReceiveInfo receiveInfo = new ReceiveInfo(Lists.newArrayList(resume));
-                get.put(getKey(RECEIVE, recruitId.toString()), gson.toJson(receiveInfo));
+                get.put(getKey(RECEIVE, recruitId.toString()), JSONObject.toJSONString(receiveInfo));
             }
             log.info("end handle resume spend time is " + (System.currentTimeMillis() - start));
         } catch (Exception e) {
@@ -134,7 +132,7 @@ public class MapdbService {
                     .createOrOpen();
             Long userId = UserHolder.get().getId();
             String result = map.get(getKey(SEND, userId.toString()));
-            return gson.fromJson(result, SendInfo.class);
+            return JSONObject.parseObject(result, SendInfo.class);
         } catch (Exception e) {
             log.warn("mapdb error", e);
         }
@@ -160,7 +158,7 @@ public class MapdbService {
             List<ReceiveResume> result = receiveInfo.getReceiveList();
             recruitList.forEach(recruit -> {
                 String receive = map.get(getKey(RECEIVE, recruit.getId().toString()));
-                ReceiveInfo info = gson.fromJson(receive, ReceiveInfo.class);
+                ReceiveInfo info = JSONObject.parseObject(receive, ReceiveInfo.class);
                 // 对简历列表按匹配度进行排序
                 if (info != null) {
                     info.setReceiveList(info

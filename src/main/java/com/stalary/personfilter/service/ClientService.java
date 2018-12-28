@@ -1,6 +1,6 @@
 package com.stalary.personfilter.service;
 
-import com.google.gson.Gson;
+import com.alibaba.fastjson.JSONObject;
 import com.stalary.personfilter.data.dto.Applicant;
 import com.stalary.personfilter.data.dto.HR;
 import com.stalary.personfilter.data.dto.ProjectInfo;
@@ -37,9 +37,6 @@ import static com.stalary.personfilter.utils.Constant.*;
 public class ClientService {
 
     @Resource
-    private Gson gson;
-
-    @Resource
     private RedisService redisService;
     /**
      * 用户中心的地址
@@ -74,11 +71,11 @@ public class ClientService {
             ResponseMessage block = info.block();
             if (block.isSuccess()) {
                 redisService.setString(RedisKeys.PROJECT_INFO, block.getData().toString());
-                ProjectHolder.set(gson.fromJson(block.getData().toString(), ProjectInfo.class));
+                ProjectHolder.set(JSONObject.parseObject(JSONObject.toJSONString(block.getData()), ProjectInfo.class));
             }
         } else {
             // 存在缓存时直接取出
-            ProjectHolder.set(gson.fromJson(redisService.getString(RedisKeys.PROJECT_INFO), ProjectInfo.class));
+            ProjectHolder.set(JSONObject.parseObject(redisService.getString(RedisKeys.PROJECT_INFO), ProjectInfo.class));
         }
     }
 
@@ -156,14 +153,14 @@ public class ClientService {
             ResponseMessage userResponse = builder.block();
             if (userResponse.isSuccess()) {
                 redisService.setString(getKey(RedisKeys.USER_TOKEN, token), userResponse.getData().toString());
-                User user = gson.fromJson(userResponse.getData().toString(), User.class);
+                User user = JSONObject.parseObject(userResponse.getData().toString(), User.class);
                 UserHolder.set(user);
                 return user;
             } else {
                 throw new MyException(userResponse.getCode(), userResponse.getMsg());
             }
         } else {
-            User user = gson.fromJson(redisService.getString(getKey(RedisKeys.USER_TOKEN, token)), User.class);
+            User user = JSONObject.parseObject(redisService.getString(getKey(RedisKeys.USER_TOKEN, token)), User.class);
             UserHolder.set(user);
             return user;
         }
@@ -184,7 +181,7 @@ public class ClientService {
         Mono<ResponseMessage> builder = builder(userCenterServer, HttpMethod.GET, "/facade/user?userId={userId}&key={key}&projectId={projectId}", userId, projectInfo.getKey(), projectInfo.getProjectId());
         ResponseMessage block = builder.block();
         if (block.isSuccess()) {
-            return gson.fromJson(block.getData().toString(), User.class);
+            return JSONObject.parseObject(block.getData().toString(), User.class);
         }
         return null;
     }

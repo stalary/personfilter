@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @model User
+ * @model Applicant
  * @description 求职对象
  * @field username 用户名
  * @field password 密码
