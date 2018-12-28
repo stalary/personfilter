@@ -18,9 +18,9 @@ import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -38,19 +38,19 @@ import static com.stalary.personfilter.utils.Constant.*;
 @Slf4j
 public class MapdbService {
 
-    @Autowired
+    @Resource
     private Gson gson;
 
-    @Autowired
+    @Resource
     private Producer producer;
 
-    @Autowired
+    @Resource
     private UserService userService;
 
-    @Autowired
+    @Resource
     private RecruitService recruitService;
 
-    @Autowired
+    @Resource
     private ResumeService resumeService;
 
     /**
@@ -66,6 +66,7 @@ public class MapdbService {
         // 向投递方发送通知
         producer.send(SEND_RESUME, SEND, json);
     }
+
     /**
      * 处理简历
      */

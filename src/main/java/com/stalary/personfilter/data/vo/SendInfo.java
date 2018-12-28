@@ -8,17 +8,14 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * SendInfo
- * 用户的投递信息
- * @author lirongqian
- * @since 2018/04/18
- */
+ * @model SendInfo
+ * @description 投递信息
+ * @field sendList 岗位列表(见SendResume)
+ **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class SendInfo {
-    /**
-     * 岗位列表
-     */
+
     private List<SendResume> sendList;
 }

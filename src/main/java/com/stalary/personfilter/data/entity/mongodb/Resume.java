@@ -9,85 +9,55 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import java.util.List;
 
 /**
- * Resume
- * 简历实体类
- * @author lirongqian
- * @since 2018/04/13
- */
+ * @model Resume
+ * @description 简历对象
+ * @field userId 关联的用户id
+ * @field name 姓名
+ * @field sex 性别
+ * @field age 年龄
+ * @field skills 技能(见Skill)
+ * @field school 毕业院校
+ * @field address 地址
+ * @field endTime 毕业时间，仅需要精准到年
+ * @field phone 联系电话
+ * @field email 邮箱
+ * @field introduce 自我介绍
+ * @field experience 个人经历：包括项目经验等
+ * @field awards 奖项
+ * @field avatar 头像
+ **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Resume extends BaseEntity {
 
-    /**
-     * 关联的用户id
-     */
     private Long userId;
 
-    /**
-     * 姓名
-     */
     private String name;
 
-    /**
-     * 性别
-     */
     private String sex;
 
-    /**
-     * 年龄
-     */
     private int age;
 
-    /**
-     * 技能
-     */
     @DBRef
     private List<Skill> skills;
 
-    /**
-     * 毕业院校
-     */
     private String school;
 
-    /**
-     * 地址
-     */
     private String address;
 
-    /**
-     * 毕业时间，仅需要精准到年
-     */
     private int endTime;
 
-    /**
-     * 联系电话
-     */
     private String phone;
 
-    /**
-     * 邮箱
-     */
     private String email;
 
-    /**
-     * 自我介绍
-     */
     private String introduce;
 
-    /**
-     * 个人经历：包括项目经验等
-     */
     private String experience;
 
-    /**
-     * 奖项
-     */
     private String awards;
 
-    /**
-     * 头像
-     */
     private String avatar;
 }

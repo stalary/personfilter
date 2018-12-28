@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 
 /**
@@ -24,7 +25,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class MongoEventListener extends AbstractMongoEventListener<Object> {
 
-    @Autowired
+    @Resource
     private MongoTemplate mongo;
 
     @Override

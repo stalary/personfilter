@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.Annotation;
@@ -32,10 +33,10 @@ import static com.stalary.personfilter.utils.Constant.*;
 @Component
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
-    @Autowired
+    @Resource
     private ClientService clientService;
 
-    @Autowired
+    @Resource
     private RedisService redisService;
 
     @Override

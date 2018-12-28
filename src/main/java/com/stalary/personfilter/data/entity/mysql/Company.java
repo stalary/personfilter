@@ -9,11 +9,15 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * Company
- *
- * @author lirongqian
- * @since 2018/04/14
- */
+ * @model Company
+ * @description 公司对象
+ * @field name 名称
+ * @field address 地址
+ * @field avatar 头像
+ * @field introduce 简介
+ * @field scale 规模
+ * @field type 类型
+ **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,33 +26,15 @@ import javax.persistence.Table;
 @Entity
 public class Company extends BaseEntity {
 
-    /**
-     * 名称
-     */
     private String name;
 
-    /**
-     * 地址
-     */
     private String address;
 
-    /**
-     * 图片
-     */
     private String avatar;
 
-    /**
-     * 简介
-     */
     private String introduce;
 
-    /**
-     * 规模
-     */
     private String scale;
 
-    /**
-     * 类型
-     */
     private String type;
 }

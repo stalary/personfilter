@@ -9,11 +9,21 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * UserInfo
- * 与用户关联的用户信息表
- * @author lirongqian
- * @since 2018/04/20
- */
+ * @model UserInfo
+ * @description 用户信息对象
+ * @field userId 用户id
+ * @field nickname 昵称
+ * @field username 用户名
+ * @field sex 性别
+ * @field introduce 个人介绍
+ * @field address 地址
+ * @field intentionCompany 意向公司
+ * @field endTime 毕业时间
+ * @field school 毕业学校
+ * @field education 学历
+ * @field intentionJob 意向岗位
+ * @field avatar 头像
+ **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,64 +32,27 @@ import javax.persistence.Table;
 @Entity
 public class UserInfo extends BaseEntity {
 
-
-    /**
-     * 关联的userId
-     */
     private Long userId;
 
-    /**
-     * 用户名
-     */
     private String username;
 
-    /**
-     *  昵称
-     */
     private String nickname;
 
-    /**
-     * 性别
-     */
     private String sex;
 
-    /**
-     * 个人介绍
-     */
     private String introduce;
 
-    /**
-     * 地址
-     */
     private String address;
 
-    /**
-     * 意向公司
-     */
     private String intentionCompany;
 
-    /**
-     * 毕业时间
-     */
     private Integer endTime;
 
-    /**
-     * 毕业学校
-     */
     private String school;
 
-    /**
-     * 学历
-     */
     private String education;
 
-    /**
-     * 意向岗位
-     */
     private String intentionJob;
 
-    /**
-     * 头像
-     */
     private String avatar;
 }

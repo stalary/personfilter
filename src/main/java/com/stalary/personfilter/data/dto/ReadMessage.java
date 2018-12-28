@@ -5,11 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * ReadMessage
- *
- * @author lirongqian
- * @since 2018/04/30
- */
+ * @model ReadMessage
+ * @description 已读对象
+ * @field id 站内信id
+ * @field userId 用户id
+ **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

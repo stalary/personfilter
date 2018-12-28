@@ -1,23 +1,21 @@
 package com.stalary.personfilter.controller;
 
-import com.google.common.collect.Maps;
 import com.stalary.personfilter.annotation.LoginRequired;
 import com.stalary.personfilter.data.dto.Applicant;
 import com.stalary.personfilter.data.dto.HR;
 import com.stalary.personfilter.data.dto.User;
 import com.stalary.personfilter.data.entity.mysql.UserInfo;
+import com.stalary.personfilter.data.vo.LoginVo;
 import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.holder.UserHolder;
-import com.stalary.personfilter.service.mysql.MessageService;
 import com.stalary.personfilter.service.ClientService;
+import com.stalary.personfilter.service.mysql.MessageService;
 import com.stalary.personfilter.service.mysql.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.util.Map;
 
 import static com.stalary.personfilter.utils.Constant.*;
@@ -25,39 +23,42 @@ import static com.stalary.personfilter.utils.Constant.*;
 /**
  * UserController
  *
+ * @description 用户操作接口
  * @author lirongqian
  * @since 2018/04/13
  */
-@Api(tags = "用户操作接口")
 @RestController
 @RequestMapping("/user")
 @Slf4j
 public class UserController {
 
-    @Autowired
+    @Resource
     private ClientService clientService;
 
-    @Autowired
+    @Resource
     private UserService userService;
 
-    @Autowired
+    @Resource
     private MessageService messageService;
 
     /**
-     * 求职者注册
-     */
+     * @method register 求职者注册
+     * @param applicant 求职者对象
+     * @return 0 token
+     **/
     @PostMapping
-    @ApiOperation(value = "求职者注册", notes = "传入求职者注册对象")
     public ResponseMessage register(
             @RequestBody Applicant applicant) {
+        // todo: 前端应该改为注册完就跳转
         return clientService.postUser(applicant, REGISTER);
     }
 
     /**
-     * 登陆，仅需要用户名和密码
-     */
+     * @method login 传入登陆对象，仅需要用户名和密码
+     * @param user 用户对象
+     * @return LoginVo 登陆对象
+     **/
     @PostMapping("/login")
-    @ApiOperation(value = "登陆", notes = "传入登陆对象，仅需要用户名和密码")
     public ResponseMessage login(
             @RequestBody User user) {
         ResponseMessage responseMessage = clientService.postUser(user, LOGIN);
@@ -66,51 +67,49 @@ public class UserController {
         }
         String token = responseMessage.getData().toString();
         User getUser = clientService.getUser(token);
-        Map<String, Object> map = Maps.newHashMap();
-        map.put("token", token);
-        map.put("role", getUser.getRole());
-        map.put("userId", getUser.getId());
-        map.put("companyId", getUser.getFirstId());
+        LoginVo loginVo = new LoginVo(token, getUser.getRole(), getUser.getId(), getUser.getFirstId());
         messageService.getCount();
-        return ResponseMessage.successMessage(map);
+        return ResponseMessage.successMessage(loginVo);
     }
 
     /**
-     * hr注册
-     */
+     * @method hrRegister hr注册
+     * @param hr hr对象
+     * @return 0 token
+     **/
     @PostMapping("/hr")
-    @ApiOperation(value = "hr注册", notes = "传入hr注册对象")
     public ResponseMessage hrRegister(
             @RequestBody HR hr) {
         return clientService.postUser(hr, REGISTER);
     }
 
     /**
-     * 退出登录
-     */
+     * @method logout 退出登录
+     * @return 0 退出成功
+     **/
     @GetMapping("/logout")
     @LoginRequired
-    @ApiOperation(value = "退出登陆", notes = "传入token")
     public ResponseMessage logout() {
         // 在拦截器中进行删除操作
         return ResponseMessage.successMessage("退出成功");
     }
 
     /**
-     * 获得用户信息，header中带入token
-     *
-     * @return
-     */
+     * @method getInfo header中带入token获取用户信息
+     * @return UserInfo 用户信息
+     **/
     @GetMapping
-    @ApiOperation(value = "获得用户信息", notes = "header中带入token")
     @LoginRequired
     public ResponseMessage getInfo() {
         return ResponseMessage.successMessage(userService.getInfo());
     }
 
-
+    /**
+     * @method updateInfo 修改用户信息
+     * @param userInfo 用户信息对象
+     * @return UserInfo 用户信息
+     **/
     @PutMapping("/info")
-    @ApiOperation(value = "修改个人信息", notes = "个人信息对象")
     @LoginRequired
     public ResponseMessage updateInfo(
             @RequestBody UserInfo userInfo) {
@@ -121,12 +120,10 @@ public class UserController {
     }
 
     /**
-     * 修改手机号
-     * @param params
-     * @return
+     * @method updatePhone 修改手机号
+     * @param params 手机号
      */
     @PutMapping("/phone")
-    @ApiOperation(value = "修改手机号", notes = "手机号")
     @LoginRequired
     public ResponseMessage updatePhone(
             @RequestBody Map<String, String> params) {
@@ -136,10 +133,10 @@ public class UserController {
     }
 
     /**
-     * 通过手机号修改密码
+     * @method updatePhone 修改密码，通过新密码进行修改
+     * @param params 新密码
      */
     @PutMapping("/password")
-    @ApiOperation(value = "修改密码", notes = "通过新密码进行修改")
     @LoginRequired
     public ResponseMessage updatePassword(
             @RequestBody Map<String, String> params) {
@@ -149,10 +146,10 @@ public class UserController {
     }
 
     /**
-     * 忘记密码
-     */
+     * @method forgetPassword 忘记密码，通过用户名，手机号，新密码进行修改
+     * @param params 参数
+     **/
     @PostMapping("/password")
-    @ApiOperation(value = "忘记密码", notes = "通过用户名，手机号，新密码进行修改")
     public ResponseMessage forgetPassword(
             @RequestBody Map<String, String> params) {
         User user = new User();
@@ -163,12 +160,10 @@ public class UserController {
     }
 
     /**
-     * 修改邮箱
-     * @param params
-     * @return
+     * @method updateEmail 修改邮箱
+     * @param params 邮箱
      */
     @PutMapping("/email")
-    @ApiOperation(value = "修改邮箱", notes = "传入新邮箱")
     @LoginRequired
     public ResponseMessage updateEmail(
             @RequestBody Map<String, String> params) {
@@ -177,15 +172,22 @@ public class UserController {
         return clientService.postUser(user, UPDATE);
     }
 
+    /**
+     * @method token 使用token获取用户信息
+     * @param token token
+     * @return User 用户信息
+     **/
     @GetMapping("/token")
-    @ApiOperation(value = "使用token获取用户信息", notes = "传入token")
     public ResponseMessage token(
             @RequestParam String token) {
         return ResponseMessage.successMessage(clientService.getUser(token));
     }
 
+    /**
+     * @method upload 上传用户头像
+     * @param avatar 头像
+     **/
     @PostMapping("/avatar")
-    @ApiOperation(value = "上传用户头像", notes = "传入图片")
     @LoginRequired
     public ResponseMessage upload(
             @RequestParam("avatar") MultipartFile avatar) {

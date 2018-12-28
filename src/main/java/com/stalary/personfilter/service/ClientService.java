@@ -1,8 +1,10 @@
 package com.stalary.personfilter.service;
 
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
-import com.stalary.personfilter.data.dto.*;
+import com.stalary.personfilter.data.dto.Applicant;
+import com.stalary.personfilter.data.dto.HR;
+import com.stalary.personfilter.data.dto.ProjectInfo;
+import com.stalary.personfilter.data.dto.User;
 import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.exception.MyException;
 import com.stalary.personfilter.holder.ProjectHolder;
@@ -10,10 +12,8 @@ import com.stalary.personfilter.holder.TokenHolder;
 import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.service.redis.RedisKeys;
 import com.stalary.personfilter.service.redis.RedisService;
-import static com.stalary.personfilter.utils.Constant.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -21,6 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+
+import javax.annotation.Resource;
+
+import static com.stalary.personfilter.utils.Constant.*;
 
 /**
  * WebClient
@@ -32,10 +36,10 @@ import reactor.core.publisher.Mono;
 @Service
 public class ClientService {
 
-    @Autowired
+    @Resource
     private Gson gson;
 
-    @Autowired
+    @Resource
     private RedisService redisService;
     /**
      * 用户中心的地址
@@ -80,26 +84,26 @@ public class ClientService {
 
     public ResponseMessage postUser(Object object, String type) {
         ProjectInfo projectInfo = ProjectHolder.get();
-        User user = new User();
+        User user;
         // 当登录注册时，判断对象类型
         if (object instanceof Applicant) {
             Applicant applicant = (Applicant) object;
-            user.setUsername(applicant.getUsername())
-                    .setPassword(applicant.getPassword())
-                    .setPhone(applicant.getPhone())
-                    .setEmail(applicant.getEmail())
-                    .setProjectId(projectInfo.getProjectId())
-                    .setRole(2);
+            user = new User().toBuilder().username(applicant.getUsername())
+                    .password(applicant.getPassword())
+                    .phone(applicant.getPhone())
+                    .email(applicant.getEmail())
+                    .projectId(projectInfo.getProjectId())
+                    .role(2).build();
         } else if (object instanceof HR) {
             HR hr = (HR) object;
-            user.setUsername(hr.getUsername())
-                    .setNickname(hr.getNickname())
-                    .setPassword(hr.getPassword())
-                    .setPhone(hr.getPhone())
-                    .setEmail(hr.getEmail())
-                    .setProjectId(projectInfo.getProjectId())
-                    .setFirstId(hr.getCompanyId())
-                    .setRole(1);
+            user = new User().toBuilder().username(hr.getUsername())
+                    .nickname(hr.getNickname())
+                    .password(hr.getPassword())
+                    .phone(hr.getPhone())
+                    .email(hr.getEmail())
+                    .projectId(projectInfo.getProjectId())
+                    .firstId(hr.getCompanyId())
+                    .role(1).build();
         } else {
             user = (User) object;
         }

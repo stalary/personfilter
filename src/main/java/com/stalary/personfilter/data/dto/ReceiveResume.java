@@ -8,39 +8,27 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * ReceiveResume
- * 接收简历
- * @author lirongqian
- * @since 2018/04/24
- */
+ * @model ReceiveResume
+ * @description 接收简历对象
+ * @field title 岗位标题
+ * @field name 用户昵称
+ * @field userId 用户id
+ * @field rate 简历匹配度
+ * @field time 接收时间
+ **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReceiveResume {
 
-    /**
-     * 岗位标题
-     */
     private String title;
 
-    /**
-     * 用户昵称
-     */
     private String name;
 
-    /**
-     * 用户id
-     */
     private Long userId;
 
-    /**
-     * 简历匹配度
-     */
     private Integer rate;
 
-    /**
-     * 接收时间
-     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime time;
 }

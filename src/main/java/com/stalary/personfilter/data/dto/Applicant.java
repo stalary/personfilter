@@ -5,33 +5,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Applicant
- * 求职者
- * @author lirongqian
- * @since 2018/04/13
- */
+ * @model User
+ * @description 求职对象
+ * @field username 用户名
+ * @field password 密码
+ * @field email 邮箱
+ **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Applicant {
 
-    /**
-     * 用户名
-     */
     private String username;
 
-    /**
-     * 手机号
-     */
     private String phone;
 
-    /**
-     * 密码
-     */
     private String password;
 
-    /**
-     * 邮箱
-     */
     private String email;
 }

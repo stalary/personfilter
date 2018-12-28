@@ -1,46 +1,29 @@
 package com.stalary.personfilter.data.vo;
 
 import com.stalary.personfilter.data.ResultEnum;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * ResponseMessage
- *
- * @author lirongqian
- * @since 2018/04/09
- */
+ * @model ResponseMessage
+ * @description 返回对象
+ * @field code 状态码
+ * @field msg 信息
+ * @field success 是否成功
+ * @field data 数据
+ **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel("返回对象")
 public class ResponseMessage<T> {
 
-    /**
-     * 状态码
-     */
-    @ApiModelProperty("状态码")
     private int code;
 
-    /**
-     * 信息
-     */
-    @ApiModelProperty("信息")
     private String msg;
 
-    /**
-     * 是否成功
-     */
-    @ApiModelProperty("是否成功")
     private boolean success;
 
-    /**
-     * 数据
-     */
-    @ApiModelProperty("数据")
     private T data;
 
     public ResponseMessage(int code, String msg, boolean success) {

@@ -9,11 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ReceiveInfo
- *
- * @author lirongqian
- * @since 2018/04/23
- */
+ * @model ReceiveInfo
+ * @description 简历列表
+ * @field receiveList 收到的简历列表(见ReceiveResume)
+ **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

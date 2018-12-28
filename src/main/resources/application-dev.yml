@@ -38,3 +38,12 @@ spring:
         port: 465
         default-encoding: UTF-8
 debug: false
+com:
+  stalary:
+    easydoc:
+      contact: stalary@163.com
+      description: 智能化招聘系统
+      name: recruit
+      open: true
+      source: true
+      path: com.stalary.personfilter
