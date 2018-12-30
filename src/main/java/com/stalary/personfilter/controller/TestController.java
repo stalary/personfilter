@@ -49,7 +49,7 @@ public class TestController {
 
     @GetMapping("/hello")
     public ResponseMessage hello() {
-        clientService.getProjectInfo();
+        clientService.genProjectInfo();
         return ResponseMessage.successMessage(userCenterServer);
     }
 

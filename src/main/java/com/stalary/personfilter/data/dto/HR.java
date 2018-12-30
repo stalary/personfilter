@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
  * @field companyId 关联的公司Id
  * @field phone 手机号
  * @field email 邮箱
+ * @field code 验证码(注册时使用)
  **/
 @Data
 @AllArgsConstructor
@@ -35,4 +36,6 @@ public class HR {
     private String phone;
 
     private String email;
+
+    private String code;
 }

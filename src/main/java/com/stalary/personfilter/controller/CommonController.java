@@ -30,7 +30,8 @@ public class CommonController {
     @GetMapping("/code")
     public ResponseMessage code(
             @RequestParam String phone) {
-        return ResponseMessage.successMessage(smsService.sendCode(phone));
+        smsService.sendCode(phone);
+        return ResponseMessage.successMessage("发送成功");
     }
 
 }

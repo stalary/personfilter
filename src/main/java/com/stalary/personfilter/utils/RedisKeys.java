@@ -1,4 +1,4 @@
-package com.stalary.personfilter.service.redis;
+package com.stalary.personfilter.utils;
 
 /**
  * RedisKeys
@@ -13,4 +13,5 @@ public class RedisKeys {
 
     public static final String USER_TOKEN = "pf_user_token";
 
+    public static final String PHONE_CODE = "pf_phone_code";
 }

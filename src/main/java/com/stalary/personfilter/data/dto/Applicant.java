@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
  * @field username 用户名
  * @field password 密码
  * @field email 邮箱
+ * @field code 验证码(注册时使用)
  **/
 @Data
 @AllArgsConstructor
@@ -23,4 +24,6 @@ public class Applicant {
     private String password;
 
     private String email;
+
+    private String code;
 }

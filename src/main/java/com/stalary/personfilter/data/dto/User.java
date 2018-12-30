@@ -15,11 +15,9 @@ import lombok.*;
  * @field projectId 项目id
  * @field role 角色，1为hr，2为求职者
  * @field firstId 关联Id
+ * @field code 验证码(注册时使用)
  **/
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
-@Builder(toBuilder = true)
 public class User {
 
     private Long id;
@@ -39,4 +37,29 @@ public class User {
     private Integer role;
 
     private Long firstId;
+
+    private String code;
+
+    public User(Applicant applicant) {
+        this.username = applicant.getUsername();
+        this.password = applicant.getPassword();
+        this.phone = applicant.getPhone();
+        this.email = applicant.getEmail();
+        this.code = applicant.getCode();
+        this.role = 2;
+    }
+
+    public User(HR hr) {
+        this.username = hr.getUsername();
+        this.nickname = hr.getNickname();
+        this.password = hr.getPassword();
+        this.phone = hr.getPhone();
+        this.email = hr.getEmail();
+        this.firstId = hr.getCompanyId();
+        this.code = hr.getCode();
+        this.role = 1;
+    }
+
+    public User() {
+    }
 }

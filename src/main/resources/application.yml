@@ -1,5 +1,9 @@
 spring:
   profiles:
     active: prod
+  application:
+    name: personfilter
+  jpa:
+    open-in-view: false
 logging:
   config: classpath:log4j2.xml

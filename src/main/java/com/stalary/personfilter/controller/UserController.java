@@ -49,7 +49,6 @@ public class UserController {
     @PostMapping
     public ResponseMessage register(
             @RequestBody Applicant applicant) {
-        // todo: 前端应该改为注册完就跳转
         return clientService.postUser(applicant, REGISTER);
     }
 
@@ -133,7 +132,7 @@ public class UserController {
     }
 
     /**
-     * @method updatePhone 修改密码，通过新密码进行修改
+     * @method updatePassword 修改密码，通过新密码进行修改
      * @param params 新密码
      */
     @PutMapping("/password")

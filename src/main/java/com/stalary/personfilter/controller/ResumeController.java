@@ -3,7 +3,6 @@ package com.stalary.personfilter.controller;
 import com.stalary.personfilter.data.entity.mongodb.Resume;
 import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.service.mongodb.ResumeService;
-import com.stalary.personfilter.service.mongodb.SkillService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -21,9 +20,6 @@ public class ResumeController {
 
     @Resource
     private ResumeService resumeService;
-
-    @Resource
-    private SkillService skillService;
 
     /**
      * @method save  保存修改简历

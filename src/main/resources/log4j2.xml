@@ -90,10 +90,10 @@
         <!-- 使用异步日志，需要依赖于Disruptor -->
         <Root level="info">
             <Appender-ref ref="Console" />
-            <Appender-ref ref="RollingFileInfo" />
+            <!--<Appender-ref ref="RollingFileInfo" />
             <Appender-ref ref="RollingFileWarn" />
             <Appender-ref ref="RollingFileError" />
-            <Appender-ref ref="RollingFileAll" />
+            <Appender-ref ref="RollingFileAll" />-->
         </Root>
     </Loggers>
 
