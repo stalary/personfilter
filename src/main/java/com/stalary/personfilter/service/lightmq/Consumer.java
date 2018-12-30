@@ -1,7 +1,7 @@
 
 package com.stalary.personfilter.service.lightmq;
 
-import com.google.gson.Gson;
+import com.alibaba.fastjson.JSONObject;
 import com.stalary.lightmqclient.MQListener;
 import com.stalary.lightmqclient.MessageDto;
 import com.stalary.lightmqclient.facade.MQConsumer;
@@ -18,12 +18,8 @@ import com.stalary.personfilter.service.mysql.UserService;
 import com.stalary.personfilter.service.outer.MailService;
 import com.stalary.personfilter.service.outer.MapdbService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 
 import static com.stalary.personfilter.utils.Constant.*;
 
@@ -36,13 +32,6 @@ import static com.stalary.personfilter.utils.Constant.*;
 @Slf4j
 @Component
 public class Consumer implements MQConsumer {
-
-    private static Gson gson;
-
-    @Autowired
-    public void setGson(Gson gson) {
-        Consumer.gson = gson;
-    }
 
     private static MapdbService mapdbService;
 
@@ -105,7 +94,7 @@ public class Consumer implements MQConsumer {
         String message = record.getValue();
         log.info("receive message: topic: " + topic + " key: " + key + " message: " + message);
         if (SEND_RESUME.equals(topic)) {
-            SendResume resume = gson.fromJson(message, SendResume.class);
+            SendResume resume = JSONObject.parseObject(message, SendResume.class);
             if (HANDLE_RESUME.equals(key)) {
                 // 处理投递简历
                 mapdbService.handleResume(resume);

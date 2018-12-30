@@ -2,19 +2,20 @@ package com.stalary.personfilter.interceptor;
 
 import com.stalary.personfilter.annotation.LoginRequired;
 import com.stalary.personfilter.data.ResultEnum;
+import com.stalary.personfilter.data.dto.User;
 import com.stalary.personfilter.exception.MyException;
-import com.stalary.personfilter.holder.TokenHolder;
 import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.service.ClientService;
-import com.stalary.personfilter.service.redis.RedisKeys;
-import com.stalary.personfilter.service.redis.RedisService;
+import com.stalary.personfilter.utils.RedisKeys;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.Annotation;
@@ -32,36 +33,46 @@ import static com.stalary.personfilter.utils.Constant.*;
 @Component
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
-    @Autowired
-    private ClientService clientService;
+
+    private static ClientService clientService;
 
     @Autowired
-    private RedisService redisService;
+    private void setClientService(ClientService clientService) {
+        LoginInterceptor.clientService = clientService;
+    }
+
+    @Resource(name = "stringRedisTemplate")
+    private StringRedisTemplate redis;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
-        clientService.getProjectInfo();
         Method method = ((HandlerMethod) handler).getMethod();
-        String uri = request.getRequestURI();
+        clientService.genProjectInfo();
         // 判断需要调用需要登陆的接口时是否已经登陆
         boolean isLoginRequired = isAnnotationPresent(method, LoginRequired.class);
         if (isLoginRequired) {
+            String uri = request.getRequestURI();
             String token = getToken(getAuthHeader(request));
-            if (clientService.getUser(token) == null) {
+            User user = clientService.getUser(token);
+            if (user == null) {
                 // token无法获取到用户信息代表未登陆
                 throw new MyException(ResultEnum.NEED_LOGIN);
             }
-            TokenHolder.set(token);
             // 退出时删除缓存
             if (uri.contains(LOGOUT)) {
-                UserHolder.remove();
-                redisService.remove(getKey(RedisKeys.USER_TOKEN, token));
+                redis.delete(getKey(RedisKeys.USER_TOKEN, token));
             }
         }
         return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        // 请求完成后清除ThreadLocal
+        UserHolder.remove();
     }
 
     private boolean isAnnotationPresent(Method method, Class<? extends Annotation> annotationClass) {
@@ -74,7 +85,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      */
     private String getAuthHeader(HttpServletRequest request) {
         String authHeader = request.getHeader(Authorization);
-        // 默认的auth
         log.info("authHeader" + authHeader);
         return authHeader;
     }
@@ -83,6 +93,10 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         String token = null;
         if (StringUtils.isNotEmpty(authHeader)) {
             token = authHeader.split(" ")[1];
+        } else {
+            if (clientService.isDebug()) {
+                token = "2f7146973b3a8850a4adad88dfc94d3c32543ce6ed7070ce66ea0eababb4bf37";
+            }
         }
         return token;
     }

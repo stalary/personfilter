@@ -10,11 +10,11 @@ import com.stalary.personfilter.repo.mysql.RecruitRepo;
 import com.stalary.personfilter.service.ClientService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,10 +34,10 @@ public class RecruitService extends BaseService<Recruit, RecruitRepo> {
         super(repo);
     }
 
-    @Autowired
+    @Resource
     private ClientService clientService;
 
-    @Autowired
+    @Resource
     private CompanyService companyService;
 
     public Map<String, Object> allRecruit(String key, int page, int size) {
@@ -65,12 +65,12 @@ public class RecruitService extends BaseService<Recruit, RecruitRepo> {
     public RecruitAndHrAndCompany getRecruitInfo(Long id) {
         Recruit recruit = findById(id);
         User user = clientService.getUser(recruit.getHrId());
-        HR hr = new HR()
-                .setCompanyId(recruit.getCompanyId())
-                .setEmail(user.getEmail())
-                .setNickname(user.getNickname())
-                .setPhone(user.getPhone())
-                .setUsername(user.getUsername());
+        HR hr = new HR().toBuilder()
+                .companyId(recruit.getCompanyId())
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .phone(user.getPhone())
+                .username(user.getUsername()).build();
         Company company = companyService.findOne(recruit.getCompanyId());
         return new RecruitAndHrAndCompany(recruit, hr, company);
     }

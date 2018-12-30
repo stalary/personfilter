@@ -3,58 +3,68 @@ package com.stalary.personfilter.controller;
 import com.stalary.personfilter.annotation.LoginRequired;
 import com.stalary.personfilter.data.dto.SendResume;
 import com.stalary.personfilter.data.entity.mysql.Recruit;
-import com.stalary.personfilter.data.vo.RecruitAndCompany;
 import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.service.mysql.RecruitService;
 import com.stalary.personfilter.service.outer.MapdbService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.javatuples.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Resource;
 
 /**
  * RecruitController
  *
+
+ */
+/**
+ * @model RecruitController
+ * @description 招聘相关接口
  * @author lirongqian
  * @since 2018/04/17
- */
-@Api(tags = "招聘操作接口")
+ **/
 @RestController
 @RequestMapping("/recruit")
 @Slf4j
 public class RecruitController {
 
-    @Autowired
+    @Resource
     private RecruitService recruitService;
 
-    @Autowired
+    @Resource
     private MapdbService mapdbService;
 
+    /**
+     * @method add 添加招聘信息
+     * @param recruit 招聘信息对象
+     * @return Recruit 招聘信息对象
+     **/
     @PostMapping
-    @ApiOperation(value = "添加或更新招聘信息", notes = "传入招聘对象")
     public ResponseMessage add(
             @RequestBody Recruit recruit) {
         Recruit saveRecruit = recruitService.saveRecruit(recruit);
         return ResponseMessage.successMessage(saveRecruit);
     }
 
+    /**
+     * @method delete 删除 招聘信息
+     * @param id 招聘信息id
+     **/
     @DeleteMapping
-    @ApiOperation(value = "删除招聘信息", notes = "传入招聘信息的id")
     public ResponseMessage delete(
             @RequestParam Long id) {
         recruitService.deleteById(id);
         return ResponseMessage.successMessage();
     }
 
+    /**
+     * @method allRecruit 查看所有招聘信息
+     * @param key 关键字
+     * @param page 当前页数
+     * @param size 每页数据量
+     * @return RecruitAndCompany 招聘信息
+     **/
     @GetMapping
-    @ApiOperation(value = "查看所有招聘信息", notes = "分页默认1页4条，传入key则按关键字搜索")
     public ResponseMessage allRecruit(
             @RequestParam(required = false, defaultValue = "") String key,
             @RequestParam(required = false, defaultValue = "1") int page,
@@ -68,10 +78,13 @@ public class RecruitController {
      * 2 向hr发送简历接收通知(站内信，邮件)
      * 3 向投递者发送简历投递成功的通知
      * 4 向hr和投递者push更新后的未读通知数量
-     * @return
+     *
      */
+    /**
+     * @method postResume 投递简历
+     * @param sendResume 投递简历对象
+     **/
     @PostMapping("/resume")
-    @ApiOperation(value = "投递简历", notes = "需要传入岗位id")
     @LoginRequired
     public ResponseMessage postResume(
             @RequestBody SendResume sendResume) {
@@ -80,29 +93,42 @@ public class RecruitController {
         return ResponseMessage.successMessage("投递成功");
     }
 
+    /**
+     * @method getSendList 查看个人投递列表
+     * @return SendInfo 投递信息
+     **/
     @GetMapping("/send")
-    @ApiOperation(value = "投递列表", notes = "查看个人投递列表")
     @LoginRequired
     public ResponseMessage getSendList() {
         return ResponseMessage.successMessage(mapdbService.getSendList());
     }
 
+    /**
+     * @method getReceiveList 查看获取的简历列表
+     * @return
+     **/
     @GetMapping("/receive")
-    @ApiOperation(value = "简历列表", notes = "查看获取的简历列表")
     @LoginRequired
     public ResponseMessage getReceiveList() {
         return ResponseMessage.successMessage(mapdbService.getReceiveList());
     }
 
+    /**
+     * @method getInfo 查看招聘信息
+     * @param id 岗位id
+     * @return RecruitAndHrAndCompany 招聘信息
+     **/
     @GetMapping("/{id}")
-    @ApiOperation(value = "查看招聘信息", notes = "传入岗位id")
     public ResponseMessage getInfo(
             @PathVariable("id") Long id) {
         return ResponseMessage.successMessage(recruitService.getRecruitInfo(id));
     }
 
+    /**
+     * @method getHrInfo 获取当前hr的招聘信息
+     * @return Recruit 招聘信息
+     **/
     @GetMapping("/hr")
-    @ApiOperation(value = "查看当前hr的招聘信息")
     @LoginRequired
     public ResponseMessage getHrInfo() {
         return ResponseMessage.successMessage(recruitService.findByUserId(UserHolder.get().getId()));

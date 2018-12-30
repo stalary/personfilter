@@ -1,79 +1,41 @@
 package com.stalary.personfilter.data.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * HR
- * hr
- * @author lirongqian
- * @since 2018/04/13
- */
+ * @model HR
+ * @description 招聘者对象
+ * @field userId 用户id
+ * @field nickname 姓名
+ * @field username 用户名
+ * @field password 密码
+ * @field companyId 关联的公司Id
+ * @field phone 手机号
+ * @field email 邮箱
+ * @field code 验证码(注册时使用)
+ **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder(toBuilder = true)
 public class HR {
 
     private Long userId;
 
-    /**
-     * 姓名
-     */
     private String nickname;
 
-    /**
-     * 用户名
-     */
     private String username;
 
-    /**
-     * 密码
-     */
     private String password;
 
-    /**
-     * 关联的公司Id
-     */
     private Long companyId;
 
-    /**
-     * 手机号
-     */
     private String phone;
 
-    /**
-     * 邮箱
-     */
     private String email;
 
-    public HR setNickname(String nickname) {
-        this.nickname = nickname;
-        return this;
-    }
-
-    public HR setUsername(String username) {
-        this.username = username;
-        return this;
-    }
-
-    public HR setPassword(String password) {
-        this.password = password;
-        return this;
-    }
-
-    public HR setCompanyId(Long companyId) {
-        this.companyId = companyId;
-        return this;
-    }
-
-    public HR setPhone(String phone) {
-        this.phone = phone;
-        return this;
-    }
-
-    public HR setEmail(String email) {
-        this.email = email;
-        return this;
-    }
+    private String code;
 }

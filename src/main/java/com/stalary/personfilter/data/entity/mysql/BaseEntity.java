@@ -2,8 +2,6 @@ package com.stalary.personfilter.data.entity.mysql;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -16,37 +14,25 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * BaseEntity
- *
- * @author lirongqian
- * @since 2018/03/24
- */
+ * @model BaseEntity
+ * @description 基础实体类
+ * @field id id
+ * @field updateTime 最后更新时间
+ * @field createTime 创建时间
+ **/
 @Data
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
 
-    /**
-     * 自增id
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty(hidden = true)
     private Long id;
 
-    /**
-     * 最后更新时间
-     */
     @JsonIgnore
     @UpdateTimestamp
-    @ApiModelProperty(hidden=true)
     private Date updateTime;
 
-    /**
-     * 创建时间
-     */
     @CreationTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(hidden=true)
     private Date createTime;
-
 }

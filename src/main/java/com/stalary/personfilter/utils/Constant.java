@@ -1,6 +1,9 @@
 package com.stalary.personfilter.utils;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+
+import java.util.List;
 
 /**
  * Constant
@@ -67,10 +70,7 @@ public class Constant {
      */
     public static final String LOOK = "look";
 
-    /**
-     * goeasy
-     */
-    public static final String SUBSCRIBE_KEY = "BS-61b0fa471fbb45a682ba64501ff7c522";
+    public static final List<String> ORIGIN_LIST = Lists.newArrayList("120.24.5.178", "localhost");
 
     public static final Joiner JOINER = Joiner.on(SPLIT);
 

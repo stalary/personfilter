@@ -15,11 +15,11 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * CompanyAndRecruit
- *
- * @author lirongqian
- * @since 2018/04/26
- */
+ * @model CompanyAndRecruit
+ * @description 公司详情
+ * @field company 公司(见Company)
+ * @field recruitList 招聘信息列表(见Recruit)
+ **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

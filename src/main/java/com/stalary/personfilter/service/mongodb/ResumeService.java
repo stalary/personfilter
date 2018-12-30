@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,13 +32,13 @@ public class ResumeService extends BaseService<Resume, ResumeRepo> {
         super(repo);
     }
 
-    @Autowired
+    @Resource(name = "mongoTemplate")
     private MongoTemplate mongo;
 
-    @Autowired
+    @Resource(name = "skillRepo")
     private SkillRepo skillRepo;
 
-    @Autowired
+    @Resource
     private RecruitService recruitService;
 
     /**

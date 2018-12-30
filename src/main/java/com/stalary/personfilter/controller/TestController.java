@@ -8,13 +8,11 @@ import com.stalary.personfilter.service.WebSocketService;
 import com.stalary.personfilter.service.mongodb.ResumeService;
 import com.stalary.personfilter.service.mysql.CompanyService;
 import com.stalary.personfilter.service.outer.MailService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
-import static com.stalary.personfilter.utils.Constant.NOTIFY;
+import javax.annotation.Resource;
 
 /**
  * TestController
@@ -23,38 +21,35 @@ import static com.stalary.personfilter.utils.Constant.NOTIFY;
  * @since 2018/04/09
  */
 @RestController
-@ApiIgnore
 public class TestController {
 
-    @Autowired
+    @Resource
     private ClientService clientService;
 
     @Value("${server.user}")
     private String userCenterServer;
 
-
-    @Autowired
+    @Resource(name = "stringRedisTemplate")
     private StringRedisTemplate redis;
 
-
-    @Autowired
+    @Resource
     private CompanyService companyService;
 
-    @Autowired
+    @Resource
     private Producer producer;
 
-    @Autowired
+    @Resource
     private ResumeService resumeService;
 
-    @Autowired
+    @Resource
     private MailService mailService;
 
-    @Autowired
+    @Resource
     private WebSocketService webSocketService;
 
     @GetMapping("/hello")
     public ResponseMessage hello() {
-        clientService.getProjectInfo();
+        clientService.genProjectInfo();
         return ResponseMessage.successMessage(userCenterServer);
     }
 

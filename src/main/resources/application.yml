@@ -1,15 +1,9 @@
 spring:
   profiles:
     active: prod
-server:
-  tomcat:
-    accesslog:
-      directory: accesslog
-      enabled: true
-      prefix: access_log
-      suffix: .log
-      rotate: true
-      file-date-format: .yyyy-MM-dd
-      request-attributes-enabled: true
-      pattern: combined
-    basedir: personfilter_tomcat
+  application:
+    name: personfilter
+  jpa:
+    open-in-view: false
+logging:
+  config: classpath:log4j2.xml

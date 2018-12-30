@@ -2,36 +2,35 @@ package com.stalary.personfilter.controller;
 
 import com.stalary.personfilter.annotation.LoginRequired;
 import com.stalary.personfilter.data.dto.ReadMessage;
-import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.data.dto.User;
 import com.stalary.personfilter.data.entity.mysql.Message;
+import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.service.mysql.MessageService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 /**
  * MessageController
- *
+ * @description 站内信以及邮件接口
  * @author lirongqian
  * @since 2018/04/17
  */
-@Api(tags = "站内信以及邮件接口")
 @RestController
 @RequestMapping("/message")
 @Slf4j
 public class MessageController {
 
-    @Autowired
+    @Resource
     private MessageService messageService;
 
     /**
-     * 推送一条站内信，可以供前端群发站内信使用
-     * @return
-     */
+     * @method postMessage 推送一条站内信，可以供前端群发站内信使用
+     * @param message 站内信
+     * @return Message 站内信
+     **/
     @PostMapping
     public ResponseMessage postMessage(
             @RequestBody Message message) {
@@ -40,10 +39,10 @@ public class MessageController {
     }
 
     /**
-     * 获取一个用户接收的站内信
-     */
+     * @method getMessage 获取一个用户接收的站内信
+     * @return Message 站内信
+     **/
     @GetMapping("/user/get")
-    @ApiOperation(value = "获取一个用户接收的站内信")
     @LoginRequired
     public ResponseMessage getMessage() {
         User user = UserHolder.get();
@@ -55,10 +54,10 @@ public class MessageController {
     }
 
     /**
-     * 已读站内信
-     */
+     * @method readMessage 已读站内信
+     * @param readMessage 已读对象
+     **/
     @PostMapping("/read")
-    @ApiOperation(value = "已读站内信", notes = "传入站内信的id和userId")
     @LoginRequired
     public ResponseMessage readMessage(
             @RequestBody ReadMessage readMessage) {
@@ -68,10 +67,10 @@ public class MessageController {
 
 
     /**
-     * 获取一个用户发送的站内信
-     */
+     * @method getSendMessage 获取一个用户发送的站内信
+     * @return Message 站内信
+     **/
     @GetMapping("/user/send")
-    @ApiOperation(value = "获取一个用户发送的站内信")
     @LoginRequired
     public ResponseMessage getSendMessage() {
         User user = UserHolder.get();

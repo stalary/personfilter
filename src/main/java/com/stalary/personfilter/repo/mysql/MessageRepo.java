@@ -3,6 +3,7 @@ package com.stalary.personfilter.repo.mysql;
 import com.stalary.personfilter.data.entity.mysql.Message;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * @date 2018/4/17
  */
 @Transactional(rollbackFor = Exception.class)
+@Repository
 public interface MessageRepo extends BaseRepo<Message, Long> {
 
     /**

@@ -1,5 +1,7 @@
 package com.stalary.personfilter.data.entity.mysql;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.gson.reflect.TypeToken;
@@ -17,11 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Recruit
- * 招聘信息
- * @author lirongqian
- * @since 2018/04/17
- */
+ * @model Recruit
+ * @description 招聘信息
+ * @field companyId 关联的公司id
+ * @field hrId 关联的hrId
+ * @field content 招聘内容
+ * @field title 招聘标题
+ **/
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
@@ -30,30 +34,16 @@ import java.util.List;
 @Entity
 public class Recruit extends BaseEntity {
 
-    /**
-     * 关联的公司id
-     */
     private Long companyId;
 
-    /**
-     * 关联的hr id
-     */
     private Long hrId;
 
-    /**
-     * 招聘内容
-     */
     private String content;
 
-    /**
-     * 招聘标题
-     */
     private String title;
 
-    /**
-     * 需要的技能列表，对前端隐藏
-     */
     @Transient
+    @JsonIgnore
     private List<SkillRule> skillList;
 
     @JsonIgnore
@@ -61,12 +51,12 @@ public class Recruit extends BaseEntity {
 
     @JsonIgnore
     public void serializeFields() {
-        this.skillStr = BeansFactory.getGson().toJson(skillList);
+        this.skillStr = JSONObject.toJSONString(skillList);
     }
 
     @JsonIgnore
     public void deserializeFields() {
-        this.skillList = BeansFactory.getGson().fromJson(skillStr, new TypeToken<List<SkillRule>>(){}.getType());
+        this.skillList = JSONObject.parseObject(skillStr, new TypeReference<List<SkillRule>>(){});
     }
 
 }

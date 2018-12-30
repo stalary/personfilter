@@ -1,26 +1,27 @@
 package com.stalary.personfilter.service;
 
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.stalary.personfilter.data.dto.*;
+import com.alibaba.fastjson.JSONObject;
+import com.stalary.personfilter.client.UserCenterClient;
+import com.stalary.personfilter.data.ResultEnum;
+import com.stalary.personfilter.data.dto.Applicant;
+import com.stalary.personfilter.data.dto.HR;
+import com.stalary.personfilter.data.dto.ProjectInfo;
+import com.stalary.personfilter.data.dto.User;
 import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.exception.MyException;
 import com.stalary.personfilter.holder.ProjectHolder;
-import com.stalary.personfilter.holder.TokenHolder;
 import com.stalary.personfilter.holder.UserHolder;
-import com.stalary.personfilter.service.redis.RedisKeys;
-import com.stalary.personfilter.service.redis.RedisService;
-import static com.stalary.personfilter.utils.Constant.*;
+import com.stalary.personfilter.utils.RedisKeys;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Mono;
+
+import javax.annotation.Resource;
+
+import static com.stalary.personfilter.utils.Constant.*;
 
 /**
  * WebClient
@@ -32,111 +33,74 @@ import reactor.core.publisher.Mono;
 @Service
 public class ClientService {
 
-    @Autowired
-    private Gson gson;
+    @Resource(name = "stringRedisTemplate")
+    private StringRedisTemplate redis;
 
-    @Autowired
-    private RedisService redisService;
-    /**
-     * 用户中心的地址
-     */
-    @Value("${server.user}")
-    private String userCenterServer;
+    @Resource
+    private UserCenterClient userCenterClient;
 
-    public ClientService() {
-        // 预热
-        builder(userCenterServer, HttpMethod.GET, "");
-    }
+    @Value("${server.debug}")
+    @Getter
+    private boolean debug;
 
-    private Mono<ResponseMessage> builder(String baseUrl, HttpMethod httpMethod, String uri, Object... uriVariables) {
-        return WebClient.create(baseUrl)
-                .method(httpMethod)
-                .uri(uri, uriVariables)
-                .retrieve()
-                .onStatus(HttpStatus::isError, response -> {
-                    log.warn("error: {}, msg: {}", response.statusCode().value(), response.statusCode().getReasonPhrase());
-                    return Mono.error(new RuntimeException(response.statusCode().value() + " : " + response.statusCode().getReasonPhrase()));
-                })
-                .bodyToMono(ResponseMessage.class)
-                .retry(3)
-                .doOnError(WebClientResponseException.class, err -> log.warn("error: {}, msg: {}", err.getRawStatusCode(), err.getResponseBodyAsString()))
-                .doOnSuccess(responseMessage -> log.info("webClient: " + userCenterServer + uri + responseMessage));
-    }
-
-    public void getProjectInfo() {
+    public void genProjectInfo() {
         // 将项目信息存入缓存中
-        if (StringUtils.isEmpty(redisService.getString(RedisKeys.PROJECT_INFO))) {
-            Mono<ResponseMessage> info = builder(userCenterServer, HttpMethod.GET, "/facade/project?name={name}&phone={phone}", "leader直聘", "17853149599");
-            ResponseMessage block = info.block();
-            if (block.isSuccess()) {
-                redisService.setString(RedisKeys.PROJECT_INFO, block.getData().toString());
-                ProjectHolder.set(gson.fromJson(block.getData().toString(), ProjectInfo.class));
+        if (StringUtils.isEmpty(redis.opsForValue().get(RedisKeys.PROJECT_INFO))) {
+            ResponseMessage<ProjectInfo> info = userCenterClient.getProjectInfo("leader直聘", "17853149599");
+            if (info.isSuccess()) {
+                redis.opsForValue().set(RedisKeys.PROJECT_INFO, JSONObject.toJSONString(info.getData()));
+                ProjectHolder.set(info.getData());
+            } else {
+                log.warn("genProjectInfo error");
             }
         } else {
             // 存在缓存时直接取出
-            ProjectHolder.set(gson.fromJson(redisService.getString(RedisKeys.PROJECT_INFO), ProjectInfo.class));
+            ProjectHolder.set(JSONObject.parseObject(redis.opsForValue().get(RedisKeys.PROJECT_INFO), ProjectInfo.class));
         }
     }
 
     public ResponseMessage postUser(Object object, String type) {
         ProjectInfo projectInfo = ProjectHolder.get();
-        User user = new User();
+        User user;
         // 当登录注册时，判断对象类型
         if (object instanceof Applicant) {
             Applicant applicant = (Applicant) object;
-            user.setUsername(applicant.getUsername())
-                    .setPassword(applicant.getPassword())
-                    .setPhone(applicant.getPhone())
-                    .setEmail(applicant.getEmail())
-                    .setProjectId(projectInfo.getProjectId())
-                    .setRole(2);
+            user = new User(applicant);
         } else if (object instanceof HR) {
             HR hr = (HR) object;
-            user.setUsername(hr.getUsername())
-                    .setNickname(hr.getNickname())
-                    .setPassword(hr.getPassword())
-                    .setPhone(hr.getPhone())
-                    .setEmail(hr.getEmail())
-                    .setProjectId(projectInfo.getProjectId())
-                    .setFirstId(hr.getCompanyId())
-                    .setRole(1);
+            user = new User(hr);
         } else {
             user = (User) object;
         }
-        // 修改密码时需要特别判断
-        String password = "";
-        if (UPDATE_PASSWORD.equals(type)) {
-            type = UPDATE;
-            password = PASSWORD;
-        }
-        // 存入项目的id
+        // 写入项目id，用于请求用户中心
         user.setProjectId(projectInfo.getProjectId());
-        ResponseMessage tokenResponse = WebClient
-                .create(userCenterServer)
-                .method(HttpMethod.POST)
-                .uri("/token/{type}/{password}?key={key}", type, password, projectInfo.getKey())
-                .body(Mono.just(user), User.class)
-                .retrieve()
-                .onStatus(HttpStatus::isError, response -> {
-                    log.warn("error: {}, msg: {}", response.statusCode().value(), response.statusCode().getReasonPhrase());
-                    return Mono.error(new RuntimeException(response.statusCode().value() + " : " + response.statusCode().getReasonPhrase()));
-                })
-                .bodyToMono(ResponseMessage.class)
-                .block();
-        if (UPDATE.equals(type)) {
-            if (tokenResponse.isSuccess()) {
-                // 修改成功后清空缓存
-                redisService.remove(getKey(RedisKeys.USER_TOKEN, TokenHolder.get()));
-                return ResponseMessage.successMessage("修改成功");
-            } else {
-                return tokenResponse;
+        ResponseMessage<String> response = new ResponseMessage<>();
+        if (UPDATE_PASSWORD.equals(type)) {
+            response = userCenterClient.updatePassword(projectInfo.getKey(), user);
+        } else if (UPDATE.equals(type)) {
+            response = userCenterClient.updateInfo(projectInfo.getKey(), user);
+        } else if (REGISTER.equals(type)) {
+            // 注册需要先校验短信验证码
+            String code = redis.opsForValue().get(getKey(RedisKeys.PHONE_CODE, user.getPhone()));
+            if (StringUtils.isEmpty(code)) {
+                throw new MyException(ResultEnum.CODE_EXPIRE);
             }
+            if (!user.getCode().equals(code)) {
+                throw new MyException(ResultEnum.CODE_ERROR);
+            }
+            response = userCenterClient.register(projectInfo.getKey(), user);
+        } else if (LOGIN.equals(type)) {
+            response = userCenterClient.login(projectInfo.getKey(), user);
+        } else {
+            log.warn("postUser type " + type + " error");
         }
-        // 当登陆注册时，需要用户token
-        if (tokenResponse.isSuccess()) {
-            getUser(tokenResponse.getData().toString());
+        if (response.isSuccess()) {
+            // 当修改密码后更新缓存
+            redis.opsForValue().set(getKey(RedisKeys.USER_TOKEN, response.getData()), JSONObject.toJSONString(user));
+        } else {
+            throw new MyException(response.getCode(), response.getMsg());
         }
-        return tokenResponse;
+        return response;
     }
 
     /**
@@ -146,20 +110,20 @@ public class ClientService {
      * @return
      */
     public User getUser(String token) {
-        if (StringUtils.isEmpty(redisService.getString(getKey(RedisKeys.USER_TOKEN, token)))) {
+        String redisKey = getKey(RedisKeys.USER_TOKEN, token);
+        if (StringUtils.isEmpty(redis.opsForValue().get(redisKey))) {
             ProjectInfo projectInfo = ProjectHolder.get();
-            Mono<ResponseMessage> builder = builder(userCenterServer, HttpMethod.GET, "/facade/token?token={token}&key={key}", token, projectInfo.getKey());
-            ResponseMessage userResponse = builder.block();
-            if (userResponse.isSuccess()) {
-                redisService.setString(getKey(RedisKeys.USER_TOKEN, token), userResponse.getData().toString());
-                User user = gson.fromJson(userResponse.getData().toString(), User.class);
+            ResponseMessage<User> response = userCenterClient.getUserInfo(token, projectInfo.getKey());
+            if (response.isSuccess()) {
+                User user = response.getData();
+                redis.opsForValue().set(redisKey, JSONObject.toJSONString(user));
                 UserHolder.set(user);
                 return user;
             } else {
-                throw new MyException(userResponse.getCode(), userResponse.getMsg());
+                throw new MyException(response.getCode(), response.getMsg());
             }
         } else {
-            User user = gson.fromJson(redisService.getString(getKey(RedisKeys.USER_TOKEN, token)), User.class);
+            User user = JSONObject.parseObject(redis.opsForValue().get(redisKey), User.class);
             UserHolder.set(user);
             return user;
         }
@@ -167,22 +131,19 @@ public class ClientService {
 
     /**
      * 通过id获取用户信息
-     *
-     * @param userId
-     * @return
      */
     public User getUser(Long userId) {
         ProjectInfo projectInfo = ProjectHolder.get();
         if (projectInfo == null) {
-            getProjectInfo();
+            genProjectInfo();
         }
         projectInfo = ProjectHolder.get();
-        Mono<ResponseMessage> builder = builder(userCenterServer, HttpMethod.GET, "/facade/user?userId={userId}&key={key}&projectId={projectId}", userId, projectInfo.getKey(), projectInfo.getProjectId());
-        ResponseMessage block = builder.block();
-        if (block.isSuccess()) {
-            return gson.fromJson(block.getData().toString(), User.class);
+        ResponseMessage<User> response = userCenterClient.getUserInfoById(userId, projectInfo.getKey(), projectInfo.getProjectId());
+        if (response.isSuccess()) {
+            return response.getData();
+        } else {
+            throw new MyException(response.getCode(), response.getMsg());
         }
-        return null;
     }
 
 }

@@ -11,9 +11,14 @@ import com.aliyuncs.profile.IClientProfile;
 import com.stalary.personfilter.data.ResultEnum;
 import com.stalary.personfilter.exception.MyException;
 import com.stalary.personfilter.utils.Constant;
+import com.stalary.personfilter.utils.RedisKeys;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.concurrent.TimeUnit;
 
 /**
  * SmsService
@@ -24,6 +29,9 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class SmsService {
+
+    @Resource(name = "stringRedisTemplate")
+    private StringRedisTemplate redis;
 
     /**
      * 阿里短信
@@ -42,6 +50,8 @@ public class SmsService {
     public String sendCode(String phone) {
         String randomCode = RandomStringUtils.randomNumeric(6);
         if (sendSms(phone, randomCode)) {
+            // 有效期一天
+            redis.opsForValue().set(Constant.getKey(RedisKeys.PHONE_CODE, phone), randomCode, 1, TimeUnit.DAYS);
             return randomCode;
         }
         return null;

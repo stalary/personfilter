@@ -3,98 +3,63 @@ package com.stalary.personfilter.data.dto;
 import lombok.*;
 
 /**
- * User
- *
- * @author lirongqian
- * @since 2018/04/15
- */
-@AllArgsConstructor
-@NoArgsConstructor
+ * @model User
+ * @description 用户对象
+ * @field userId 用户id
+ * @field nickname 昵称
+ * @field username 用户名
+ * @field password 密码
+ * @field companyId 关联的公司Id
+ * @field phone 手机号
+ * @field email 邮箱
+ * @field projectId 项目id
+ * @field role 角色，1为hr，2为求职者
+ * @field firstId 关联Id
+ * @field code 验证码(注册时使用)
+ **/
 @Data
 public class User {
 
-    /**
-     * id
-     */
     private Long id;
 
-    /**
-     * 用户名
-     */
     private String username;
 
-    /**
-     * 昵称
-     */
     private String nickname;
 
-    /**
-     * 手机号
-     */
     private String phone;
 
-    /**
-     * 密码
-     */
     private String password;
 
-    /**
-     * 邮箱
-     */
     private String email;
 
-    /**
-     * 项目id
-     */
     private Long projectId;
 
-    /**
-     * 角色，1为hr，2为求职者
-     */
     private Integer role;
 
-    /**
-     * 关联Id
-     */
     private Long firstId;
 
-    public User setUsername(String username) {
-        this.username = username;
-        return this;
+    private String code;
+
+    public User(Applicant applicant) {
+        this.username = applicant.getUsername();
+        this.password = applicant.getPassword();
+        this.phone = applicant.getPhone();
+        this.email = applicant.getEmail();
+        this.code = applicant.getCode();
+        this.role = 2;
     }
 
-    public User setPhone(String phone) {
-        this.phone = phone;
-        return this;
+    public User(HR hr) {
+        this.username = hr.getUsername();
+        this.nickname = hr.getNickname();
+        this.password = hr.getPassword();
+        this.phone = hr.getPhone();
+        this.email = hr.getEmail();
+        this.firstId = hr.getCompanyId();
+        this.code = hr.getCode();
+        this.role = 1;
     }
 
-    public User setPassword(String password) {
-        this.password = password;
-        return this;
-    }
-
-    public User setEmail(String email) {
-        this.email = email;
-        return this;
-    }
-
-    public User setProjectId(Long projectId) {
-        this.projectId = projectId;
-        return this;
-    }
-
-    public User setNickname(String nickname) {
-        this.nickname = nickname;
-        return this;
-    }
-
-    public User setRole(Integer role) {
-        this.role = role;
-        return this;
-    }
-
-    public User setFirstId(Long firstId) {
-        this.firstId = firstId;
-        return this;
+    public User() {
     }
 }

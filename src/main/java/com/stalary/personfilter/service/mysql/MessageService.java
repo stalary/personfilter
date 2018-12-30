@@ -7,6 +7,7 @@ import com.stalary.personfilter.service.WebSocketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public class MessageService extends BaseService<Message, MessageRepo> {
         super(repo);
     }
 
-    @Autowired
+    @Resource
     private WebSocketService webSocketService;
 
     public List<Message> findByToId(Long toId) {
@@ -35,9 +36,7 @@ public class MessageService extends BaseService<Message, MessageRepo> {
 
     /**
      * 查找未读通知的数量
-     * @param toId
-     * @return
-     */
+     **/
     public List<Message> findNotRead(Long toId) {
         return repo.findByToIdAndReadState(toId, false);
     }

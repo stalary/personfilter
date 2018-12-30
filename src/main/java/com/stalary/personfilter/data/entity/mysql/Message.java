@@ -1,6 +1,5 @@
 package com.stalary.personfilter.data.entity.mysql;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,11 +9,14 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * Message
- * 站内信
- * @author lirongqian
- * @since 2018/04/17
- */
+ * @model Message
+ * @description 站内信对象
+ * @field fromId 发送方id，系统发送则id为0
+ * @field toId 接收方id
+ * @field title 站内信标题
+ * @field content 内容
+ * @field readState 是否已阅
+ **/
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
@@ -23,29 +25,13 @@ import javax.persistence.Table;
 @Entity
 public class Message extends BaseEntity {
 
-    /**
-     * 发送方id，系统发送则id为0
-     */
     private Long fromId;
 
-    /**
-     * 接收方id
-     */
     private Long toId;
 
-    /**
-     * 站内信标题
-     */
     private String title;
 
-    /**
-     * 内容
-     */
     private String content;
 
-    /**
-     * 是否已阅
-     */
-    @ApiModelProperty(value = "false")
-    private Boolean readState;
+    private Boolean readState = false;
 }
