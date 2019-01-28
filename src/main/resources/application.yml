@@ -1,6 +1,8 @@
 spring:
   profiles:
     active: prod
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
   application:
     name: personfilter
   jpa:

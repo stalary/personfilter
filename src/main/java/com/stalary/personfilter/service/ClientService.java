@@ -2,7 +2,7 @@ package com.stalary.personfilter.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.stalary.personfilter.client.UserCenterClient;
-import com.stalary.personfilter.data.ResultEnum;
+import com.stalary.personfilter.exception.ResultEnum;
 import com.stalary.personfilter.data.dto.Applicant;
 import com.stalary.personfilter.data.dto.HR;
 import com.stalary.personfilter.data.dto.ProjectInfo;

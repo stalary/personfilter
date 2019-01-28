@@ -3,10 +3,7 @@ package com.stalary.personfilter.data.entity.mysql;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.google.gson.reflect.TypeToken;
 import com.stalary.personfilter.data.dto.SkillRule;
-import com.stalary.personfilter.factory.BeansFactory;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,7 +12,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

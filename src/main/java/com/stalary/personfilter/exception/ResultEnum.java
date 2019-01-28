@@ -1,4 +1,4 @@
-package com.stalary.personfilter.data;
+package com.stalary.personfilter.exception;
 
 import lombok.Getter;
 

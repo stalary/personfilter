@@ -1,6 +1,5 @@
 package com.stalary.personfilter.exception;
 
-import com.stalary.personfilter.data.ResultEnum;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

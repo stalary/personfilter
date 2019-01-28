@@ -1,6 +1,5 @@
 package com.stalary.personfilter.service.mysql;
 
-import com.google.common.collect.Maps;
 import com.stalary.personfilter.data.entity.mysql.Company;
 import com.stalary.personfilter.data.entity.mysql.Recruit;
 import com.stalary.personfilter.data.vo.CompanyAndRecruit;
@@ -12,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +34,7 @@ public class CompanyService extends BaseService<Company, CompanyRepo> {
     public Map<String, Object> allCompany(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         Page<Company> companyList = repo.findAll(pageRequest);
-        Map<String, Object> result = Maps.newHashMap();
+        Map<String, Object> result = new HashMap<>();
         result.put("total", companyList.getTotalPages());
         result.put("companyList", companyList.getContent());
         return result;

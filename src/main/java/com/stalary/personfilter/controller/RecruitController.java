@@ -5,10 +5,11 @@ import com.stalary.personfilter.data.dto.SendResume;
 import com.stalary.personfilter.data.entity.mysql.Recruit;
 import com.stalary.personfilter.data.vo.ResponseMessage;
 import com.stalary.personfilter.holder.UserHolder;
+import com.stalary.personfilter.service.mongodb.ResumeService;
 import com.stalary.personfilter.service.mysql.RecruitService;
-import com.stalary.personfilter.service.outer.MapdbService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 
@@ -32,7 +33,7 @@ public class RecruitController {
     private RecruitService recruitService;
 
     @Resource
-    private MapdbService mapdbService;
+    private ResumeService resumeService;
 
     /**
      * @method add 添加招聘信息
@@ -47,7 +48,7 @@ public class RecruitController {
     }
 
     /**
-     * @method delete 删除 招聘信息
+     * @method delete 删除招聘信息
      * @param id 招聘信息id
      **/
     @DeleteMapping
@@ -89,7 +90,7 @@ public class RecruitController {
     public ResponseMessage postResume(
             @RequestBody SendResume sendResume) {
         log.info("sendResume" + sendResume);
-        mapdbService.postResume(sendResume.getRecruitId(), sendResume.getTitle());
+        resumeService.postResume(sendResume.getRecruitId(), sendResume.getTitle());
         return ResponseMessage.successMessage("投递成功");
     }
 
@@ -100,7 +101,7 @@ public class RecruitController {
     @GetMapping("/send")
     @LoginRequired
     public ResponseMessage getSendList() {
-        return ResponseMessage.successMessage(mapdbService.getSendList());
+        return ResponseMessage.successMessage(resumeService.getSendList());
     }
 
     /**
@@ -110,7 +111,7 @@ public class RecruitController {
     @GetMapping("/receive")
     @LoginRequired
     public ResponseMessage getReceiveList() {
-        return ResponseMessage.successMessage(mapdbService.getReceiveList());
+        return ResponseMessage.successMessage(resumeService.getReceiveList());
     }
 
     /**

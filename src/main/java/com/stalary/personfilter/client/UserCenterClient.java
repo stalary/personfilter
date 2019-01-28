@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface UserCenterClient {
 
     /**
-     * @method getProjectInfo 获取项目信息
+     * getProjectInfo 获取项目信息
      * @param name 项目名称
      * @param phone 手机号
      * @return 项目信息
@@ -32,7 +32,7 @@ public interface UserCenterClient {
             @RequestParam(name = "phone") String phone);
 
     /**
-     * @method updateInfo 更新用户信息
+     * updateInfo 更新用户信息
      * @param key 项目的key
      * @param user 用户信息
      * @return token
@@ -43,7 +43,7 @@ public interface UserCenterClient {
             @RequestBody User user);
 
     /**
-     * @method updatePassword 修改密码
+     * updatePassword 修改密码
      * @param key 项目的key
      * @param user 用户信息
      * @return token
@@ -54,7 +54,7 @@ public interface UserCenterClient {
             @RequestBody User user);
 
     /**
-     * @method register 用户注册
+     * register 用户注册
      * @param key 项目的key
      * @param user 用户信息
      * @return token
@@ -65,7 +65,7 @@ public interface UserCenterClient {
             @RequestBody User user);
 
     /**
-     * @method login 用户登陆
+     * login 用户登陆
      * @param key 项目的key
      * @param user 用户信息
      * @return token
@@ -76,7 +76,7 @@ public interface UserCenterClient {
             @RequestBody User user);
 
     /**
-     * @method getUserInfo 获取用户信息
+     * getUserInfo 获取用户信息
      * @param token token
      * @param key 项目的key
      * @return 用户信息
@@ -87,11 +87,10 @@ public interface UserCenterClient {
             @RequestParam(name = "key") String key);
 
     /**
-     * @method getUserInfoById 通过用户id获取用户信息
+     * getUserInfoById 通过用户id获取用户信息
      * @param userId 用户id
      * @param key 项目的key
      * @param projectId 项目id
-     * @return
      **/
     @GetMapping("/facade/user")
     ResponseMessage<User> getUserInfoById(

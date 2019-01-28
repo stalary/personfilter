@@ -1,7 +1,7 @@
 package com.stalary.personfilter.interceptor;
 
 import com.stalary.personfilter.annotation.LoginRequired;
-import com.stalary.personfilter.data.ResultEnum;
+import com.stalary.personfilter.exception.ResultEnum;
 import com.stalary.personfilter.data.dto.User;
 import com.stalary.personfilter.exception.MyException;
 import com.stalary.personfilter.holder.UserHolder;

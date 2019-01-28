@@ -67,4 +67,5 @@ public class CompanyController {
             @PathVariable("id") Long id) {
         return ResponseMessage.successMessage(companyService.getInfo(id));
     }
+
 }

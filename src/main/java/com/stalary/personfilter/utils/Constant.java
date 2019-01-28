@@ -34,7 +34,7 @@ public class Constant {
 
     public static final String UPDATE_PASSWORD = "update/password";
 
-
+    public static final String USER_AVATAR = "avatar";
 
     public static final String SENDINFO = "sendInfo";
 
@@ -53,17 +53,12 @@ public class Constant {
     /**
      * 处理简历
      */
-    public static final String HANDLE_RESUME = "handle";
-
-    /**
-     * 投递方
-     */
-    public static final String SEND = "send";
+    public static final String HANDLE_RESUME = "handle_resume";
 
     /**
      * 接受方
      */
-    public static final String RECEIVE = "receive";
+    public static final String RECEIVE_RESUME = "receive_resume";
 
     /**
      * 查看简历

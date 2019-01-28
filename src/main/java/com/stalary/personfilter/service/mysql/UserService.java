@@ -4,7 +4,10 @@ import com.stalary.personfilter.data.entity.mysql.UserInfo;
 import com.stalary.personfilter.holder.UserHolder;
 import com.stalary.personfilter.repo.mysql.UserInfoRepo;
 import com.stalary.personfilter.service.outer.QiNiuService;
+import com.stalary.personfilter.utils.Constant;
+import com.stalary.personfilter.utils.PFUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +36,8 @@ public class UserService extends BaseService<UserInfo, UserInfoRepo> {
 
 
     public void uploadAvatar(MultipartFile avatar) {
-        String url = qiNiuService.uploadPicture(avatar);
+        String name = Constant.getKey(Constant.USER_AVATAR, String.valueOf(UserHolder.get().getId()));
+        String url = qiNiuService.uploadPicture(avatar, name);
         UserInfo info = getInfo();
         info.setAvatar(url);
         repo.save(info);

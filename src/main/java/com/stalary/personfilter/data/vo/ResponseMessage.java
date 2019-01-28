@@ -1,6 +1,6 @@
 package com.stalary.personfilter.data.vo;
 
-import com.stalary.personfilter.data.ResultEnum;
+import com.stalary.personfilter.exception.ResultEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

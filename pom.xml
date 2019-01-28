@@ -26,11 +26,6 @@
     </properties>
     <repositories>
         <repository>
-            <id>oss</id>
-            <name>oss</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
             <id>aliyun-repository</id>
             <name>aliyun repository</name>
             <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
@@ -167,11 +162,11 @@
             <version>1.1.0</version>
         </dependency>
 
-        <!-- mapdb -->
+        <!-- guava -->
         <dependency>
-            <groupId>org.mapdb</groupId>
-            <artifactId>mapdb</artifactId>
-            <version>3.0.5</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>25.1-jre</version>
         </dependency>
 
         <!-- 七牛云存储 -->
@@ -185,7 +180,7 @@
         <dependency>
             <groupId>com.stalary</groupId>
             <artifactId>easy-doc</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>0.1.0</version>
         </dependency>
 
     </dependencies>

@@ -1,27 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>
-    hello world!
-</h1>
-<button onclick="f()">接收消息</button>
-<script type="text/javascript" src="http://cdn-hangzhou.goeasy.io"></script>
-<script type="text/javascript">
-    function f() {
-        var goEasy = new GoEasy({
-            appkey: 'BS-61b0fa471fbb45a682ba64501ff7c522'
-        });
-        goEasy.subscribe({
-            channel: "test",
-            onMessage: function (message) {
-                alert('收到：' + message.content);
-            }
-        });
+<meta charset="utf-8" />
+<title>WebSocket Test</title>
+<script language="javascript"type="text/javascript">
+    var wsUri ="ws://59.111.95.232:31000/push/1";
+    var output;
+
+    function init() {
+        output = document.getElementById("output");
+        testWebSocket();
     }
+
+    function testWebSocket() {
+        websocket = new WebSocket(wsUri);
+        websocket.onopen = function(evt) {
+            onOpen(evt)
+        };
+        websocket.onclose = function(evt) {
+            onClose(evt)
+        };
+        websocket.onmessage = function(evt) {
+            onMessage(evt)
+        };
+        websocket.onerror = function(evt) {
+            onError(evt)
+        };
+    }
+
+    function onOpen(evt) {
+        writeToScreen("CONNECTED");
+        doSend("WebSocket rocks");
+    }
+
+    function onClose(evt) {
+        writeToScreen("DISCONNECTED");
+    }
+
+    function onMessage(evt) {
+        writeToScreen('<span style="color: blue;">RESPONSE: '+ evt.data+'</span>');
+        // websocket.close();
+    }
+
+    function onError(evt) {
+        writeToScreen('<span style="color: red;">ERROR:</span> '+ evt.data);
+    }
+
+    function doSend(message) {
+        writeToScreen("SENT: " + message);
+        websocket.send(message);
+    }
+
+    function writeToScreen(message) {
+        var pre = document.createElement("p");
+        pre.style.wordWrap = "break-word";
+        pre.innerHTML = message;
+        output.appendChild(pre);
+    }
+
+    window.addEventListener("load", init, false);
 </script>
-</body>
+<h2>WebSocket Test</h2>
+<div id="output"></div>
 </html>

@@ -8,7 +8,7 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
-import com.stalary.personfilter.data.ResultEnum;
+import com.stalary.personfilter.exception.ResultEnum;
 import com.stalary.personfilter.exception.MyException;
 import com.stalary.personfilter.utils.Constant;
 import com.stalary.personfilter.utils.RedisKeys;

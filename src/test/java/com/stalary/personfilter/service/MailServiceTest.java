@@ -25,6 +25,6 @@ public class MailServiceTest extends BaseTest {
 
     @Test
     public void test() {
-        mailService.sendEmil("452024236@qq.com", "测试", "测试邮件");
+        mailService.sendEmail("452024236@qq.com", "测试", "测试邮件");
     }
 }
